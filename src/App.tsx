@@ -22,7 +22,7 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <BrowserRouter>
+      <BrowserRouter basename"/BASE-LYD/">
         <AppLayout>
           <Routes>
             <Route path="/" element={<Dashboard />} />
