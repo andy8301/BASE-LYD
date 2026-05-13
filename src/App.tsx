@@ -38,7 +38,7 @@ const App = () => (
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AppLayout>
-      <HashRouter>
+      </HashRouter>
     </TooltipProvider>
   </QueryClientProvider>
 );
