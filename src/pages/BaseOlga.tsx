@@ -77,7 +77,7 @@ export default function BaseOlga() {
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="max-w-5xl max-h-[92vh] overflow-y-auto">
           <DialogHeader className="border-b pb-4">
-            <DialogTitle className="text-xl font-bold text-blue-900">Formulario de Gestión (B a AG)</DialogTitle>
+            <DialogTitle className="text-xl font-bold text-blue-900">Formulario de Gestión Integral</DialogTitle>
           </DialogHeader>
           
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-8 pt-4 pb-10">
@@ -85,43 +85,55 @@ export default function BaseOlga() {
             {/* 1. Radicación e Ingreso */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-blue-50/50 rounded-lg border border-blue-100">
               <h3 className="col-span-3 font-bold text-blue-800 border-b border-blue-200 pb-1 text-sm">1. Radicación e Ingreso</h3>
-              <div className="space-y-1"><Label className="text-xs font-bold font-mono">No consecutivo (B)</Label><Input {...register("consecutivo")} className="bg-white h-9" /></div>
-              <div className="space-y-1"><Label className="text-xs font-bold font-mono">FECHA ACTO (J)</Label><Input {...register("fechaActo")} className="bg-white h-9 border-blue-200" /></div>
-              <div className="space-y-1"><Label className="text-xs font-bold font-mono">No. EXPEDIENTE (F)</Label><Input {...register("expediente")} className="bg-white h-9" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">No consecutivo (B)</Label><Input {...register("consecutivo")} className="bg-white h-9" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">Canal de ingreso (C)</Label><Input {...register("canalIngreso")} className="bg-white h-9" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">Area Remitente (D)</Label><Input {...register("areaRemitente")} className="bg-white h-9" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">No. PLANILLA (E)</Label><Input {...register("planilla")} className="bg-white h-9" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">No. EXPEDIENTE (F)</Label><Input {...register("expediente")} className="bg-white h-9" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">Fecha Radicacion (G)</Label><Input {...register("fechaRadicacion")} className="bg-white h-9" /></div>
+              <div className="col-span-2 space-y-1"><Label className="text-xs font-bold">ACTO ADMINISTRA-TIVO (H)</Label><Input {...register("actoAdministrativo")} className="bg-white h-9" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">No. ACTO / SADE (I)</Label><Input {...register("numeroActo")} className="bg-white h-9" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold text-blue-700 font-bold">FECHA ACTO (J)</Label><Input {...register("fechaActo")} className="bg-white h-9 border-blue-300" /></div>
             </div>
 
             {/* 2. Información del Contribuyente */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-green-50/50 rounded-lg border border-green-100">
               <h3 className="col-span-3 font-bold text-green-800 border-b border-green-200 pb-1 text-sm">2. Información del Contribuyente</h3>
-              <div className="space-y-1"><Label className="text-xs font-bold font-mono">CONTRIBUYENTE (N)</Label><Input {...register("contribuyente")} className="bg-white h-9" /></div>
-              <div className="space-y-1"><Label className="text-xs font-bold font-mono">OBSERVACIONES (P)</Label><Input {...register("observaciones")} className="bg-white h-9" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">PLACA (L)</Label><Input {...register("placa")} className="bg-white h-9" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">No. DE IDENTIFICACION (M)</Label><Input {...register("identificacion")} className="bg-white h-9" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">CONTRIBUYENTE (N)</Label><Input {...register("contribuyente")} className="bg-white h-9" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">CIUDAD-DEPARTAMENTO (O)</Label><Input {...register("ciudadDepartamento")} className="bg-white h-9" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">OBSERVACIONES (P)</Label><Input {...register("observaciones")} className="bg-white h-9" /></div>
               <div className="space-y-1">
-                <Label className="text-xs font-bold font-mono">FUNCIONARIO (Q)</Label>
+                <Label className="text-xs font-bold">FUNCIONARIO (Q)</Label>
                 <Select onValueChange={(v) => setValue("funcionarioEncargado", v)}>
                   <SelectTrigger className="bg-white h-9"><SelectValue placeholder="-" /></SelectTrigger>
                   <SelectContent>{funcionarios.map(f => <SelectItem key={f} value={f}>{f}</SelectItem>)}</SelectContent>
                 </Select>
               </div>
-              <div className="space-y-1 col-span-1"><Label className="text-xs font-bold font-mono text-green-700">NOTA: (R)</Label><Input {...register("nota")} className="bg-white h-9 border-green-200" /></div>
+              <div className="space-y-1 col-span-1"><Label className="text-xs font-bold text-green-700 font-bold">NOTA: (R)</Label><Input {...register("nota")} className="bg-white h-9 border-green-300" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">FECHA DE RECIBIDO (S)</Label><Input {...register("fechaRecibido")} className="bg-white h-9" /></div>
             </div>
 
             {/* 3. Clasificación y Respuesta */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-orange-50/50 rounded-lg border border-orange-100">
               <h3 className="col-span-3 font-bold text-orange-800 border-b border-orange-200 pb-1 text-sm">3. Clasificación y Respuesta (V a AG)</h3>
-              <div className="space-y-1"><Label className="text-xs font-bold font-mono">ARTÍCULO (V)</Label><Input {...register("item")} className="bg-white h-9" /></div>
-              <div className="col-span-2 space-y-1"><Label className="text-xs font-bold font-mono text-[10px]">SI EL TIPO DE RENTA ES OTRO (W)</Label><Input {...register("tipoRentaOtro")} className="bg-white h-9" /></div>
-              <div className="space-y-1"><Label className="text-xs font-bold font-mono">PRELACIÓN LEGAL (X)</Label><Input {...register("prelacionLegal")} className="bg-white h-9" /></div>
-              <div className="space-y-1"><Label className="text-xs font-bold font-mono text-[10px]">BASE FUNCIONARIO 1RA RESP (Y)</Label><Input {...register("baseFuncionario1ra")} className="bg-white h-9" /></div>
-              <div className="space-y-1"><Label className="text-xs font-bold font-mono">FECHA RESOLUCIÓN SALIDA (AB)</Label><Input {...register("fechaResolucionSadeSalida")} className="bg-white h-9" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">ITEM / ARTÍCULO (V)</Label><Input {...register("item")} className="bg-white h-9" /></div>
+              <div className="col-span-2 space-y-1"><Label className="text-xs font-bold text-[10px]">SI EL TIPO DE RENTA ES OTRO (W)</Label><Input {...register("tipoRentaOtro")} className="bg-white h-9" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">PRELACIÓN LEGAL (X)</Label><Input {...register("prelacionLegal")} className="bg-white h-9" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold text-[10px]">BASE FUNCIONARIO 1RA RESP (Y)</Label><Input {...register("baseFuncionario1ra")} className="bg-white h-9" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">FECHA RESOLUCIÓN SALIDA (AB)</Label><Input {...register("fechaResolucionSadeSalida")} className="bg-white h-9" /></div>
               <div className="space-y-1">
-                <Label className="text-xs font-bold font-mono">TIPO DE RESPUESTA (AC)</Label>
+                <Label className="text-xs font-bold">TIPO DE RESPUESTA (AC)</Label>
                 <Select onValueChange={(v) => setValue("tipoRespuesta", v)}>
                   <SelectTrigger className="bg-white h-9"><SelectValue placeholder="-" /></SelectTrigger>
                   <SelectContent>{respuestas.map(r => <SelectItem key={r} value={r}>{r}</SelectItem>)}</SelectContent>
                 </Select>
               </div>
-              <div className="space-y-1"><Label className="text-xs font-bold font-mono text-red-600">FECHA EJECUTORIA (AF)</Label><Input {...register("fechaEjecutoria")} className="bg-white h-9 border-red-200" /></div>
-              <div className="space-y-1"><Label className="text-xs font-bold font-mono">TRASLADO (AG)</Label><Input {...register("traslado")} className="bg-white h-9" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">No PLANILLA (AD)</Label><Input {...register("noPlanillaSalida")} className="bg-white h-9" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">FECHA DE PLANILLA (AE)</Label><Input {...register("fechaDePlanillaSalida")} className="bg-white h-9" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold text-red-600">FECHA EJECUTORIA (AF)</Label><Input {...register("fechaEjecutoria")} className="bg-white h-9 border-red-200" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">TRASLADO (AG)</Label><Input {...register("traslado")} className="bg-white h-9" /></div>
             </div>
 
             <Button type="submit" className="w-full bg-slate-900 py-6 text-xl font-bold text-white hover:bg-black"><Save className="mr-2" /> Guardar Todo</Button>
