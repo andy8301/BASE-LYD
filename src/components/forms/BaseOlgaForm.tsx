@@ -48,7 +48,6 @@ export default function BaseOlga() {
 
   useEffect(() => { fetchData(); }, []);
 
-  // Lógica de filtrado en tiempo real al usar el buscador
   useEffect(() => {
     let result = data;
     if (searchTerm) {
@@ -114,7 +113,7 @@ export default function BaseOlga() {
 
   return (
     <div className="p-6 space-y-6">
-      {/* Encabezado Superior estilo Nexura */}
+      {/* Panel Superior */}
       <div className="flex justify-between items-center bg-white p-4 rounded-lg shadow border border-slate-100">
         <div>
           <h1 className="text-2xl font-bold text-slate-800">Base Olga</h1>
@@ -130,12 +129,12 @@ export default function BaseOlga() {
         </div>
       </div>
 
-      {/* Barra de Búsqueda y Filtros de Estado */}
+      {/* Control de Consultas y Búsquedas */}
       <div className="flex flex-col md:flex-row gap-4 bg-white p-4 rounded-lg shadow border border-slate-100">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
           <Input 
-            placeholder="Buscar en todos los campos (Consecutivo, Expediente, Contribuyente)..." 
+            placeholder="Buscar por Consecutivo, Expediente o Contribuyente..." 
             className="pl-9 bg-slate-50/50"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
@@ -154,7 +153,7 @@ export default function BaseOlga() {
         </div>
       </div>
 
-      {/* Tabla Principal de Registros de la Consulta */}
+      {/* Grilla / Tabla de Datos de Consulta */}
       <div className="bg-white rounded-lg shadow border border-slate-100 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
@@ -208,7 +207,7 @@ export default function BaseOlga() {
         </div>
       </div>
 
-      {/* Modal del Formulario Integral (B a AQ) */}
+      {/* Modal del Formulario Extendida (B a AQ) */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="max-w-6xl max-h-[92vh] overflow-y-auto">
           <DialogHeader className="border-b pb-4">
@@ -218,7 +217,7 @@ export default function BaseOlga() {
           </DialogHeader>
           
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-8 pt-4 pb-10">
-            {/* 1. Radicación e Ingreso */}
+            {/* 1. Radicación */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-blue-50/50 rounded-lg border border-blue-100">
               <h3 className="col-span-3 font-bold text-blue-800 border-b">1. Radicación e Ingreso (B a J)</h3>
               <div className="space-y-1"><Label>Consecutivo (B)</Label><Input {...register("consecutivo")} className="bg-white" /></div>
@@ -226,7 +225,7 @@ export default function BaseOlga() {
               <div className="space-y-1"><Label className="text-blue-700 font-semibold">FECHA ACTO (J)</Label><Input {...register("fechaActo")} className="bg-white border-blue-300" /></div>
             </div>
 
-            {/* 2. Contribuyente y Renta */}
+            {/* 2. Contribuyente */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-green-50/50 rounded-lg border border-green-100">
               <h3 className="col-span-3 font-bold text-green-800 border-b">2. Contribuyente y Renta (L a T)</h3>
               <div className="space-y-1"><Label>CONTRIBUYENTE (N)</Label><Input {...register("contribuyente")} className="bg-white" /></div>
@@ -240,7 +239,7 @@ export default function BaseOlga() {
               </div>
             </div>
 
-            {/* 3. Clasificación Inicial */}
+            {/* 3. Clasificación */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-orange-50/50 rounded-lg border border-orange-100">
               <h3 className="col-span-3 font-bold text-orange-800 border-b">3. Clasificación Inicial (V a AG)</h3>
               <div className="space-y-1"><Label>ITEM (V)</Label><Input {...register("item")} className="bg-white" /></div>
@@ -248,7 +247,7 @@ export default function BaseOlga() {
               <div className="space-y-1"><Label>TRASLADO (AG)</Label><Input {...register("traslado")} className="bg-white" /></div>
             </div>
 
-            {/* 4. Segunda Instancia y Seguimiento */}
+            {/* 4. Segunda Instancia Nuevos Campos */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-purple-50/50 rounded-lg border border-purple-100">
               <h3 className="col-span-3 font-bold text-purple-800 border-b border-purple-200">4. Segunda Instancia y Seguimiento (AH a AQ)</h3>
               <div className="space-y-1"><Label>OBSERVACIÓN (AH)</Label><Input {...register("observacionAH")} className="bg-white" /></div>
