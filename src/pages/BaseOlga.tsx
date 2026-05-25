@@ -69,14 +69,14 @@ export default function BaseOlga() {
         formData.baseFunc3raAR || "", // AR
         ...Array(11).fill(""), // AS a BC (Espacios vacíos de control)
         formData.fechaVencimientoBD || "", // BD
-        formData.numResolucionBE || "", // BE
-        formData.numSadeBF || "", // BF
-        formData.fechaResolucionBG || "", // BG
-        formData.numPlanillaBH || "", // BH
-        formData.fechaPlanillaBI || "", // BI
-        formData.fechaEjecutoriaBJ || "", // BJ
-        formData.trasladoBK || "", // BK
-        formData.tipoRespuestaBL || "" // BL
+        formData.diasPendientesBE || "", // BE
+        formData.semaforoVencimientoBF || "", // BF
+        formData.diasTranscurridosBG || "", // BG
+        formData.semaforoExpedientesBH || "", // BH
+        formData.anoIngresoBI || "", // BI
+        "", // BJ (Fórmula oculta en el Excel, no se pisa)
+        formData.clasificacionPdtesBK || "", // BK
+        formData.funcencarBL || "" // BL
       ];
 
       if (editingItem) {
@@ -205,29 +205,10 @@ export default function BaseOlga() {
               </div>
             </div>
 
-            {/* 5. TERCERA INSTANCIA */}
+            {/* 5. CONTROL Y CONTROL DE VENCIMIENTO (BE a BL) */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-teal-50/50 rounded-lg border border-teal-100">
-              <h3 className="col-span-3 font-bold text-teal-800 border-b border-teal-200 pb-1 text-sm">5. Tercera Instancia y Cierre (BE a BL)</h3>
-              <div className="space-y-1"><Label className="text-xs font-bold">No. RESOLUCIÓN (BE)</Label><Input {...register("numResolucionBE")} className="bg-white h-9" /></div>
-              <div className="space-y-1"><Label className="text-xs font-bold">No. SADE (BF)</Label><Input {...register("numSadeBF")} className="bg-white h-9" /></div>
-              <div className="space-y-1"><Label className="text-xs font-bold">FECHA RESOLUCIÓN (BG)</Label><Input {...register("fechaResolucionBG")} className="bg-white h-9" /></div>
-              <div className="space-y-1"><Label className="text-xs font-bold">No. PLANILLA (BH)</Label><Input {...register("numPlanillaBH")} className="bg-white h-9" /></div>
-              <div className="space-y-1"><Label className="text-xs font-bold">FECHA PLANILLA (BI)</Label><Input {...register("fechaPlanillaBI")} className="bg-white h-9" /></div>
-              <div className="space-y-1"><Label className="text-xs font-bold text-red-600">FECHA EJECUTORIA (BJ)</Label><Input {...register("fechaEjecutoriaBJ")} className="bg-white h-9 border-red-200" /></div>
-              <div className="space-y-1"><Label className="text-xs font-bold">TRASLADO (BK)</Label><Input {...register("trasladoBK")} className="bg-white h-9" /></div>
-              <div className="space-y-1">
-                <Label className="text-xs font-bold">TIPO DE RESPUESTA (BL)</Label>
-                <Select onValueChange={(v) => setValue("tipoRespuestaBL", v)}>
-                  <SelectTrigger className="bg-white h-9"><SelectValue placeholder="-" /></SelectTrigger>
-                  <SelectContent>{respuestas.map(r => <SelectItem key={r} value={r}>{r}</SelectItem>)}</SelectContent>
-                </Select>
-              </div>
-            </div>
-
-            <Button type="submit" className="w-full bg-slate-900 py-6 text-xl font-bold text-white hover:bg-black"><Save className="mr-2 h-6 w-6" /> Guardar Todo en Sheets</Button>
-          </form>
-        </DialogContent>
-      </Dialog>
-    </div>
-  );
-}
+              <h3 className="col-span-3 font-bold text-teal-800 border-b border-teal-200 pb-1 text-sm">5. Control de Vencimiento y Asignación (BE a BL)</h3>
+              <div className="space-y-1"><Label className="text-xs font-bold text-red-600">DIAS PENDIENTES (BE)</Label><Input {...register("diasPendientesBE")} className="bg-white h-9 border-red-200" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold text-orange-600">SEMAFORO DE VENCIMIENTO (BF)</Label><Input {...register("semaforoVencimientoBF")} className="bg-white h-9 border-orange-200" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">DIAS TRANSCURRIDOS (BG)</Label><Input {...register("diasTranscurridosBG")} className="bg-white h-9" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">SEMAFORO EXPEDIENTES (BH)</Label><Input {...register("semaforoExpedientesBH")} className="
