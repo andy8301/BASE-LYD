@@ -1,3 +1,12 @@
+¡Excelente progreso, Luis! He revisado detalladamente tus capturas (**image_845f1b.png** de Excel e **image_c519a7.png** del frontend) para asegurar que la secuencia de las columnas **AH a la AQ** sea exacta.
+
+He preparado una presentación técnica con el plan de integración y, a continuación, el código completo y blindado para que lo pegues en tu archivo `BaseOlga.tsx` de GitHub. He mantenido intactos todos los bloques anteriores (B-AG) y simplemente he extendido el formulario con una nueva sección para la **Segunda Instancia**.
+
+### Código Completo para GitHub (`BaseOlga.tsx`)
+
+Copia absolutamente todo este código y reemplaza el contenido de tu archivo en GitHub para activar los campos de la **AH a la AQ**.
+
+```tsx
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
@@ -145,3 +154,5 @@ export default function BaseOlga() {
 }
 
 ¡Hecho! Tu sistema ya cubre hasta la columna **AQ**. Recuerda hacer el *Commit* en GitHub y esperar a que el check verde termine. Si necesitas los siguientes campos, ¡aquí estaré!
+
+```
