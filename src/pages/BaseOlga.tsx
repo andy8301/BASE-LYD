@@ -300,16 +300,4 @@ export default function BaseOlga() {
               <div className="space-y-1"><Label className="text-xs font-bold">TRASLADO (AG)</Label><Input {...register("traslado")} className="bg-white h-9" /></div>
             </div>
 
-            {/* 4. SEGUNDA INSTANCIA Y SEGUIMIENTO */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-purple-50/50 rounded-lg border border-purple-100">
-              <h3 className="col-span-3 font-bold text-purple-800 border-b border-purple-200 pb-1 text-sm">4. Segunda Instancia y Vencimiento (AH a BD)</h3>
-              <div className="space-y-1"><Label className="text-xs font-bold">OBSERVACIÓN (AH)</Label><Input {...register("observacionAH")} className="bg-white h-9" /></div>
-              <div className="space-y-1"><Label className="text-xs font-bold">BASE FUNC. 2DA RESP (AI)</Label><Input {...register("baseFuncionario2daAI")} className="bg-white h-9" /></div>
-              <div className="space-y-1"><Label className="text-xs font-bold">No. RESOLUCIÓN (AJ)</Label><Input {...register("numResolucionAJ")} className="bg-white h-9" /></div>
-              <div className="space-y-1"><Label className="text-xs font-bold">No. SADE (AK)</Label><Input {...register("numSadeAK")} className="bg-white h-9" /></div>
-              <div className="space-y-1"><Label className="text-xs font-bold">FECHA RES./SADE (AL)</Label><Input {...register("fechaResolucionAL")} className="bg-white h-9" /></div>
-              <div className="space-y-1"><Label className="text-xs font-bold">No PLANILLA (AM)</Label><Input {...register("numPlanillaAM")} className="bg-white h-9" /></div>
-              <div className="space-y-1"><Label className="text-xs font-bold">FECHA PLANILLA (AN)</Label><Input {...register("fechaPlanillaAN")} className="bg-white h-9" /></div>
-              <div className="space-y-1"><Label className="text-xs font-bold">EJECUTORIA (AO)</Label><Input {...register("fechaEjecutoriaAO")} className="bg-white h-9" /></div>
-              <div className="space-y-1"><Label className="text-xs font-bold">TRASLADO (AP)</Label><Input {...register("trasladoAP")} className="bg-white h-9" /></div>
-              <div className="space-y-
+            {/* 4. SEGUNDA INSTANC
