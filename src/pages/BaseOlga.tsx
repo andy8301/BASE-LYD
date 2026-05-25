@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -129,19 +128,27 @@ export default function BaseOlga() {
 
   return (
     <div className="p-6 space-y-6">
-      {/* Panel Superior */}
+      {/* Panel Superior con botones nativos limpios */}
       <div className="flex justify-between items-center bg-white p-4 rounded-lg shadow border border-slate-100">
         <div>
           <h1 className="text-2xl font-bold text-slate-800">Base Olga</h1>
           <p className="text-sm text-slate-500">Sistema de radicación y gestión de cobros</p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" onClick={fetchData} className="text-slate-600 border-slate-200">
+          <button 
+            type="button"
+            onClick={fetchData} 
+            className="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-200 rounded-md hover:bg-slate-50 transition-colors"
+          >
             <RefreshCw className={`mr-2 h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} /> Actualizar
-          </Button>
-          <Button onClick={() => { reset({}); setEditingItem(undefined); setIsDialogOpen(true); }} className="bg-blue-600 hover:bg-blue-700 text-white font-semibold">
+          </button>
+          <button 
+            type="button"
+            onClick={() => { reset({}); setEditingItem(undefined); setIsDialogOpen(true); }} 
+            className="inline-flex items-center justify-center px-4 py-2 text-sm font-semibold text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors shadow-sm"
+          >
             <Plus className="mr-2 h-4 w-4" /> Agregar Nuevo
-          </Button>
+          </button>
         </div>
       </div>
 
@@ -211,9 +218,13 @@ export default function BaseOlga() {
                       </span>
                     </td>
                     <td className="p-4 text-center">
-                      <Button variant="ghost" size="sm" onClick={() => handleEdit(item)} className="text-blue-600 hover:text-blue-700 hover:bg-blue-50">
-                        <Edit3 className="h-4 w-4 mr-1" /> Editar
-                      </Button>
+                      <button 
+                        type="button" 
+                        onClick={() => handleEdit(item)} 
+                        className="inline-flex items-center px-2.5 py-1.5 text-xs font-medium text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded transition-colors"
+                      >
+                        <Edit3 className="h-3.5 w-3.5 mr-1" /> Editar
+                      </button>
                     </td>
                   </tr>
                 ))
@@ -300,4 +311,59 @@ export default function BaseOlga() {
               <div className="space-y-1"><Label className="text-xs font-bold">TRASLADO (AG)</Label><Input {...register("traslado")} className="bg-white h-9" /></div>
             </div>
 
-            {/* 4. SEGUNDA INSTANC
+            {/* 4. SEGUNDA INSTANCIA Y SEGUIMIENTO */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-purple-50/50 rounded-lg border border-purple-100">
+              <h3 className="col-span-3 font-bold text-purple-800 border-b border-purple-200 pb-1 text-sm">4. Segunda Instancia y Vencimiento (AH a BD)</h3>
+              <div className="space-y-1"><Label className="text-xs font-bold">OBSERVACIÓN (AH)</Label><Input {...register("observacionAH")} className="bg-white h-9" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">BASE FUNC. 2DA RESP (AI)</Label><Input {...register("baseFuncionario2daAI")} className="bg-white h-9" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">No. RESOLUCIÓN (AJ)</Label><Input {...register("numResolucionAJ")} className="bg-white h-9" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">No. SADE (AK)</Label><Input {...register("numSadeAK")} className="bg-white h-9" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">FECHA RES./SADE (AL)</Label><Input {...register("fechaResolucionAL")} className="bg-white h-9" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">No PLANILLA (AM)</Label><Input {...register("numPlanillaAM")} className="bg-white h-9" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">FECHA PLANILLA (AN)</Label><Input {...register("fechaPlanillaAN")} className="bg-white h-9" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">EJECUTORIA (AO)</Label><Input {...register("fechaEjecutoriaAO")} className="bg-white h-9" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">TRASLADO (AP)</Label><Input {...register("trasladoAP")} className="bg-white h-9" /></div>
+              <div className="space-y-1">
+                <Label className="text-xs font-bold">TIPO RESPUESTA (AQ)</Label>
+                <Select onValueChange={(v) => setValue("tipoRespuestaAQ", v)}>
+                  <SelectTrigger className="bg-white h-9"><SelectValue placeholder="-" /></SelectTrigger>
+                  <SelectContent>{respuestas.map(r => <SelectItem key={r} value={r}>{r}</SelectItem>)}</SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-1"><Label className="text-xs font-bold">BASE FUNC. 3RA RESP (AR)</Label><Input {...register("baseFunc3raAR")} className="bg-white h-9 border-purple-200" /></div>
+              <div className="space-y-1">
+                <Label className="text-xs font-bold text-red-700">FECHA VENCIMIENTO (BD)</Label>
+                <Input {...register("fechaVencimientoBD")} className="bg-white h-9 border-red-300" />
+              </div>
+            </div>
+
+            {/* 5. CONTROL Y CONTROL DE VENCIMIENTO */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-teal-50/50 rounded-lg border border-teal-100">
+              <h3 className="col-span-3 font-bold text-teal-800 border-b border-teal-200 pb-1 text-sm">5. Control de Vencimiento y Asignación (BE a BL)</h3>
+              <div className="space-y-1"><Label className="text-xs font-bold text-red-600">DIAS PENDIENTES (BE)</Label><Input {...register("diasPendientesBE")} className="bg-white h-9 border-red-200" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold text-orange-600">SEMAFORO DE VENCIMIENTO (BF)</Label><Input {...register("semaforoVencimientoBF")} className="bg-white h-9 border-orange-200" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">DIAS TRANSCURRIDOS (BG)</Label><Input {...register("diasTranscurridosBG")} className="bg-white h-9" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">SEMAFORO EXPEDIENTES (BH)</Label><Input {...register("semaforoExpedientesBH")} className="bg-white h-9" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">AÑO INGRESO (BI)</Label><Input {...register("anoIngresoBI")} className="bg-white h-9" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">CLASIFICACION PDTES (BK)</Label><Input {...register("clasificacionPdtesBK")} className="bg-white h-9" /></div>
+              <div className="space-y-1">
+                <Label className="text-xs font-bold">FUNCENCAR (BL)</Label>
+                <Select onValueChange={(v) => setValue("funcencarBL", v)}>
+                  <SelectTrigger className="bg-white h-9"><SelectValue placeholder="-" /></SelectTrigger>
+                  <SelectContent>{funcionarios.map(f => <SelectItem key={f} value={f}>{f}</SelectItem>)}</SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <button 
+              type="submit" 
+              className="w-full bg-slate-900 py-4 rounded-md text-xl font-bold text-white hover:bg-black transition-colors shadow"
+            >
+              <Save className="inline mr-2 h-6 w-6" /> Guardar Todo en Sheets
+            </button>
+          </form>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+}
