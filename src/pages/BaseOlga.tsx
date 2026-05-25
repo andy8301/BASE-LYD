@@ -109,7 +109,7 @@ export default function BaseOlga() {
           
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-8 pt-4 pb-10">
             
-            {/* BLOQUE 1: RADICACIÓN E INGRESO (B-J) */}
+            {/* 1. RADICACIÓN E INGRESO */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-blue-50/50 rounded-lg border border-blue-100">
               <h3 className="col-span-3 font-bold text-blue-800 border-b border-blue-200 pb-1 text-sm">1. Radicación e Ingreso</h3>
               <div className="space-y-1"><Label className="text-xs font-bold">No consecutivo (B)</Label><Input {...register("consecutivo")} className="bg-white h-9" /></div>
@@ -123,7 +123,7 @@ export default function BaseOlga() {
               <div className="space-y-1"><Label className="text-xs font-bold text-blue-700">FECHA ACTO (J)</Label><Input {...register("fechaActo")} className="bg-white h-9 border-blue-300" /></div>
             </div>
 
-            {/* BLOQUE 2: CONTRIBUYENTE Y RENTA (L-U) */}
+            {/* 2. CONTRIBUYENTE Y RENTA */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-green-50/50 rounded-lg border border-green-100">
               <h3 className="col-span-3 font-bold text-green-800 border-b border-green-200 pb-1 text-sm">2. Información del Contribuyente</h3>
               <div className="space-y-1"><Label className="text-xs font-bold">PLACA (L)</Label><Input {...register("placa")} className="bg-white h-9" /></div>
@@ -156,7 +156,7 @@ export default function BaseOlga() {
               </div>
             </div>
 
-            {/* BLOQUE 3: CLASIFICACIÓN Y RESPUESTA (V-AG) */}
+            {/* 3. CLASIFICACIÓN Y RESPUESTA */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-orange-50/50 rounded-lg border border-orange-100">
               <h3 className="col-span-3 font-bold text-orange-800 border-b border-orange-200 pb-1 text-sm">3. Clasificación y Respuesta (V a AG)</h3>
               <div className="space-y-1"><Label className="text-xs font-bold">ITEM (V)</Label><Input {...register("item")} className="bg-white h-9 border-orange-200" /></div>
@@ -179,7 +179,7 @@ export default function BaseOlga() {
               <div className="space-y-1"><Label className="text-xs font-bold">TRASLADO (AG)</Label><Input {...register("traslado")} className="bg-white h-9" /></div>
             </div>
 
-            {/* BLOQUE 4: SEGUNDA INSTANCIA Y SEGUIMIENTO (AH a BD) */}
+            {/* 4. SEGUNDA INSTANCIA Y SEGUIMIENTO */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-purple-50/50 rounded-lg border border-purple-100">
               <h3 className="col-span-3 font-bold text-purple-800 border-b border-purple-200 pb-1 text-sm">4. Segunda Instancia y Vencimiento (AH a BD)</h3>
               <div className="space-y-1"><Label className="text-xs font-bold">OBSERVACIÓN (AH)</Label><Input {...register("observacionAH")} className="bg-white h-9" /></div>
@@ -187,4 +187,47 @@ export default function BaseOlga() {
               <div className="space-y-1"><Label className="text-xs font-bold">No. RESOLUCIÓN (AJ)</Label><Input {...register("numResolucionAJ")} className="bg-white h-9" /></div>
               <div className="space-y-1"><Label className="text-xs font-bold">No. SADE (AK)</Label><Input {...register("numSadeAK")} className="bg-white h-9" /></div>
               <div className="space-y-1"><Label className="text-xs font-bold">FECHA RES./SADE (AL)</Label><Input {...register("fechaResolucionAL")} className="bg-white h-9" /></div>
-              <div className="space-y-1"><Label className="text-xs font-bold">No PLANILLA (AM)</Label><Input {...register("
+              <div className="space-y-1"><Label className="text-xs font-bold">No PLANILLA (AM)</Label><Input {...register("numPlanillaAM")} className="bg-white h-9" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">FECHA PLANILLA (AN)</Label><Input {...register("fechaPlanillaAN")} className="bg-white h-9" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">EJECUTORIA (AO)</Label><Input {...register("fechaEjecutoriaAO")} className="bg-white h-9" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">TRASLADO (AP)</Label><Input {...register("trasladoAP")} className="bg-white h-9" /></div>
+              <div className="space-y-1">
+                <Label className="text-xs font-bold">TIPO RESPUESTA (AQ)</Label>
+                <Select onValueChange={(v) => setValue("tipoRespuestaAQ", v)}>
+                  <SelectTrigger className="bg-white h-9"><SelectValue placeholder="-" /></SelectTrigger>
+                  <SelectContent>{respuestas.map(r => <SelectItem key={r} value={r}>{r}</SelectItem>)}</SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-1"><Label className="text-xs font-bold">BASE FUNC. 3RA RESP (AR)</Label><Input {...register("baseFunc3raAR")} className="bg-white h-9 border-purple-200" /></div>
+              <div className="space-y-1">
+                <Label className="text-xs font-bold text-red-700">FECHA VENCIMIENTO (BD)</Label>
+                <Input {...register("fechaVencimientoBD")} className="bg-white h-9 border-red-300" />
+              </div>
+            </div>
+
+            {/* 5. TERCERA INSTANCIA */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-teal-50/50 rounded-lg border border-teal-100">
+              <h3 className="col-span-3 font-bold text-teal-800 border-b border-teal-200 pb-1 text-sm">5. Tercera Instancia y Cierre (BE a BL)</h3>
+              <div className="space-y-1"><Label className="text-xs font-bold">No. RESOLUCIÓN (BE)</Label><Input {...register("numResolucionBE")} className="bg-white h-9" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">No. SADE (BF)</Label><Input {...register("numSadeBF")} className="bg-white h-9" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">FECHA RESOLUCIÓN (BG)</Label><Input {...register("fechaResolucionBG")} className="bg-white h-9" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">No. PLANILLA (BH)</Label><Input {...register("numPlanillaBH")} className="bg-white h-9" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">FECHA PLANILLA (BI)</Label><Input {...register("fechaPlanillaBI")} className="bg-white h-9" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold text-red-600">FECHA EJECUTORIA (BJ)</Label><Input {...register("fechaEjecutoriaBJ")} className="bg-white h-9 border-red-200" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">TRASLADO (BK)</Label><Input {...register("trasladoBK")} className="bg-white h-9" /></div>
+              <div className="space-y-1">
+                <Label className="text-xs font-bold">TIPO DE RESPUESTA (BL)</Label>
+                <Select onValueChange={(v) => setValue("tipoRespuestaBL", v)}>
+                  <SelectTrigger className="bg-white h-9"><SelectValue placeholder="-" /></SelectTrigger>
+                  <SelectContent>{respuestas.map(r => <SelectItem key={r} value={r}>{r}</SelectItem>)}</SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <Button type="submit" className="w-full bg-slate-900 py-6 text-xl font-bold text-white hover:bg-black"><Save className="mr-2 h-6 w-6" /> Guardar Todo en Sheets</Button>
+          </form>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+}
