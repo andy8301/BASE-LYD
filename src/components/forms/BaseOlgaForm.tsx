@@ -1,12 +1,3 @@
-¡Excelente progreso, Luis! He revisado detalladamente tus capturas (**image_845f1b.png** de Excel e **image_c519a7.png** del frontend) para asegurar que la secuencia de las columnas **AH a la AQ** sea exacta.
-
-He preparado una presentación técnica con el plan de integración y, a continuación, el código completo y blindado para que lo pegues en tu archivo `BaseOlga.tsx` de GitHub. He mantenido intactos todos los bloques anteriores (B-AG) y simplemente he extendido el formulario con una nueva sección para la **Segunda Instancia**.
-
-### Código Completo para GitHub (`BaseOlga.tsx`)
-
-Copia absolutamente todo este código y reemplaza el contenido de tu archivo en GitHub para activar los campos de la **AH a la AQ**.
-
-```tsx
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
@@ -26,7 +17,6 @@ export default function BaseOlga() {
   
   const { register, handleSubmit, setValue, reset } = useForm();
 
-  // Maestros de datos
   const funcionarios = ["Adalberto Vásquez", "Benjamín Acosta Gordillo", "Carlos Peña", "César Enrique Gómez", "Cristiano Felipe Arana", "Claudia Mosquera", "Daniela Riascos", "Diego Fernando Ortiz", "Diego Fernando López", "Eliana Salamanca", "Frank Mauricio Restrepo", "Gustavo Adolfo Valencia", "Ibeth Restrepo Espitia", "Isabel Cristina Quintero", "Jhon Helber Samboni", "Jorge Arias", "Jose Fernando Moreno", "Juan Manuel Pizo", "Katherine Salamanca", "Karol Tatiana López", "Luis Andres Botia Riascos", "Maria Cristina Posso", "Maria Jose Cerquera", "Olga Lucia Gomez Aristizabal", "Robinson Rosero", "Samuel Orozco", "Sara Millán", "Wilson Quiñónez", "Yaleydy Mosquera", "Yamid Bolaños Manquillo", "Yohana Estrada", "Maira Alejandra Cardona", "Nailen Andrea Arias", "Diana Patricia Osorio Ospina"];
   const respuestas = ["PETICIÓN", "TRASLADO", "RESPUESTA", "NOTIFICACIÓN", "AUTO DE CIERRE", "REVOCATORIA", "CONTESTADO"];
 
@@ -46,13 +36,12 @@ export default function BaseOlga() {
 
   const onSubmit = async (formData: any) => {
     try {
-      // MAPEACIÓN EXACTA A GOOGLE SHEETS (B hasta AQ)
       const rowData = [
         "", // A
         formData.consecutivo || "", formData.canalIngreso || "", formData.areaRemitente || "", // B, C, D
         formData.planilla || "", formData.expediente || "", formData.fechaRadicacion || "", // E, F, G
         formData.actoAdministrativo || "", formData.numeroActo || "", formData.fechaActo || "", // H, I, J
-        "", // K (Espacio Mes)
+        "", // K (Espacio para Mes)
         formData.placa || "", formData.identificacion || "", formData.contribuyente || "", // L, M, N
         formData.ciudadDepartamento || "", formData.observaciones || "", formData.funcionarioEncargado || "", // O, P, Q
         formData.nota || "", formData.fechaRecibido || "", formData.tipoRenta || "", // R, S, T
@@ -81,7 +70,7 @@ export default function BaseOlga() {
       }
       setIsDialogOpen(false);
       fetchData();
-      toast.success("¡Expediente actualizado hasta la AQ!");
+      toast.success("¡Expediente guardado correctamente!");
     } catch (error) { toast.error("Error al guardar"); }
   };
 
@@ -100,7 +89,7 @@ export default function BaseOlga() {
           
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-8 pt-4 pb-10">
             
-            {/* BLOQUES 1, 2 y 3: Mantenemos lo anterior intacto */}
+            {/* 1. Radicación */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-blue-50/50 rounded-lg border border-blue-100">
               <h3 className="col-span-3 font-bold text-blue-800 border-b">1. Radicación e Ingreso (B a J)</h3>
               <div className="space-y-1"><Label>Consecutivo (B)</Label><Input {...register("consecutivo")} /></div>
@@ -108,12 +97,14 @@ export default function BaseOlga() {
               <div className="space-y-1"><Label className="text-blue-700">FECHA ACTO (J)</Label><Input {...register("fechaActo")} /></div>
             </div>
 
+            {/* 2. Contribuyente */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-green-50/50 rounded-lg border border-green-100">
               <h3 className="col-span-3 font-bold text-green-800 border-b">2. Contribuyente y Renta (L a T)</h3>
               <div className="space-y-1"><Label>CONTRIBUYENTE (N)</Label><Input {...register("contribuyente")} /></div>
               <div className="space-y-1"><Label className="text-green-700">NOTA: (R)</Label><Input {...register("nota")} /></div>
             </div>
 
+            {/* 3. Clasificación */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-orange-50/50 rounded-lg border border-orange-100">
               <h3 className="col-span-3 font-bold text-orange-800 border-b">3. Clasificación Inicial (V a AG)</h3>
               <div className="space-y-1"><Label>ITEM (V)</Label><Input {...register("item")} /></div>
@@ -121,7 +112,7 @@ export default function BaseOlga() {
               <div className="space-y-1"><Label>TRASLADO (AG)</Label><Input {...register("traslado")} /></div>
             </div>
 
-            {/* BLOQUE NUEVO SOLICITADO: AH a AQ */}
+            {/* 4. Segunda Instancia */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-purple-50/50 rounded-lg border border-purple-100">
               <h3 className="col-span-3 font-bold text-purple-800 border-b border-purple-200">4. Segunda Instancia y Seguimiento (AH a AQ)</h3>
               
@@ -152,7 +143,3 @@ export default function BaseOlga() {
     </div>
   );
 }
-
-¡Hecho! Tu sistema ya cubre hasta la columna **AQ**. Recuerda hacer el *Commit* en GitHub y esperar a que el check verde termine. Si necesitas los siguientes campos, ¡aquí estaré!
-
-```
