@@ -17,7 +17,7 @@ export default function BaseOlga() {
   
   const { register, handleSubmit, setValue, reset } = useForm();
 
-  // Listados Maestros para los Selects (Manteniendo tus originales exactos)
+  // Listados Maestros para los Selects
   const funcionarios = ["Adalberto Vasquez", "Benjamin Acosta Gordillo", "Carlos Peña", "Cesar Enrique Gomez", "Cristian Felipe Arana", "Claudia Mosquera", "Daniela Riascos", "Diego Fernando Ortiz", "Diego Fernando Lopez", "Eliana Salamanca", "Frank Mauricio Restrepo", "Gustavo Adolfo Valencia", "Ibeth Restrepo Espitia", "Isabel Cristina Quintero", "Jhon Helber Samboni", "Jorge Arias", "Jose Fernando Moreno", "Juan Manuel Pizo", "Katherine Salamanca", "Karol Tatiana Lopez", "Luis Andres Botia Riascos", "Maria Cristina Posso", "Maria Jose Cerquera", "Olga Lucia Gomez Aristizabal", "Robinson Rosero", "Samuel Orozco", "Sara Millán", "Wilson Quiñónez", "Yaleydy Mosquera", "Yamid Bolaños Manquillo", "Yohana Estrada", "Maira Alejandra Cardona", "Nailen Andrea Arias", "Diana Patricia Osorio Ospina"];
   const tiposRenta = ["IMPUESTO SOBRE VEHICULOS", "IMPUESTO DE REGISTRO", "IMPUESTO AL CONSUMO", "IMPUESTO DE DEGUELLO", "TASA DE SEGURIDAD", "ESTAMPILLA", "APREHENCIÓN Y DECOMISO DE MERCANCIAS", "PASAPORTE", "OTROS", "NO TRIBUTARIO", "IMPUESTO TASA DE GASOLINA"];
   const tiposTramite = ["Derecho de peticion", "Exención", "Devolucion", "Copia boleta fiscal", "Recurso", "Certificación", "Atención PDTIR", "Insolvencia", "Subsanación"];
@@ -39,7 +39,7 @@ export default function BaseOlga() {
 
   const onSubmit = async (formData: any) => {
     try {
-      // Mapeo EXACTO por columnas desde la A hasta la BD sin saltos
+      // Mapeo EXACTO por columnas desde la A hasta la BL sin desplazamientos
       const rowData = [
         "", // A
         formData.consecutivo || "", formData.canalIngreso || "", formData.areaRemitente || "", // B, C, D
@@ -67,13 +67,21 @@ export default function BaseOlga() {
         formData.trasladoAP || "", // AP
         formData.tipoRespuestaAQ || "", // AQ
         formData.baseFunc3raAR || "", // AR
-        ...Array(11).fill(""), // AS a BC (Espacios vacíos de control en Excel)
-        formData.fechaVencimientoBD || "" // BD
+        ...Array(11).fill(""), // AS a BC (Espacios vacíos de control)
+        formData.fechaVencimientoBD || "", // BD
+        formData.numResolucionBE || "", // BE
+        formData.numSadeBF || "", // BF
+        formData.fechaResolucionBG || "", // BG
+        formData.numPlanillaBH || "", // BH
+        formData.fechaPlanillaBI || "", // BI
+        formData.fechaEjecutoriaBJ || "", // BJ
+        formData.trasladoBK || "", // BK
+        formData.tipoRespuestaBL || "" // BL
       ];
 
       if (editingItem) {
         const rowNumber = editingItem.id.replace('row-', '');
-        await updateSheetRow(SHEET_NAMES.BASE_OLGA, `A${rowNumber}:BD${rowNumber}`, rowData);
+        await updateSheetRow(SHEET_NAMES.BASE_OLGA, `A${rowNumber}:BL${rowNumber}`, rowData);
       } else {
         await appendToSheet(SHEET_NAMES.BASE_OLGA, rowData);
       }
@@ -97,7 +105,7 @@ export default function BaseOlga() {
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="max-w-6xl max-h-[92vh] overflow-y-auto">
-          <DialogHeader className="border-b pb-4"><DialogTitle className="text-xl font-bold text-blue-900">Formulario de Gestión Integral (B a BD)</DialogTitle></DialogHeader>
+          <DialogHeader className="border-b pb-4"><DialogTitle className="text-xl font-bold text-blue-900">Formulario de Gestión Integral (B a BL)</DialogTitle></DialogHeader>
           
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-8 pt-4 pb-10">
             
@@ -171,36 +179,12 @@ export default function BaseOlga() {
               <div className="space-y-1"><Label className="text-xs font-bold">TRASLADO (AG)</Label><Input {...register("traslado")} className="bg-white h-9" /></div>
             </div>
 
-            {/* BLOQUE 4 NUEVO: SEGUNDA Y TERCERA INSTANCIA (AH a BD) */}
+            {/* BLOQUE 4: SEGUNDA INSTANCIA Y SEGUIMIENTO (AH a BD) */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-purple-50/50 rounded-lg border border-purple-100">
-              <h3 className="col-span-3 font-bold text-purple-800 border-b border-purple-200 pb-1 text-sm">4. Instancias y Vencimiento (AH a BD)</h3>
+              <h3 className="col-span-3 font-bold text-purple-800 border-b border-purple-200 pb-1 text-sm">4. Segunda Instancia y Vencimiento (AH a BD)</h3>
               <div className="space-y-1"><Label className="text-xs font-bold">OBSERVACIÓN (AH)</Label><Input {...register("observacionAH")} className="bg-white h-9" /></div>
               <div className="space-y-1"><Label className="text-xs font-bold">BASE FUNC. 2DA RESP (AI)</Label><Input {...register("baseFuncionario2daAI")} className="bg-white h-9" /></div>
               <div className="space-y-1"><Label className="text-xs font-bold">No. RESOLUCIÓN (AJ)</Label><Input {...register("numResolucionAJ")} className="bg-white h-9" /></div>
               <div className="space-y-1"><Label className="text-xs font-bold">No. SADE (AK)</Label><Input {...register("numSadeAK")} className="bg-white h-9" /></div>
               <div className="space-y-1"><Label className="text-xs font-bold">FECHA RES./SADE (AL)</Label><Input {...register("fechaResolucionAL")} className="bg-white h-9" /></div>
-              <div className="space-y-1"><Label className="text-xs font-bold">No PLANILLA (AM)</Label><Input {...register("numPlanillaAM")} className="bg-white h-9" /></div>
-              <div className="space-y-1"><Label className="text-xs font-bold">FECHA PLANILLA (AN)</Label><Input {...register("fechaPlanillaAN")} className="bg-white h-9" /></div>
-              <div className="space-y-1"><Label className="text-xs font-bold">EJECUTORIA (AO)</Label><Input {...register("fechaEjecutoriaAO")} className="bg-white h-9" /></div>
-              <div className="space-y-1"><Label className="text-xs font-bold">TRASLADO (AP)</Label><Input {...register("trasladoAP")} className="bg-white h-9" /></div>
-              <div className="space-y-1">
-                <Label className="text-xs font-bold">TIPO RESPUESTA (AQ)</Label>
-                <Select onValueChange={(v) => setValue("tipoRespuestaAQ", v)}>
-                  <SelectTrigger className="bg-white h-9"><SelectValue placeholder="-" /></SelectTrigger>
-                  <SelectContent>{respuestas.map(r => <SelectItem key={r} value={r}>{r}</SelectItem>)}</SelectContent>
-                </Select>
-              </div>
-              <div className="space-y-1"><Label className="text-xs font-bold">BASE FUNC. 3RA RESP (AR)</Label><Input {...register("baseFunc3raAR")} className="bg-white h-9 border-purple-200" /></div>
-              <div className="space-y-1">
-                <Label className="text-xs font-bold text-red-700">FECHA VENCIMIENTO (BD)</Label>
-                <Input {...register("fechaVencimientoBD")} className="bg-white h-9 border-red-300" />
-              </div>
-            </div>
-
-            <Button type="submit" className="w-full bg-slate-900 py-6 text-xl font-bold text-white hover:bg-black"><Save className="mr-2 h-6 w-6" /> Guardar Todo en Sheets</Button>
-          </form>
-        </DialogContent>
-      </Dialog>
-    </div>
-  );
-}
+              <div className="space-y-1"><Label className="text-xs font-bold">No PLANILLA (AM)</Label><Input {...register("
