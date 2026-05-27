@@ -28,7 +28,7 @@ export default function Correos() {
     correoSolicitante: "",              // I
     tipoRenta: "IMPUESTO SOBRE VEHÍCULOS AUTOMOTORES", // J (Intacto)
     tipoRentaOtro: "",                  // K
-    tipoTramite: "DERECHO DE PETICION", // L (Inicia con la primera opción correcta)
+    tipoTramite: "DERECHO DE PETICION", // L
     item: "",                           // M
     placa: "",                          // N
     fechaRespuesta: "",                 // O
@@ -211,7 +211,7 @@ export default function Correos() {
               </div>
             </div>
 
-            {/* J (TIPO DE RENTA - INTACTO) */}
+            {/* J (TIPO DE RENTA) */}
             <div>
               <Label>TIPO DE RENTA</Label>
               <select 
@@ -247,27 +247,3 @@ export default function Correos() {
             {/* BLOQUE CAMPOS SIGUIENTES (L A Z) */}
             {mostrarCamposExtras && (
               <div className="space-y-4 pt-2 border-t border-dashed border-slate-200 mt-2 animate-in fade-in duration-300">
-                
-                {/* L - TIPO DE TRAMITE (ACTUALIZADO CON TUS OPCIONES REALES) */}
-                <div>
-                  <Label>TIPO DE TRAMITE</Label>
-                  <select 
-                    name="tipoTramite" 
-                    value={formData.tipoTramite} 
-                    onChange={handleChange} 
-                    className="w-full p-2 border rounded-md text-sm bg-background"
-                  >
-                    <option value="DERECHO DE PETICION">DERECHO DE PETICION</option>
-                    <option value="QUEJAS">QUEJAS</option>
-                    <option value="RECLAMOS">RECLAMOS</option>
-                    <option value="SUGERENCIAS">SUGERENCIAS</option>
-                    <option value="FELICITACIONES">FELICITACIONES</option>
-                    <option value="ATENCION PDTIR">ATENCION PDTIR</option>
-                  </select>
-                </div>
-
-                {/* M y N */}
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label>ITEM</Label>
-                    <Input type="text" name="item" value={formData.item} onChange={
