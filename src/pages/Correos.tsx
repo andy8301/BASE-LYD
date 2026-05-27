@@ -1,7 +1,7 @@
 export function FormularioDeCorreos({ onEnviar, onCancelar }: { onEnviar: (datos: any) => void; onCancelar: () => void }) {
   const [formData, setFormData] = useState({
     canalIngreso: "CORREO ELECTRÓNICO",
-    mes: "OCTUBRE", // Forzado temporalmente en texto plano para evitar métodos dinámicos que fallen en compilación
+    mes: "OCTUBRE",
     fechaAsignacion: "",
     correoFuncionarioEncargado: "respuestavur@valledelcauca.gov.co",
     funcionarioEncargado: "",
