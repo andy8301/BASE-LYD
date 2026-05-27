@@ -1,137 +1,180 @@
-import { useState, useEffect } from "react";
-import { ProcessTable } from "@/components/common/ProcessTable";
-import { BaseCorreos } from "@/types/processes";
-import { CorreosForm } from "@/components/forms/CorreosForm";
-import { Button } from "@/components/ui/button";
-import { Plus, RefreshCw } from "lucide-react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { toast } from "sonner";
-import { readSheet, appendToSheet, SHEET_NAMES } from "@/lib/googleSheets";
+import { useState } from "react";
+import { Boton } from "@/components/ui/button";
 
-function rowToCorreos(row: Record<string, string>, index: number): BaseCorreos {
-  const fechaVencimiento = row['FECHA DE VENCIMIENTO'] || new Date().toISOString();
-  const diasPendientes = parseInt(row['DIAS PENDIENTES'] || '0') || 0;
-
-  return {
-    id: `row-${index + 2}`,
-    canalIngreso: row['CANAL DE INGRESO'] || '',
-    funcionarioEncargado: row['FUNCIONARIO ENCARGADO'] || '',
-    tipoRenta: row['TIPO DE RENTA'] || '',
-    tipoTramite: row['TIPO DE TRAMITE'] || '',
-    fechaVencimiento,
-    diasPendientes,
-    semaforo: row['SEMAFORO'] === 'VENCIDO' ? 'rojo' : row['SEMAFORO'] === 'PROXIMO' ? 'amarillo' : 'verde',
-    estado: row['SEMAFORO'] === 'VENCIDO' ? 'vencido' : 'pendiente',
-    fechaIngreso: row['FECHA ASIGNACION'] || new Date().toISOString(),
-    mes: row['MES'] || '',
-    fechaAsignacion: row['FECHA ASIGNACION'] || '',
-    correoFuncionario: row['CORREO FUNCIONARIO ENCARGADO'] || '',
-    asuntoCorreo: row['ASUNTO CORREO'] || '',
-    fechaCorreo: row['FECHA CORREO (DD-MM-AAAA)'] || '',
-    contribuyenteSolicitante: row['CONTRIBUYENTE O SOLICITANTE'] || '',
-    item: row['ITEM'] || '',
-    placa: row['PLACA'] || '',
-    fechaRespuesta: row['FECHA RESPUESTA (DD-MM-AAAA)'] || '',
-    tipoRespuesta: row['TIPO DE RESPUESTA'] || '',
-    numeroSadeSalida: row['No DE SADE DE SALIDA'] || '',
-    observaciones: row['OBSERVACIONES'] || '',
-  };
+interface FormularioCorreosProps {
+  onEnviar: (datos: any) => void;
+  onCancelar: () => void;
 }
 
-export default function CorreosPage() {
-  const [data, setData] = useState<BaseCorreos[]>([]);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [editingItem, setEditingItem] = useState<BaseCorreos | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+export function FormularioDeCorreos({ onEnviar, onCancelar }: FormularioCorreosProps) {
+  const [formData, setFormData] = useState({
+    canalIngreso: "CORREO ELECTRÓNICO",
+    mes: new Date().toLocaleString("es-CO", { month: "long" }).toUpperCase(),
+    fechaAsignacion: new Date().toISOString().split("T")[0],
+    correoFuncionarioEncargado: "respuestavur@valledelcauca.gov.co",
+    funcionarioEncargado: "",
+    asuntoCorreo: "",
+    fechaCorreo: "",
+    contribuyenteSolicitante: "",
+    correoSolicitante: "",
+    tipoTramite: ""
+  });
 
-  const columns = [
-    { key: 'asuntoCorreo', label: 'Asunto' },
-    { key: 'contribuyenteSolicitante', label: 'Solicitante' },
-    { key: 'funcionarioEncargado', label: 'Funcionario' },
-    { key: 'tipoTramite', label: 'Tipo Trámite' },
-    { key: 'fechaCorreo', label: 'Fecha Correo' },
-    { key: 'fechaRespuesta', label: 'Fecha Respuesta',
-      render: (item: BaseCorreos) => item.fechaRespuesta || 'Pendiente'
-    }
-  ];
-
-  const fetchData = async () => {
-    setIsLoading(true);
-    try {
-      const result = await readSheet(SHEET_NAMES.CORREOS);
-      const sheetData = result[SHEET_NAMES.CORREOS] || [];
-      const records = sheetData.map((row: Record<string, string>, index: number) => rowToCorreos(row, index));
-      setData(records);
-      console.log(`Loaded ${records.length} records from Correos`);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-      toast.error("Error al cargar los datos de Correos");
-    } finally {
-      setIsLoading(false);
-    }
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  useEffect(() => { fetchData(); }, []);
-
-  const handleSubmit = (formData: BaseCorreos) => {
-    if (editingItem) {
-      setData(prev => prev.map(item => item.id === editingItem.id ? formData : item));
-      toast.success("Correo actualizado exitosamente");
-    } else {
-      setData(prev => [...prev, formData]);
-      toast.success("Correo creado exitosamente");
-    }
-    setIsDialogOpen(false);
-    setEditingItem(null);
-  };
-
-  const handleEdit = (item: BaseCorreos) => {
-    setEditingItem(item);
-    setIsDialogOpen(true);
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onEnviar(formData);
   };
 
   return (
-    <div className="p-6 max-w-7xl mx-auto space-y-6">
-      <div className="mb-8 flex justify-between items-center">
+    <form onSubmit={handleSubmit} className="space-y-4 pt-4">
+      <div className="grid grid-cols-2 gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-foreground mb-2">Correos Electrónicos</h1>
-          <p className="text-muted-foreground text-lg">Gestión y seguimiento de correspondencia electrónica</p>
+          <label className="block text-sm font-medium mb-1">Canal de Ingreso</label>
+          <input
+            type="text"
+            name="canalIngreso"
+            value={formData.canalIngreso}
+            disabled
+            className="w-full p-2 border rounded bg-muted text-muted-foreground cursor-not-allowed text-sm"
+          />
         </div>
-        <div className="flex gap-2">
-          <Button variant="outline" onClick={fetchData} disabled={isLoading} className="flex items-center gap-2">
-            <RefreshCw className={`h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
-            Actualizar
-          </Button>
-          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-            <DialogTrigger asChild>
-              <Button onClick={() => setEditingItem(null)}>
-                <Plus className="h-4 w-4 mr-2" /> Agregar Nuevo
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-              <DialogHeader>
-                <DialogTitle>{editingItem ? 'Editar Correo' : 'Nuevo Correo'}</DialogTitle>
-              </DialogHeader>
-              <CorreosForm onSubmit={handleSubmit} initialData={editingItem || undefined} mode={editingItem ? 'edit' : 'create'} />
-            </DialogContent>
-          </Dialog>
+        <div>
+          <label className="block text-sm font-medium mb-1">Mes</label>
+          <select
+            name="mes"
+            value={formData.mes}
+            onChange={handleChange}
+            className="w-full p-2 border rounded text-sm bg-background"
+            required
+          >
+            {["ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE"].map((m) => (
+              <option key={m} value={m}>{m}</option>
+            ))}
+          </select>
         </div>
       </div>
 
-      {isLoading ? (
-        <div className="flex items-center justify-center py-12">
-          <RefreshCw className="h-8 w-8 animate-spin mr-2" />
-          <span>Cargando datos...</span>
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <label className="block text-sm font-medium mb-1">Fecha Correo (Origen)</label>
+          <input
+            type="date"
+            name="fechaCorreo"
+            value={formData.fechaCorreo}
+            onChange={handleChange}
+            className="w-full p-2 border rounded text-sm bg-background"
+            required
+          />
         </div>
-      ) : (
-        <ProcessTable
-          title="Correspondencia Electrónica"
-          description={`Seguimiento de correos, consultas y respuestas (${data.length} registros)`}
-          data={data}
-          columns={columns}
-          onEdit={handleEdit}
+        <div>
+          <label className="block text-sm font-medium mb-1">Fecha Asignación</label>
+          <input
+            type="date"
+            name="fechaAsignacion"
+            value={formData.fechaAsignacion}
+            onChange={handleChange}
+            className="w-full p-2 border rounded text-sm bg-background"
+            required
+          />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <label className="block text-sm font-medium mb-1">Contribuyente / Solicitante</label>
+          <input
+            type="text"
+            name="contribuyenteSolicitante"
+            value={formData.contribuyenteSolicitante}
+            onChange={handleChange}
+            placeholder="Nombre completo"
+            className="w-full p-2 border rounded text-sm bg-background"
+            required
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium mb-1">Correo Solicitante</label>
+          <input
+            type="email"
+            name="correoSolicitante"
+            value={formData.correoSolicitante}
+            onChange={handleChange}
+            placeholder="correo@ejemplo.com"
+            className="w-full p-2 border rounded text-sm bg-background"
+            required
+          />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <label className="block text-sm font-medium mb-1">Funcionario Encargado</label>
+          <input
+            type="text"
+            name="funcionarioEncargado"
+            value={formData.funcionarioEncargado}
+            onChange={handleChange}
+            placeholder="Nombre del funcionario"
+            className="w-full p-2 border rounded text-sm bg-background"
+            required
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium mb-1">Correo Funcionario</label>
+          <input
+            type="email"
+            name="correoFuncionarioEncargado"
+            value={formData.correoFuncionarioEncargado}
+            onChange={handleChange}
+            className="w-full p-2 border rounded text-sm bg-background"
+            required
+          />
+        </div>
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium mb-1">Tipo de Trámite</label>
+        <select
+          name="tipoTramite"
+          value={formData.tipoTramite}
+          onChange={handleChange}
+          className="w-full p-2 border rounded text-sm bg-background"
+          required
+        >
+          <option value="">Seleccione un trámite</option>
+          <option value="Liquidación de Boleta Fiscal">Liquidación de Boleta Fiscal</option>
+          <option value="Petición de Herencia">Petición de Herencia</option>
+          <option value="Radicación Orden Judicial">Radicación Orden Judicial</option>
+          <option value="Otros">Otros</option>
+        </select>
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium mb-1">Asunto del Correo</label>
+        <textarea
+          name="asuntoCorreo"
+          value={formData.asuntoCorreo}
+          onChange={handleChange}
+          placeholder="Fwd: Asunto completo de la boleta fiscal o solicitud..."
+          rows={3}
+          className="w-full p-2 border rounded text-sm bg-background resize-none"
+          required
         />
-      )}
-    </div>
+      </div>
+
+      <div className="flex justify-end gap-2 pt-2">
+        <Boton type="button" variant="outline" onClick={onCancelar}>
+          Cancelar
+        </Boton>
+        <Boton type="submit">
+          Guardar Registro
+        </Boton>
+      </div>
+    </form>
   );
 }
