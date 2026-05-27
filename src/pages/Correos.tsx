@@ -12,12 +12,13 @@ export function FormularioDeCorreos({ onEnviar, onCancelar }: { onEnviar: (datos
     tipoTramite: ""
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+  // Cambiado para que use tipos nativos sin depender de la importación de React
+  const handleChange = (e: any) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: any) => {
     e.preventDefault();
     onEnviar(formData);
   };
