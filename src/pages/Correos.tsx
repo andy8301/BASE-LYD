@@ -13,7 +13,7 @@ export default function Correos() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
 
-  // INTERRUPTOR VISUAL: Controla si se muestran los campos del bloque L al Z
+  // INTERRUPTOR VISUAL: Abre de la L a la Z
   const [mostrarCamposExtras, setMostrarCamposExtras] = useState(false);
 
   const [formData, setFormData] = useState({
@@ -27,15 +27,15 @@ export default function Correos() {
     contribuyenteOclicitante: "",       // H
     correoSolicitante: "",              // I
     tipoRenta: "VEHICULOS",             // J
-    tipoRentaOtro: "",                  // K (Actuará también como el texto si se especifica)
-    tipoTramite: "",                    // L
+    tipoRentaOtro: "",                  // K (Se envía vacío por la estructura de celdas)
+    tipoTramite: "LIQUIDACION",         // L (Inicia por defecto)
     item: "",                           // M
     placa: "",                          // N
     fechaRespuesta: "",                 // O
-    tipoRespuesta: "",                  // P
+    tipoRespuesta: "LIQUIDACION",       // P (Inicia por defecto)
     noSadeSalida: "",                   // Q
     observaciones: "",                  // R
-    prelacionLegal: "",                 // S
+    prelacionLegal: "DERECHOS DE PETICIÓN (15 DÍAS HÁBILES)", // S (Inicia por defecto)
     fechaVencimiento: "",               // T
     diasPendientes: "",                 // U
     semaforo: "",                       // V
@@ -88,7 +88,7 @@ export default function Correos() {
 
       await appendToSheet(SHEET_NAMES.CORREOS, nuevaFila);
       setIsDialogOpen(false);
-      setMostrarCamposExtras(false); // Resetear el botón oculto
+      setMostrarCamposExtras(false);
       toast.success("Registro guardado con éxito");
       
       setFormData({
@@ -101,14 +101,14 @@ export default function Correos() {
         correoSolicitante: "",
         tipoRenta: "VEHICULOS",
         tipoRentaOtro: "",
-        tipoTramite: "",
+        tipoTramite: "LIQUIDACION",
         item: "",
         placa: "",
         fechaRespuesta: "",
-        tipoRespuesta: "",
+        tipoRespuesta: "LIQUIDACION",
         noSadeSalida: "",
         observaciones: "",
-        prelacionLegal: "",
+        prelacionLegal: "DERECHOS DE PETICIÓN (15 DÍAS HÁBILES)",
         fechaVencimiento: "",
         diasPendientes: "",
         semaforo: "",
@@ -131,7 +131,7 @@ export default function Correos() {
         </div>
         <button 
           onClick={() => {
-            setMostrarCamposExtras(false); // Abrir limpio
+            setMostrarCamposExtras(false);
             setIsDialogOpen(true);
           }}
           className="flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-md hover:bg-primary/90 text-sm font-medium"
@@ -148,7 +148,7 @@ export default function Correos() {
           
           <form onSubmit={manejarEnviar} className="space-y-4 pt-2">
             
-            {/* BLOQUE OBLIGATORIO (A MÁXIMO J) */}
+            {/* BLOQUE HASTA CAMPO J */}
 
             {/* A y B */}
             <div className="grid grid-cols-2 gap-4">
@@ -232,32 +232,38 @@ export default function Correos() {
               </select>
             </div>
 
-            {/* INTERRUPTOR DE LA COLUMNA K (TRANSFORMADO EN BOTÓN DE ACCIÓN VISUAL) */}
+            {/* BOTÓN COLUMNA K: DISPARADOR PARA MOSTRAR LO SIGUIENTE */}
             <div className="pt-2">
               <button
                 type="button"
                 onClick={() => setMostrarCamposExtras(!mostrarCamposExtras)}
                 className="w-full flex items-center justify-between p-3 border border-dashed border-primary/50 rounded-lg bg-primary/5 hover:bg-primary/10 text-primary text-xs font-semibold uppercase tracking-wider transition-colors"
               >
-                <span>SI EL TIPO DE RENTA ES OTRO (HUNDA AQUÍ PARA ESPECIFICAR Y VER MÁS CAMPOS)</span>
+                <span>SI EL TIPO DE RENTA ES OTRO (HUNDA AQUÍ PARA VER MÁS CAMPOS)</span>
                 {mostrarCamposExtras ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
               </button>
             </div>
 
-            {/* CAMPOS CONDICIONALES (REVELADOS DE LA L A LA Z SÓLO SI SE UNDE EL BOTÓN) */}
+            {/* BLOQUE CAMPOS SIGUIENTES (L A Z) */}
             {mostrarCamposExtras && (
               <div className="space-y-4 pt-2 border-t border-dashed border-slate-200 mt-2 animate-in fade-in duration-300">
                 
-                {/* K (Espacio para escribir el tipo de renta otro) */}
-                <div>
-                  <Label>ESPECIFICAR TIPO DE RENTA (OTRO)</Label>
-                  <Input type="text" name="tipoRentaOtro" value={formData.tipoRentaOtro} onChange={handleChange} placeholder="Escriba aquí la renta correspondiente" />
-                </div>
-
-                {/* L */}
+                {/* L (TIPO DE TRAMITE DESPLEGABLE) */}
                 <div>
                   <Label>TIPO DE TRAMITE</Label>
-                  <Input type="text" name="tipoTramite" value={formData.tipoTramite} onChange={handleChange} />
+                  <select 
+                    name="tipoTramite" 
+                    value={formData.tipoTramite} 
+                    onChange={handleChange} 
+                    className="w-full p-2 border rounded-md text-sm bg-background"
+                  >
+                    <option value="LIQUIDACION">LIQUIDACION</option>
+                    <option value="RESPUESTA A PETICION">RESPUESTA A PETICION</option>
+                    <option value="DEVOLUCION">DEVOLUCION</option>
+                    <option value="CORRECCION DE DECLARACION">CORRECCION DE DECLARACION</option>
+                    <option value="RECURSO">RECURSO</option>
+                    <option value="SOLICITUD EXENCION">SOLICITUD EXENCION</option>
+                  </select>
                 </div>
 
                 {/* M y N */}
@@ -272,7 +278,7 @@ export default function Correos() {
                   </div>
                 </div>
 
-                {/* O y P */}
+                {/* O y P (TIPO DE RESPUESTA DESPLEGABLE) */}
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <Label>FECHA RESPUESTA (DD-MM-AAAA)</Label>
@@ -280,7 +286,18 @@ export default function Correos() {
                   </div>
                   <div>
                     <Label>TIPO DE RESPUESTA</Label>
-                    <Input type="text" name="tipoRespuesta" value={formData.tipoRespuesta} onChange={handleChange} />
+                    <select 
+                      name="tipoRespuesta" 
+                      value={formData.tipoRespuesta} 
+                      onChange={handleChange} 
+                      className="w-full p-2 border rounded-md text-sm bg-background"
+                    >
+                      <option value="LIQUIDACION">LIQUIDACION</option>
+                      <option value="OFICIO">OFICIO</option>
+                      <option value="RESOLUCION">RESOLUCION</option>
+                      <option value="REQUERIMIENTO ORDINARIO">REQUERIMIENTO ORDINARIO</option>
+                      <option value="AUTO">AUTO</option>
+                    </select>
                   </div>
                 </div>
 
@@ -302,12 +319,29 @@ export default function Correos() {
                   />
                 </div>
 
-                {/* S, T, U */}
-                <div className="grid grid-cols-3 gap-4">
-                  <div>
-                    <Label>PRELACIÓN LEGAL</Label>
-                    <Input type="text" name="prelacionLegal" value={formData.prelacionLegal} onChange={handleChange} />
-                  </div>
+                {/* S (PRELACIÓN LEGAL DESPLEGABLE), T, U */}
+                <div>
+                  <Label>PRELACIÓN LEGAL</Label>
+                  <select 
+                    name="prelacionLegal" 
+                    value={formData.prelacionLegal} 
+                    onChange={handleChange} 
+                    className="w-full p-2 border rounded-md text-sm bg-background mb-4"
+                  >
+                    <option value="DERECHOS DE PETICIÓN (15 DÍAS HÁBILES)">DERECHOS DE PETICIÓN (15 DÍAS HÁBILES)</option>
+                    <option value="TUTELAS (48 HORAS O 10 DÍAS PRORROGABLES)">TUTELAS (48 HORAS O 10 DÍAS PRORROGABLES)</option>
+                    <option value="TRASLADOS (5 DÍAS HÁBILES)">TRASLADOS (5 DÍAS HÁBILES)</option>
+                    <option value="ENTIDADES PÚBLICAS (10 DÍAS HÁBILES)">ENTIDADES PÚBLICAS (10 DÍAS HÁBILES)</option>
+                    <option value="DERECHOS DE PETICIÓN ENTRE AUTORIDADES (10 DÍAS HÁBILES)">DERECHOS DE PETICIÓN ENTRE AUTORIDADES (10 DÍAS HÁBILES)</option>
+                    <option value="SOLICITUD DE INFORMACIÓN COMPLEMENTARIA (30 DÍAS DESDE RADICACIÓN)">SOLICITUD DE INFORMACIÓN COMPLEMENTARIA (30 DÍAS DESDE RADICACIÓN)</option>
+                    <option value="REVOCATORIA DIRECTA (2 MESES PARA RESOLVER)">REVOCATORIA DIRECTA (2 MESES PARA RESOLVER)</option>
+                    <option value="SILENCIO ADMINISTRATIVO POSITIVO (3 MESES SIN RESPUESTA VUR)">SILENCIO ADMINISTRATIVO POSITIVO (3 MESES SIN RESPUESTA VUR)</option>
+                    <option value="TÉRMINOS DE PRESCRIPCIÓN Y CADUCIDAD (DEPENDE DEL TRIBUTO)">TÉRMINOS DE PRESCRIPCIÓN Y CADUCIDAD (DEPENDE DEL TRIBUTO)</option>
+                    <option value="CORRECCIONES EX-OFICIO (SEGÚN EL ESTATUTO TRIBUTARIO)">CORRECCIONES EX-OFICIO (SEGÚN EL ESTATUTO TRIBUTARIO)</option>
+                  </select>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
                   <div>
                     <Label>FECHA DE VENCIMIENTO</Label>
                     <Input type="date" name="fechaVencimiento" value={formData.fechaVencimiento} onChange={handleChange} />
@@ -349,7 +383,7 @@ export default function Correos() {
               </div>
             )}
 
-            {/* Botones de acción del Formulario */}
+            {/* Botones de acción */}
             <div className="flex justify-end gap-2 pt-4 border-t border-slate-100">
               <button type="button" onClick={() => setIsDialogOpen(false)} className="px-4 py-2 border rounded-md text-sm hover:bg-muted">
                 Cancelar
@@ -363,7 +397,7 @@ export default function Correos() {
       </Dialog>
 
       <div className="border rounded-md p-8 text-center text-muted-foreground bg-card">
-        Tabla de control de correos electrónicos organizada por orden exacto.
+        Tabla de control de correos electrónicos de la A a la Z organizada por orden exacto.
       </div>
     </div>
   );
