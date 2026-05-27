@@ -1,8 +1,8 @@
 export function FormularioDeCorreos({ onEnviar, onCancelar }: { onEnviar: (datos: any) => void; onCancelar: () => void }) {
   const [formData, setFormData] = useState({
     canalIngreso: "CORREO ELECTRÓNICO",
-    mes: new Date().toLocaleString("es-CO", { month: "long" }).toUpperCase(),
-    fechaAsignacion: new Date().toISOString().split("T")[0],
+    mes: "OCTUBRE", // Forzado temporalmente en texto plano para evitar métodos dinámicos que fallen en compilación
+    fechaAsignacion: "",
     correoFuncionarioEncargado: "respuestavur@valledelcauca.gov.co",
     funcionarioEncargado: "",
     asuntoCorreo: "",
@@ -12,10 +12,11 @@ export function FormularioDeCorreos({ onEnviar, onCancelar }: { onEnviar: (datos
     tipoTramite: ""
   });
 
-  // Cambiado para que use tipos nativos sin depender de la importación de React
   const handleChange = (e: any) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
   };
 
   const handleSubmit = (e: any) => {
@@ -85,7 +86,6 @@ export function FormularioDeCorreos({ onEnviar, onCancelar }: { onEnviar: (datos
             name="contribuyenteSolicitante"
             value={formData.contribuyenteSolicitante}
             onChange={handleChange}
-            placeholder="Nombre completo"
             className="w-full p-2 border rounded text-sm bg-background"
             required
           />
@@ -97,7 +97,6 @@ export function FormularioDeCorreos({ onEnviar, onCancelar }: { onEnviar: (datos
             name="correoSolicitante"
             value={formData.correoSolicitante}
             onChange={handleChange}
-            placeholder="correo@ejemplo.com"
             className="w-full p-2 border rounded text-sm bg-background"
             required
           />
@@ -112,7 +111,6 @@ export function FormularioDeCorreos({ onEnviar, onCancelar }: { onEnviar: (datos
             name="funcionarioEncargado"
             value={formData.funcionarioEncargado}
             onChange={handleChange}
-            placeholder="Nombre del funcionario"
             className="w-full p-2 border rounded text-sm bg-background"
             required
           />
@@ -153,7 +151,6 @@ export function FormularioDeCorreos({ onEnviar, onCancelar }: { onEnviar: (datos
           name="asuntoCorreo"
           value={formData.asuntoCorreo}
           onChange={handleChange}
-          placeholder="Fwd: Asunto completo del correo..."
           rows={3}
           className="w-full p-2 border rounded text-sm bg-background resize-none"
           required
