@@ -13,7 +13,7 @@ export default function Correos() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
 
-  // ESTADO INTERNO (Mantiene los mismos nombres técnicos mapeados de la A a la Z)
+  // ESTADO INTERNO CON TODOS LOS CAMPOS DE LA A A LA Z
   const [formData, setFormData] = useState({
     canalIngreso: "CORREO ELECTRÓNICO", // A
     mes: "OCTUBRE",                     // B
@@ -22,9 +22,9 @@ export default function Correos() {
     funcionarioEncargado: "",           // E
     asuntoCorreo: "",                   // F
     fechaCorreo: "",                    // G
-    contribuyenteSolicitante: "",       // H
+    contribuyenteOclicitante: "",       // H
     correoSolicitante: "",              // I
-    tipoRenta: "",                      // J
+    tipoRenta: "VEHICULOS",             // J (Inicia por defecto en VEHICULOS)
     tipoRentaOtro: "",                  // K
     tipoTramite: "",                    // L
     item: "",                           // M
@@ -63,7 +63,7 @@ export default function Correos() {
         formData.funcionarioEncargado,       // E
         formData.asuntoCorreo,               // F
         formData.fechaCorreo,                // G
-        formData.contribuyenteSolicitante,   // H
+        formData.contribuyenteOclicitante,   // H
         formData.correoSolicitante,          // I
         formData.tipoRenta,                  // J
         formData.tipoRentaOtro,              // K
@@ -94,9 +94,9 @@ export default function Correos() {
         funcionarioEncargado: "",
         asuntoCorreo: "",
         fechaCorreo: "",
-        contribuyenteSolicitante: "",
+        contribuyenteOclicitante: "",
         correoSolicitante: "",
-        tipoRenta: "",
+        tipoRenta: "VEHICULOS",
         tipoRentaOtro: "",
         tipoTramite: "",
         item: "",
@@ -142,8 +142,6 @@ export default function Correos() {
           
           <form onSubmit={manejarEnviar} className="space-y-4 pt-2">
             
-            {/* ORDEN VISUAL ESTRICTO SEGÚN TU MATRIZ (A - Z) */}
-
             {/* A y B */}
             <div className="grid grid-cols-2 gap-4">
               <div>
@@ -178,7 +176,7 @@ export default function Correos() {
               <Input type="text" name="funcionarioEncargado" value={formData.funcionarioEncargado} onChange={handleChange} required />
             </div>
 
-            {/* F (Asunto Correo - Se ubica aquí exacto después de E) */}
+            {/* F */}
             <div>
               <Label>ASUNTO CORREO</Label>
               <textarea
@@ -199,7 +197,7 @@ export default function Correos() {
               </div>
               <div>
                 <Label>CONTRIBUYENTE O SOLICITANTE</Label>
-                <Input type="text" name="contribuyenteSolicitante" value={formData.contribuyenteSolicitante} onChange={handleChange} required />
+                <Input type="text" name="contribuyenteOclicitante" value={formData.contribuyenteOclicitante} onChange={handleChange} required />
               </div>
               <div>
                 <Label>CORREO SOLICITANTE</Label>
@@ -207,11 +205,24 @@ export default function Correos() {
               </div>
             </div>
 
-            {/* J y K */}
+            {/* J y L (TIPO DE RENTA como menú desplegable y TIPO DE TRÁMITE) */}
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <Label>TIPO DE RENTA</Label>
-                <Input type="text" name="tipoRenta" value={formData.tipoRenta} onChange={handleChange} />
+                <select 
+                  name="tipoRenta" 
+                  value={formData.tipoRenta} 
+                  onChange={handleChange} 
+                  className="w-full p-2 border rounded-md text-sm bg-background"
+                  required
+                >
+                  <option value="VEHICULOS">VEHICULOS</option>
+                  <option value="REGISTRO">REGISTRO</option>
+                  <option value="ESTAMPILLAS">ESTAMPILLAS</option>
+                  <option value="DEGUELLO">DEGUELLO</option>
+                  <option value="TASAS">TASAS</option>
+                  <option value="OTRO">OTRO</option>
+                </select>
               </div>
               <div>
                 <Label>TIPO DE TRAMITE</Label>
@@ -219,7 +230,7 @@ export default function Correos() {
               </div>
             </div>
 
-            {/* L */}
+            {/* K */}
             <div>
               <Label>SI EL TIPO DE RENTA ES OTRO (ESPECIFICAR EN ESTA COLUMNA)</Label>
               <Input type="text" name="tipoRentaOtro" value={formData.tipoRentaOtro} onChange={handleChange} />
@@ -255,7 +266,7 @@ export default function Correos() {
               <Input type="text" name="noSadeSalida" value={formData.noSadeSalida} onChange={handleChange} />
             </div>
 
-            {/* R (Observaciones va exactamente aquí antes de S) */}
+            {/* R */}
             <div>
               <Label>OBSERVACIONES</Label>
               <textarea
