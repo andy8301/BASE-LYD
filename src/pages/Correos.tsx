@@ -13,34 +13,34 @@ export default function Correos() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
 
-  // ESTADO INICIAL COMPLETO CON TODOS LOS CAMPOS DE LA A A LA Z
+  // ESTADO INTERNO (Mantiene los mismos nombres técnicos mapeados de la A a la Z)
   const [formData, setFormData] = useState({
-    canalIngreso: "CORREO ELECTRÓNICO",
-    mes: "OCTUBRE",
-    fechaAsignacion: "",
-    correoFuncionarioEncargado: "respuestavur@valledelcauca.gov.co",
-    funcionarioEncargado: "",
-    asuntoCorreo: "",
-    fechaCorreo: "",
-    contribuyenteSolicitante: "",
-    correoSolicitante: "",
-    tipoRenta: "",
-    tipoRentaOtro: "",
-    tipoTramite: "",
-    item: "",
-    placa: "",
-    fechaRespuesta: "",
-    tipoRespuesta: "",
-    noSadeSalida: "",
-    observaciones: "",
-    prelacionLegal: "",
-    fechaVencimiento: "",
-    diasPendientes: "",
-    semaforo: "",
-    noExpediente: "",
-    anoIngreso: "",
-    mesIngreso: "",
-    siEsFormula: ""
+    canalIngreso: "CORREO ELECTRÓNICO", // A
+    mes: "OCTUBRE",                     // B
+    fechaAsignacion: "",                // C
+    correoFuncionarioEncargado: "respuestavur@valledelcauca.gov.co", // D
+    funcionarioEncargado: "",           // E
+    asuntoCorreo: "",                   // F
+    fechaCorreo: "",                    // G
+    contribuyenteSolicitante: "",       // H
+    correoSolicitante: "",              // I
+    tipoRenta: "",                      // J
+    tipoRentaOtro: "",                  // K
+    tipoTramite: "",                    // L
+    item: "",                           // M
+    placa: "",                          // N
+    fechaRespuesta: "",                 // O
+    tipoRespuesta: "",                  // P
+    noSadeSalida: "",                   // Q
+    observaciones: "",                  // R
+    prelacionLegal: "",                 // S
+    fechaVencimiento: "",               // T
+    diasPendientes: "",                 // U
+    semaforo: "",                       // V
+    noExpediente: "",                   // W
+    anoIngreso: "",                     // X
+    mesIngreso: "",                     // Y
+    siEsFormula: ""                     // Z
   });
 
   const handleChange = (e: any) => {
@@ -56,32 +56,32 @@ export default function Correos() {
       toast.success("Guardando registro...");
       
       const nuevaFila = [
-        formData.canalIngreso,
-        formData.mes,
-        formData.fechaAsignacion,
-        formData.correoFuncionarioEncargado,
-        formData.funcionarioEncargado,
-        formData.asuntoCorreo,
-        formData.fechaCorreo,
-        formData.contribuyenteSolicitante,
-        formData.correoSolicitante,
-        formData.tipoRenta,
-        formData.tipoRentaOtro,
-        formData.tipoTramite,
-        formData.item,
-        formData.placa,
-        formData.fechaRespuesta,
-        formData.tipoRespuesta,
-        formData.noSadeSalida,
-        formData.observaciones,
-        formData.prelacionLegal,
-        formData.fechaVencimiento,
-        formData.diasPendientes,
-        formData.semaforo,
-        formData.noExpediente,
-        formData.anoIngreso,
-        formData.mesIngreso,
-        formData.siEsFormula
+        formData.canalIngreso,               // A
+        formData.mes,                        // B
+        formData.fechaAsignacion,            // C
+        formData.correoFuncionarioEncargado, // D
+        formData.funcionarioEncargado,       // E
+        formData.asuntoCorreo,               // F
+        formData.fechaCorreo,                // G
+        formData.contribuyenteSolicitante,   // H
+        formData.correoSolicitante,          // I
+        formData.tipoRenta,                  // J
+        formData.tipoRentaOtro,              // K
+        formData.tipoTramite,                // L
+        formData.item,                       // M
+        formData.placa,                      // N
+        formData.fechaRespuesta,             // O
+        formData.tipoRespuesta,              // P
+        formData.noSadeSalida,               // Q
+        formData.observaciones,              // R
+        formData.prelacionLegal,             // S
+        formData.fechaVencimiento,           // T
+        formData.diasPendientes,             // U
+        formData.semaforo,                   // V
+        formData.noExpediente,               // W
+        formData.anoIngreso,                 // X
+        formData.mesIngreso,                 // Y
+        formData.siEsFormula                 // Z
       ];
 
       await appendToSheet(SHEET_NAMES.CORREOS, nuevaFila);
@@ -141,6 +141,10 @@ export default function Correos() {
           </DialogHeader>
           
           <form onSubmit={manejarEnviar} className="space-y-4 pt-2">
+            
+            {/* ORDEN VISUAL ESTRICTO SEGÚN TU MATRIZ (A - Z) */}
+
+            {/* A y B */}
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <Label>CANAL DE INGRESO</Label>
@@ -156,6 +160,7 @@ export default function Correos() {
               </div>
             </div>
 
+            {/* C y D */}
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <Label>FECHA ASIGNACION</Label>
@@ -167,112 +172,13 @@ export default function Correos() {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label>FUNCIONARIO ENCARGADO</Label>
-                <Input type="text" name="funcionarioEncargado" value={formData.funcionarioEncargado} onChange={handleChange} required />
-              </div>
-              <div>
-                <Label>FECHA CORREO (DD-MM-AAAA)</Label>
-                <Input type="date" name="fechaCorreo" value={formData.fechaCorreo} onChange={handleChange} required />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label>CONTRIBUYENTE O SOLICITANTE</Label>
-                <Input type="text" name="contribuyenteSolicitante" value={formData.contribuyenteSolicitante} onChange={handleChange} required />
-              </div>
-              <div>
-                <Label>CORREO SOLICITANTE</Label>
-                <Input type="email" name="correoSolicitante" value={formData.correoSolicitante} onChange={handleChange} required />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label>TIPO DE RENTA</Label>
-                <Input type="text" name="tipoRenta" value={formData.tipoRenta} onChange={handleChange} />
-              </div>
-              <div>
-                <Label>TIPO DE TRAMITE</Label>
-                <Input type="text" name="tipoTramite" value={formData.tipoTramite} onChange={handleChange} />
-              </div>
-            </div>
-
+            {/* E */}
             <div>
-              <Label>SI EL TIPO DE RENTA ES OTRO (ESPECIFICAR EN ESTA COLUMNA)</Label>
-              <Input type="text" name="tipoRentaOtro" value={formData.tipoRentaOtro} onChange={handleChange} />
+              <Label>FUNCIONARIO ENCARGADO</Label>
+              <Input type="text" name="funcionarioEncargado" value={formData.funcionarioEncargado} onChange={handleChange} required />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label>ITEM</Label>
-                <Input type="text" name="item" value={formData.item} onChange={handleChange} />
-              </div>
-              <div>
-                <Label>PLACA</Label>
-                <Input type="text" name="placa" value={formData.placa} onChange={handleChange} />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label>FECHA RESPUESTA (DD-MM-AAAA)</Label>
-                <Input type="date" name="fechaRespuesta" value={formData.fechaRespuesta} onChange={handleChange} />
-              </div>
-              <div>
-                <Label>TIPO DE RESPUESTA</Label>
-                <Input type="text" name="tipoRespuesta" value={formData.tipoRespuesta} onChange={handleChange} />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label>No DE SADE DE SALIDA</Label>
-                <Input type="text" name="noSadeSalida" value={formData.noSadeSalida} onChange={handleChange} />
-              </div>
-              <div>
-                <Label>PRELACIÓN LEGAL</Label>
-                <Input type="text" name="prelacionLegal" value={formData.prelacionLegal} onChange={handleChange} />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-3 gap-4">
-              <div>
-                <Label>FECHA DE VENCIMIENTO</Label>
-                <Input type="date" name="fechaVencimiento" value={formData.fechaVencimiento} onChange={handleChange} />
-              </div>
-              <div>
-                <Label>DIAS PENDIENTES</Label>
-                <Input type="number" name="diasPendientes" value={formData.diasPendientes} onChange={handleChange} />
-              </div>
-              <div>
-                <Label>SEMAFORO</Label>
-                <Input type="text" name="semaforo" value={formData.semaforo} onChange={handleChange} />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-3 gap-4">
-              <div>
-                <Label>NO EXPEDIENTE</Label>
-                <Input type="text" name="noExpediente" value={formData.noExpediente} onChange={handleChange} />
-              </div>
-              <div>
-                <Label>AÑO INGRESO</Label>
-                <Input type="number" name="anoIngreso" value={formData.anoIngreso} onChange={handleChange} />
-              </div>
-              <div>
-                <Label>MES INGRESO</Label>
-                <Input type="text" name="mesIngreso" value={formData.mesIngreso} onChange={handleChange} />
-              </div>
-            </div>
-
-            <div>
-              <Label>SI ES FORMULA</Label>
-              <Input type="text" name="siEsFormula" value={formData.siEsFormula} onChange={handleChange} />
-            </div>
-
+            {/* F (Asunto Correo - Se ubica aquí exacto después de E) */}
             <div>
               <Label>ASUNTO CORREO</Label>
               <textarea
@@ -285,6 +191,71 @@ export default function Correos() {
               />
             </div>
 
+            {/* G, H, I */}
+            <div className="grid grid-cols-3 gap-4">
+              <div>
+                <Label>FECHA CORREO (DD-MM-AAAA)</Label>
+                <Input type="date" name="fechaCorreo" value={formData.fechaCorreo} onChange={handleChange} required />
+              </div>
+              <div>
+                <Label>CONTRIBUYENTE O SOLICITANTE</Label>
+                <Input type="text" name="contribuyenteSolicitante" value={formData.contribuyenteSolicitante} onChange={handleChange} required />
+              </div>
+              <div>
+                <Label>CORREO SOLICITANTE</Label>
+                <Input type="email" name="correoSolicitante" value={formData.correoSolicitante} onChange={handleChange} required />
+              </div>
+            </div>
+
+            {/* J y K */}
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label>TIPO DE RENTA</Label>
+                <Input type="text" name="tipoRenta" value={formData.tipoRenta} onChange={handleChange} />
+              </div>
+              <div>
+                <Label>TIPO DE TRAMITE</Label>
+                <Input type="text" name="tipoTramite" value={formData.tipoTramite} onChange={handleChange} />
+              </div>
+            </div>
+
+            {/* L */}
+            <div>
+              <Label>SI EL TIPO DE RENTA ES OTRO (ESPECIFICAR EN ESTA COLUMNA)</Label>
+              <Input type="text" name="tipoRentaOtro" value={formData.tipoRentaOtro} onChange={handleChange} />
+            </div>
+
+            {/* M y N */}
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label>ITEM</Label>
+                <Input type="text" name="item" value={formData.item} onChange={handleChange} />
+              </div>
+              <div>
+                <Label>PLACA</Label>
+                <Input type="text" name="placa" value={formData.placa} onChange={handleChange} />
+              </div>
+            </div>
+
+            {/* O y P */}
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label>FECHA RESPUESTA (DD-MM-AAAA)</Label>
+                <Input type="date" name="fechaRespuesta" value={formData.fechaRespuesta} onChange={handleChange} />
+              </div>
+              <div>
+                <Label>TIPO DE RESPUESTA</Label>
+                <Input type="text" name="tipoRespuesta" value={formData.tipoRespuesta} onChange={handleChange} />
+              </div>
+            </div>
+
+            {/* Q */}
+            <div>
+              <Label>No DE SADE DE SALIDA</Label>
+              <Input type="text" name="noSadeSalida" value={formData.noSadeSalida} onChange={handleChange} />
+            </div>
+
+            {/* R (Observaciones va exactamente aquí antes de S) */}
             <div>
               <Label>OBSERVACIONES</Label>
               <textarea
@@ -296,6 +267,51 @@ export default function Correos() {
               />
             </div>
 
+            {/* S, T, U */}
+            <div className="grid grid-cols-3 gap-4">
+              <div>
+                <Label>PRELACIÓN LEGAL</Label>
+                <Input type="text" name="prelacionLegal" value={formData.prelacionLegal} onChange={handleChange} />
+              </div>
+              <div>
+                <Label>FECHA DE VENCIMIENTO</Label>
+                <Input type="date" name="fechaVencimiento" value={formData.fechaVencimiento} onChange={handleChange} />
+              </div>
+              <div>
+                <Label>DIAS PENDIENTES</Label>
+                <Input type="number" name="diasPendientes" value={formData.diasPendientes} onChange={handleChange} />
+              </div>
+            </div>
+
+            {/* V, W, X */}
+            <div className="grid grid-cols-3 gap-4">
+              <div>
+                <Label>SEMAFORO</Label>
+                <Input type="text" name="semaforo" value={formData.semaforo} onChange={handleChange} />
+              </div>
+              <div>
+                <Label>NO EXPEDIENTE</Label>
+                <Input type="text" name="noExpediente" value={formData.noExpediente} onChange={handleChange} />
+              </div>
+              <div>
+                <Label>AÑO INGRESO</Label>
+                <Input type="number" name="anoIngreso" value={formData.anoIngreso} onChange={handleChange} />
+              </div>
+            </div>
+
+            {/* Y y Z */}
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label>MES INGRESO</Label>
+                <Input type="text" name="mesIngreso" value={formData.mesIngreso} onChange={handleChange} />
+              </div>
+              <div>
+                <Label>SI ES FORMULA</Label>
+                <Input type="text" name="siEsFormula" value={formData.siEsFormula} onChange={handleChange} />
+              </div>
+            </div>
+
+            {/* Botones de acción */}
             <div className="flex justify-end gap-2 pt-2">
               <button type="button" onClick={() => setIsDialogOpen(false)} className="px-4 py-2 border rounded-md text-sm hover:bg-muted">
                 Cancelar
@@ -309,7 +325,7 @@ export default function Correos() {
       </Dialog>
 
       <div className="border rounded-md p-8 text-center text-muted-foreground bg-card">
-        Tabla de control de correos electrónicos de la A a la Z lista para operar.
+        Tabla de control de correos electrónicos de la A a la Z organizada por orden exacto.
       </div>
     </div>
   );
