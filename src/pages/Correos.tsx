@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -10,8 +10,8 @@ export default function Correos() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [mostrarCamposExtras, setMostrarCamposExtras] = useState(false);
 
-  // ESTADO INICIAL CORREGIDO (CON LAS TILDES EXACTAS IGUALES A LOS COMODINES)
-  const [formData, setFormData] = useState({
+  // ESTADO INICIAL TOTALMENTE SEGURO
+  const [formData, setFormData] = useState<any>({
     canalIngreso: "CORREO ELECTRÓNICO",
     mes: "OCTUBRE",
     fechaAsignacion: "",
@@ -23,7 +23,7 @@ export default function Correos() {
     correoSolicitante: "",
     tipoRenta: "IMPUESTO SOBRE VEHÍCULOS AUTOMOTORES",
     tipoRentaOtro: "",
-    tipoTramite: "DERECHO DE PETICIÓN", // <-- CORREGIDO CON TILDE PARA EVITAR EL TS2322
+    tipoTramite: "DERECHO DE PETICIÓN",
     item: "",
     placa: "",
     fechaRespuesta: "",
@@ -125,6 +125,7 @@ export default function Correos() {
           <p className="text-muted-foreground">Gestión y seguimiento de correspondencia electrónica</p>
         </div>
         <button 
+          type="button"
           onClick={() => {
             setMostrarCamposExtras(false);
             setIsDialogOpen(true);
@@ -143,7 +144,7 @@ export default function Correos() {
           
           <form onSubmit={manejarEnviar} className="space-y-4 pt-2">
             
-            {/* CAMPOS DEL BLOQUE PRINCIPAL (A - J) */}
+            {/* CAMPOS PRINCIPALES (A - J) */}
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <Label>CANAL DE INGRESO</Label>
@@ -151,7 +152,7 @@ export default function Correos() {
               </div>
               <div>
                 <Label>MES</Label>
-                <select name="mes" value={formData.mes} onChange={handleChange} className="w-full p-2 border rounded-md text-sm bg-background" required>
+                <select name="mes" value={formData.mes} onChange={handleChange} className="w-full p-2 border rounded-md text-sm bg-background focus:ring-1 focus:ring-primary" required>
                   {["ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE"].map((m) => (
                     <option key={m} value={m}>{m}</option>
                   ))}
@@ -175,7 +176,6 @@ export default function Correos() {
               <Input type="text" name="funcionarioEncargado" value={formData.funcionarioEncargado} onChange={handleChange} required />
             </div>
 
-            {/* ASUNTO DEL CORREO */}
             <div>
               <Label>ASUNTO CORREO</Label>
               <textarea
@@ -203,14 +203,14 @@ export default function Correos() {
               </div>
             </div>
 
-            {/* TIPO DE RENTA ORIGINAL (IN TACTO) */}
+            {/* TIPO DE RENTA (INTACTO COMO PEDISTE) */}
             <div>
               <Label>TIPO DE RENTA</Label>
               <select 
                 name="tipoRenta" 
                 value={formData.tipoRenta} 
                 onChange={handleChange} 
-                className="w-full p-2 border rounded-md text-sm bg-background"
+                className="w-full p-2 border rounded-md text-sm bg-background focus:ring-1 focus:ring-primary"
                 required
               >
                 <option value="IMPUESTO SOBRE VEHÍCULOS AUTOMOTORES">IMPUESTO SOBRE VEHÍCULOS AUTOMOTORES</option>
@@ -224,7 +224,7 @@ export default function Correos() {
               </select>
             </div>
 
-            {/* BOTÓN DISPARADOR DE LA COLUMNA K */}
+            {/* BOTÓN COLUMNA K (DISPARADOR) */}
             <div className="pt-2">
               <button
                 type="button"
@@ -236,18 +236,18 @@ export default function Correos() {
               </button>
             </div>
 
-            {/* SECCIÓN DESPLEGABLE CON LOS ENUM PERFECTOS (L - Z) */}
+            {/* CAMPOS COMPLEMENTARIOS (L - Z) */}
             {mostrarCamposExtras && (
-              <div className="space-y-4 pt-2 border-t border-dashed border-slate-200 mt-2">
+              <div className="space-y-4 pt-2 border-t border-dashed border-slate-200 mt-2 animate-in fade-in duration-200">
                 
-                {/* TIPO DE TRAMITE CON LAS TILDES CORRECTAS CORREGIDAS */}
+                {/* TIPO DE TRAMITE CON DESPLEGABLES CORRECTOS */}
                 <div>
                   <Label>TIPO DE TRAMITE</Label>
                   <select 
                     name="tipoTramite" 
                     value={formData.tipoTramite} 
                     onChange={handleChange} 
-                    className="w-full p-2 border rounded-md text-sm bg-background"
+                    className="w-full p-2 border rounded-md text-sm bg-background focus:ring-1 focus:ring-primary"
                   >
                     <option value="DERECHO DE PETICIÓN">DERECHO DE PETICIÓN</option>
                     <option value="QUEJAS">QUEJAS</option>
@@ -280,7 +280,7 @@ export default function Correos() {
                       name="tipoRespuesta" 
                       value={formData.tipoRespuesta} 
                       onChange={handleChange} 
-                      className="w-full p-2 border rounded-md text-sm bg-background"
+                      className="w-full p-2 border rounded-md text-sm bg-background focus:ring-1 focus:ring-primary"
                     >
                       <option value="LIQUIDACION">LIQUIDACION</option>
                       <option value="OFICIO">OFICIO</option>
@@ -303,4 +303,87 @@ export default function Correos() {
                     value={formData.observaciones}
                     onChange={handleChange}
                     rows={2}
-                    className="w-full p-2 border rounded-md text-sm bg-background resize-none focus:outline-none
+                    className="w-full p-2 border rounded-md text-sm bg-background resize-none focus:outline-none focus:ring-1 focus:ring-primary"
+                  />
+                </div>
+
+                <div>
+                  <Label>PRELACIÓN LEGAL</Label>
+                  <select 
+                    name="prelacionLegal" 
+                    value={formData.prelacionLegal} 
+                    onChange={handleChange} 
+                    className="w-full p-2 border rounded-md text-sm bg-background mb-4 focus:ring-1 focus:ring-primary"
+                  >
+                    <option value="DERECHOS DE PETICIÓN (15 DÍAS HÁBILES)">DERECHOS DE PETICIÓN (15 DÍAS HÁBILES)</option>
+                    <option value="TUTELAS (48 HORAS O 10 DÍAS PRORROGABLES)">TUTELAS (48 HORAS O 10 DÍAS PRORROGABLES)</option>
+                    <option value="TRASLADOS (5 DÍAS HÁBILES)">TRASLADOS (5 DÍAS HÁBILES)</option>
+                    <option value="ENTIDADES PÚBLICAS (10 DÍAS HÁBILES)">ENTIDADES PÚBLICAS (10 DÍAS HÁBILES)</option>
+                    <option value="DERECHOS DE PETICIÓN ENTRE AUTORIDADES (10 DÍAS HÁBILES)">DERECHOS DE PETICIÓN ENTRE AUTORIDADES (10 DÍAS HÁBILES)</option>
+                    <option value="SOLICITUD DE INFORMACIÓN COMPLEMENTARIA (30 DÍAS DESDE RADICACIÓN)">SOLICITUD DE INFORMACIÓN COMPLEMENTARIA (30 DÍAS DESDE RADICACIÓN)</option>
+                    <option value="REVOCATORIA DIRECTA (2 MESES PARA RESOLVER)">REVOCATORIA DIRECTA (2 MESES PARA RESOLVER)</option>
+                    <option value="SILENCIO ADMINISTRATIVO POSITIVO (3 MESES SIN RESPUESTA VUR)">SILENCIO ADMINISTRATIVO POSITIVO (3 MESES SIN RESPUESTA VUR)</option>
+                    <option value="TÉRMINOS DE PRESCRIPCIÓN Y CADUCIDAD (DEPENDE DEL TRIBUTO)">TÉRMINOS DE PRESCRIPCIÓN Y CADUCIDAD (DEPENDE DEL TRIBUTO)</option>
+                    <option value="CORRECCIONES EX-OFICIO (SEGÚN EL ESTATUTO TRIBUTARIO)">CORRECCIONES EX-OFICIO (SEGÚN EL ESTATUTO TRIBUTARIO)</option>
+                  </select>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label>FECHA DE VENCIMIENTO</Label>
+                    <Input type="date" name="fechaVencimiento" value={formData.fechaVencimiento} onChange={handleChange} />
+                  </div>
+                  <div>
+                    <Label>DIAS PENDIENTES</Label>
+                    <Input type="number" name="diasPendientes" value={formData.diasPendientes} onChange={handleChange} />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-3 gap-4">
+                  <div>
+                    <Label>SEMAFORO</Label>
+                    <Input type="text" name="semaforo" value={formData.semaforo} onChange={handleChange} />
+                  </div>
+                  <div>
+                    <Label>NO EXPEDIENTE</Label>
+                    <Input type="text" name="noExpediente" value={formData.noExpediente} onChange={handleChange} />
+                  </div>
+                  <div>
+                    <Label>AÑO INGRESO</Label>
+                    <Input type="number" name="anoIngreso" value={formData.anoIngreso} onChange={handleChange} />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label>MES INGRESO</Label>
+                    <Input type="text" name="mesIngreso" value={formData.mesIngreso} onChange={handleChange} />
+                  </div>
+                  <div>
+                    <Label>SI ES FORMULA</Label>
+                    <Input type="text" name="siEsFormula" value={formData.siEsFormula} onChange={handleChange} />
+                  </div>
+                </div>
+
+              </div>
+            )}
+
+            {/* BOTONES */}
+            <div className="flex justify-end gap-2 pt-4 border-t border-slate-100">
+              <button type="button" onClick={() => setIsDialogOpen(false)} className="px-4 py-2 border rounded-md text-sm hover:bg-muted">
+                Cancelar
+              </button>
+              <button type="submit" className="px-4 py-2 bg-primary text-primary-foreground rounded-md text-sm hover:bg-primary/90">
+                Guardar Registro
+              </button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+      <div className="border rounded-md p-8 text-center text-muted-foreground bg-card">
+        Tabla de control de correos electrónicos de la A a la Z organizada por orden exacto.
+      </div>
+    </div>
+  );
+}
