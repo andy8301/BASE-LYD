@@ -13,34 +13,34 @@ export default function Correos() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
 
-  // ESTADO INICIAL CON LAS VARIABLES EXACTAS EN INGLÉS TÉCNICO INTERNO
+  // ESTADO INICIAL COMPLETO CON TODOS LOS CAMPOS DE LA A A LA Z
   const [formData, setFormData] = useState({
-    canalIngreso: "CORREO ELECTRÓNICO", // A
-    mes: "OCTUBRE",                     // B
-    fechaAsignacion: "",                // C
-    correoFuncionarioEncargado: "respuestavur@valledelcauca.gov.co", // D
-    funcionarioEncargado: "",           // E
-    asuntoCorreo: "",                   // F
-    fechaCorreo: "",                    // G
-    contribuyenteSolicitante: "",       // H
-    correoSolicitante: "",              // I
-    tipoRenta: "",                      // J
-    tipoRentaOtro: "",                  // K
-    tipoTramite: "",                    // L
-    item: "",                           // M
-    placa: "",                          // N
-    fechaRespuesta: "",                 // O
-    tipoRespuesta: "",                  // P
-    noSadeSalida: "",                   // Q
-    observaciones: "",                  // R
-    prelacionLegal: "",                 // S
-    fechaVencimiento: "",               // T
-    diasPendientes: "",                 // U
-    semaforo: "",                       // V
-    noExpediente: "",                   // W
-    anoIngreso: "",                     // X
-    mesIngreso: "",                     // Y
-    siEsFormula: ""                     // Z
+    canalIngreso: "CORREO ELECTRÓNICO",
+    mes: "OCTUBRE",
+    fechaAsignacion: "",
+    correoFuncionarioEncargado: "respuestavur@valledelcauca.gov.co",
+    funcionarioEncargado: "",
+    asuntoCorreo: "",
+    fechaCorreo: "",
+    contribuyenteSolicitante: "",
+    correoSolicitante: "",
+    tipoRenta: "",
+    tipoRentaOtro: "",
+    tipoTramite: "",
+    item: "",
+    placa: "",
+    fechaRespuesta: "",
+    tipoRespuesta: "",
+    noSadeSalida: "",
+    observaciones: "",
+    prelacionLegal: "",
+    fechaVencimiento: "",
+    diasPendientes: "",
+    semaforo: "",
+    noExpediente: "",
+    anoIngreso: "",
+    mesIngreso: "",
+    siEsFormula: ""
   });
 
   const handleChange = (e: any) => {
@@ -55,41 +55,39 @@ export default function Correos() {
     try {
       toast.success("Guardando registro...");
       
-      // EL MAPEO EN EL ORDEN MATRIZ EXACTO DE TU EXCEL (A - Z)
       const nuevaFila = [
-        formData.canalIngreso,               // A
-        formData.mes,                        // B
-        formData.fechaAsignacion,            // C
-        formData.correoFuncionarioEncargado, // D
-        formData.funcionarioEncargado,       // E
-        formData.asuntoCorreo,               // F
-        formData.fechaCorreo,                // G
-        formData.contribuyenteSolicitante,   // H
-        formData.correoSolicitante,          // I
-        formData.tipoRenta,                  // J
-        formData.tipoRentaOtro,              // K
-        formData.tipoTramite,                // L
-        formData.item,                       // M
-        formData.placa,                      // N
-        formData.fechaRespuesta,             // O
-        formData.tipoRespuesta,              // P
-        formData.noSadeSalida,               // Q
-        formData.observaciones,              // R
-        formData.prelacionLegal,             // S
-        formData.fechaVencimiento,           // T
-        formData.diasPendientes,             // U
-        formData.semaforo,                   // V
-        formData.noExpediente,               // W
-        formData.anoIngreso,                 // X
-        formData.mesIngreso,                 // Y
-        formData.siEsFormula                 // Z
+        formData.canalIngreso,
+        formData.mes,
+        formData.fechaAsignacion,
+        formData.correoFuncionarioEncargado,
+        formData.funcionarioEncargado,
+        formData.asuntoCorreo,
+        formData.fechaCorreo,
+        formData.contribuyenteSolicitante,
+        formData.correoSolicitante,
+        formData.tipoRenta,
+        formData.tipoRentaOtro,
+        formData.tipoTramite,
+        formData.item,
+        formData.placa,
+        formData.fechaRespuesta,
+        formData.tipoRespuesta,
+        formData.noSadeSalida,
+        formData.observaciones,
+        formData.prelacionLegal,
+        formData.fechaVencimiento,
+        formData.diasPendientes,
+        formData.semaforo,
+        formData.noExpediente,
+        formData.anoIngreso,
+        formData.mesIngreso,
+        formData.siEsFormula
       ];
 
       await appendToSheet(SHEET_NAMES.CORREOS, nuevaFila);
       setIsDialogOpen(false);
-      toast.success("Registro guardado exitosamente");
+      toast.success("Registro guardado con éxito");
       
-      // Resetear campos variables manteniendo los valores por defecto
       setFormData({
         ...formData,
         fechaAsignacion: "",
@@ -123,7 +121,6 @@ export default function Correos() {
 
   return (
     <div className="p-6 space-y-6">
-      {/* Encabezado Principal */}
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Correos Electrónicos</h1>
@@ -137,7 +134,6 @@ export default function Correos() {
         </button>
       </div>
 
-      {/* MODAL CON SCROLL PARA LA TOTALIDAD DE CAMPOS (A - Z) */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="sm:max-w-[750px] max-h-[90vh] overflow-y-auto">
           <DialogHeader>
@@ -145,10 +141,6 @@ export default function Correos() {
           </DialogHeader>
           
           <form onSubmit={manejarEnviar} className="space-y-4 pt-2">
-            
-            {/* ENCABEZADOS EN ESPAÑOL IDÉNTICOS A TU EXCEL */}
-            
-            {/* Bloque 1: Columnas A - D */}
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <Label>CANAL DE INGRESO</Label>
@@ -175,7 +167,6 @@ export default function Correos() {
               </div>
             </div>
 
-            {/* Bloque 2: Columnas E - I */}
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <Label>FUNCIONARIO ENCARGADO</Label>
@@ -198,11 +189,10 @@ export default function Correos() {
               </div>
             </div>
 
-            {/* Bloque 3: Columnas J - N */}
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <Label>TIPO DE RENTA</Label>
-                <Input type="text" name="tipoRenta" value={formData.tipoRenta} onChange={handleChange} placeholder="Ej. Vehículos, Registro" />
+                <Input type="text" name="tipoRenta" value={formData.tipoRenta} onChange={handleChange} />
               </div>
               <div>
                 <Label>TIPO DE TRAMITE</Label>
@@ -226,5 +216,101 @@ export default function Correos() {
               </div>
             </div>
 
-            {/* Bloque 4: Columnas O - S */}
-            <div className="grid grid-cols-2 gap
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label>FECHA RESPUESTA (DD-MM-AAAA)</Label>
+                <Input type="date" name="fechaRespuesta" value={formData.fechaRespuesta} onChange={handleChange} />
+              </div>
+              <div>
+                <Label>TIPO DE RESPUESTA</Label>
+                <Input type="text" name="tipoRespuesta" value={formData.tipoRespuesta} onChange={handleChange} />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label>No DE SADE DE SALIDA</Label>
+                <Input type="text" name="noSadeSalida" value={formData.noSadeSalida} onChange={handleChange} />
+              </div>
+              <div>
+                <Label>PRELACIÓN LEGAL</Label>
+                <Input type="text" name="prelacionLegal" value={formData.prelacionLegal} onChange={handleChange} />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-3 gap-4">
+              <div>
+                <Label>FECHA DE VENCIMIENTO</Label>
+                <Input type="date" name="fechaVencimiento" value={formData.fechaVencimiento} onChange={handleChange} />
+              </div>
+              <div>
+                <Label>DIAS PENDIENTES</Label>
+                <Input type="number" name="diasPendientes" value={formData.diasPendientes} onChange={handleChange} />
+              </div>
+              <div>
+                <Label>SEMAFORO</Label>
+                <Input type="text" name="semaforo" value={formData.semaforo} onChange={handleChange} />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-3 gap-4">
+              <div>
+                <Label>NO EXPEDIENTE</Label>
+                <Input type="text" name="noExpediente" value={formData.noExpediente} onChange={handleChange} />
+              </div>
+              <div>
+                <Label>AÑO INGRESO</Label>
+                <Input type="number" name="anoIngreso" value={formData.anoIngreso} onChange={handleChange} />
+              </div>
+              <div>
+                <Label>MES INGRESO</Label>
+                <Input type="text" name="mesIngreso" value={formData.mesIngreso} onChange={handleChange} />
+              </div>
+            </div>
+
+            <div>
+              <Label>SI ES FORMULA</Label>
+              <Input type="text" name="siEsFormula" value={formData.siEsFormula} onChange={handleChange} />
+            </div>
+
+            <div>
+              <Label>ASUNTO CORREO</Label>
+              <textarea
+                name="asuntoCorreo"
+                value={formData.asuntoCorreo}
+                onChange={handleChange}
+                rows={2}
+                className="w-full p-2 border rounded-md text-sm bg-background resize-none focus:outline-none focus:ring-1 focus:ring-primary"
+                required
+              />
+            </div>
+
+            <div>
+              <Label>OBSERVACIONES</Label>
+              <textarea
+                name="observaciones"
+                value={formData.observaciones}
+                onChange={handleChange}
+                rows={2}
+                className="w-full p-2 border rounded-md text-sm bg-background resize-none focus:outline-none focus:ring-1 focus:ring-primary"
+              />
+            </div>
+
+            <div className="flex justify-end gap-2 pt-2">
+              <button type="button" onClick={() => setIsDialogOpen(false)} className="px-4 py-2 border rounded-md text-sm hover:bg-muted">
+                Cancelar
+              </button>
+              <button type="submit" className="px-4 py-2 bg-primary text-primary-foreground rounded-md text-sm hover:bg-primary/90">
+                Guardar Registro
+              </button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+      <div className="border rounded-md p-8 text-center text-muted-foreground bg-card">
+        Tabla de control de correos electrónicos de la A a la Z lista para operar.
+      </div>
+    </div>
+  );
+}
