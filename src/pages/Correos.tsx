@@ -2,47 +2,42 @@ import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { RefreshCw, Plus, Save, Search, FileSpreadsheet, Edit3, ChevronDown, ChevronUp } from "lucide-react";
+import { Plus, ChevronDown, ChevronUp } from "lucide-react";
 import { toast } from "sonner";
-import { readSheet, appendToSheet, updateSheetRow, SHEET_NAMES } from "@/lib/googleSheets";
+import { appendToSheet, SHEET_NAMES } from "@/lib/googleSheets";
 
 export default function Correos() {
-  const [data, setData] = useState<any[]>([]);
-  const [filteredData, setFilteredData] = useState<any[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
-
-  // INTERRUPTOR VISUAL: Abre los campos de la L a la Z
   const [mostrarCamposExtras, setMostrarCamposExtras] = useState(false);
 
+  // ESTADO INICIAL CORREGIDO (CON LAS TILDES EXACTAS IGUALES A LOS COMODINES)
   const [formData, setFormData] = useState({
-    canalIngreso: "CORREO ELECTRÓNICO", // A
-    mes: "OCTUBRE",                     // B
-    fechaAsignacion: "",                // C
-    correoFuncionarioEncargado: "respuestavur@valledelcauca.gov.co", // D
-    funcionarioEncargado: "",           // E
-    asuntoCorreo: "",                   // F
-    fechaCorreo: "",                    // G
-    contribuyenteSolicitante: "",       // H
-    correoSolicitante: "",              // I
-    tipoRenta: "IMPUESTO SOBRE VEHÍCULOS AUTOMOTORES", // J (Intacto)
-    tipoRentaOtro: "",                  // K
-    tipoTramite: "DERECHO DE PETICION", // L
-    item: "",                           // M
-    placa: "",                          // N
-    fechaRespuesta: "",                 // O
-    tipoRespuesta: "LIQUIDACION",       // P
-    noSadeSalida: "",                   // Q
-    observaciones: "",                  // R
-    prelacionLegal: "DERECHOS DE PETICIÓN (15 DÍAS HÁBILES)", // S
-    fechaVencimiento: "",               // T
-    diasPendientes: "",                 // U
-    semaforo: "",                       // V
-    noExpediente: "",                   // W
-    anoIngreso: "",                     // X
-    mesIngreso: "",                     // Y
-    siEsFormula: ""                     // Z
+    canalIngreso: "CORREO ELECTRÓNICO",
+    mes: "OCTUBRE",
+    fechaAsignacion: "",
+    correoFuncionarioEncargado: "respuestavur@valledelcauca.gov.co",
+    funcionarioEncargado: "",
+    asuntoCorreo: "",
+    fechaCorreo: "",
+    contribuyenteSolicitante: "",
+    correoSolicitante: "",
+    tipoRenta: "IMPUESTO SOBRE VEHÍCULOS AUTOMOTORES",
+    tipoRentaOtro: "",
+    tipoTramite: "DERECHO DE PETICIÓN", // <-- CORREGIDO CON TILDE PARA EVITAR EL TS2322
+    item: "",
+    placa: "",
+    fechaRespuesta: "",
+    tipoRespuesta: "LIQUIDACION",
+    noSadeSalida: "",
+    observaciones: "",
+    prelacionLegal: "DERECHOS DE PETICIÓN (15 DÍAS HÁBILES)",
+    fechaVencimiento: "",
+    diasPendientes: "",
+    semaforo: "",
+    noExpediente: "",
+    anoIngreso: "",
+    mesIngreso: "",
+    siEsFormula: ""
   });
 
   const handleChange = (e: any) => {
@@ -101,7 +96,7 @@ export default function Correos() {
         correoSolicitante: "",
         tipoRenta: "IMPUESTO SOBRE VEHÍCULOS AUTOMOTORES",
         tipoRentaOtro: "",
-        tipoTramite: "DERECHO DE PETICION",
+        tipoTramite: "DERECHO DE PETICIÓN",
         item: "",
         placa: "",
         fechaRespuesta: "",
@@ -148,7 +143,7 @@ export default function Correos() {
           
           <form onSubmit={manejarEnviar} className="space-y-4 pt-2">
             
-            {/* A y B */}
+            {/* CAMPOS DEL BLOQUE PRINCIPAL (A - J) */}
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <Label>CANAL DE INGRESO</Label>
@@ -164,7 +159,6 @@ export default function Correos() {
               </div>
             </div>
 
-            {/* C y D */}
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <Label>FECHA ASIGNACION</Label>
@@ -176,13 +170,12 @@ export default function Correos() {
               </div>
             </div>
 
-            {/* E */}
             <div>
               <Label>FUNCIONARIO ENCARGADO</Label>
               <Input type="text" name="funcionarioEncargado" value={formData.funcionarioEncargado} onChange={handleChange} required />
             </div>
 
-            {/* F */}
+            {/* ASUNTO DEL CORREO */}
             <div>
               <Label>ASUNTO CORREO</Label>
               <textarea
@@ -195,7 +188,6 @@ export default function Correos() {
               />
             </div>
 
-            {/* G, H, I */}
             <div className="grid grid-cols-3 gap-4">
               <div>
                 <Label>FECHA CORREO (DD-MM-AAAA)</Label>
@@ -211,7 +203,7 @@ export default function Correos() {
               </div>
             </div>
 
-            {/* J (TIPO DE RENTA) */}
+            {/* TIPO DE RENTA ORIGINAL (IN TACTO) */}
             <div>
               <Label>TIPO DE RENTA</Label>
               <select 
@@ -232,7 +224,7 @@ export default function Correos() {
               </select>
             </div>
 
-            {/* BOTÓN COLUMNA K */}
+            {/* BOTÓN DISPARADOR DE LA COLUMNA K */}
             <div className="pt-2">
               <button
                 type="button"
@@ -244,6 +236,71 @@ export default function Correos() {
               </button>
             </div>
 
-            {/* BLOQUE CAMPOS SIGUIENTES (L A Z) */}
+            {/* SECCIÓN DESPLEGABLE CON LOS ENUM PERFECTOS (L - Z) */}
             {mostrarCamposExtras && (
-              <div className="space-y-4 pt-2 border-t border-dashed border-slate-200 mt-2 animate-in fade-in duration-300">
+              <div className="space-y-4 pt-2 border-t border-dashed border-slate-200 mt-2">
+                
+                {/* TIPO DE TRAMITE CON LAS TILDES CORRECTAS CORREGIDAS */}
+                <div>
+                  <Label>TIPO DE TRAMITE</Label>
+                  <select 
+                    name="tipoTramite" 
+                    value={formData.tipoTramite} 
+                    onChange={handleChange} 
+                    className="w-full p-2 border rounded-md text-sm bg-background"
+                  >
+                    <option value="DERECHO DE PETICIÓN">DERECHO DE PETICIÓN</option>
+                    <option value="QUEJAS">QUEJAS</option>
+                    <option value="RECLAMOS">RECLAMOS</option>
+                    <option value="SUGERENCIAS">SUGERENCIAS</option>
+                    <option value="FELICITACIONES">FELICITACIONES</option>
+                    <option value="ATENCION PDTIR">ATENCION PDTIR</option>
+                  </select>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label>ITEM</Label>
+                    <Input type="text" name="item" value={formData.item} onChange={handleChange} />
+                  </div>
+                  <div>
+                    <Label>PLACA</Label>
+                    <Input type="text" name="placa" value={formData.placa} onChange={handleChange} />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label>FECHA RESPUESTA (DD-MM-AAAA)</Label>
+                    <Input type="date" name="fechaRespuesta" value={formData.fechaRespuesta} onChange={handleChange} />
+                  </div>
+                  <div>
+                    <Label>TIPO DE RESPUESTA</Label>
+                    <select 
+                      name="tipoRespuesta" 
+                      value={formData.tipoRespuesta} 
+                      onChange={handleChange} 
+                      className="w-full p-2 border rounded-md text-sm bg-background"
+                    >
+                      <option value="LIQUIDACION">LIQUIDACION</option>
+                      <option value="OFICIO">OFICIO</option>
+                      <option value="RESOLUCION">RESOLUCION</option>
+                      <option value="REQUERIMIENTO ORDINARIO">REQUERIMIENTO ORDINARIO</option>
+                      <option value="AUTO">AUTO</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div>
+                  <Label>No DE SADE DE SALIDA</Label>
+                  <Input type="text" name="noSadeSalida" value={formData.noSadeSalida} onChange={handleChange} />
+                </div>
+
+                <div>
+                  <Label>OBSERVACIONES</Label>
+                  <textarea
+                    name="observaciones"
+                    value={formData.observaciones}
+                    onChange={handleChange}
+                    rows={2}
+                    className="w-full p-2 border rounded-md text-sm bg-background resize-none focus:outline-none
