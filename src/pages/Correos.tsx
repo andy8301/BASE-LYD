@@ -1,12 +1,4 @@
-import { useState } from "react";
-import { Boton } from "@/components/ui/button";
-
-interface FormularioCorreosProps {
-  onEnviar: (datos: any) => void;
-  onCancelar: () => void;
-}
-
-export function FormularioDeCorreos({ onEnviar, onCancelar }: FormularioCorreosProps) {
+export function FormularioDeCorreos({ onEnviar, onCancelar }: { onEnviar: (datos: any) => void; onCancelar: () => void }) {
   const [formData, setFormData] = useState({
     canalIngreso: "CORREO ELECTRÓNICO",
     mes: new Date().toLocaleString("es-CO", { month: "long" }).toUpperCase(),
@@ -160,7 +152,7 @@ export function FormularioDeCorreos({ onEnviar, onCancelar }: FormularioCorreosP
           name="asuntoCorreo"
           value={formData.asuntoCorreo}
           onChange={handleChange}
-          placeholder="Fwd: Asunto completo de la boleta fiscal o solicitud..."
+          placeholder="Fwd: Asunto completo del correo..."
           rows={3}
           className="w-full p-2 border rounded text-sm bg-background resize-none"
           required
@@ -168,12 +160,12 @@ export function FormularioDeCorreos({ onEnviar, onCancelar }: FormularioCorreosP
       </div>
 
       <div className="flex justify-end gap-2 pt-2">
-        <Boton type="button" variant="outline" onClick={onCancelar}>
+        <button type="button" onClick={onCancelar} className="px-4 py-2 border rounded text-sm hover:bg-slate-50">
           Cancelar
-        </Boton>
-        <Boton type="submit">
+        </button>
+        <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded text-sm hover:bg-blue-700">
           Guardar Registro
-        </Boton>
+        </button>
       </div>
     </form>
   );
