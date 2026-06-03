@@ -76,6 +76,16 @@ const tipoRespuestaList: string[] = [
   "NOTIFICACION"
 ];
 
+// 5. LISTADO DE LAS 6 OPCIONES DE PRELACION LEGAL
+const prelacionLegalList: string[] = [
+  "PETICIONES DE AUTORIDADES",
+  "PETICIONES DE PERIODISTAS",
+  "RIESGO DE VIDA O SALUD",
+  "POBLACION VULNERABLE",
+  "DERECHOS FUNDAMENTALES",
+  "N/A"
+];
+
 export default function Correos() {
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const [mostrarCamposExtras, setMostrarCamposExtras] = useState<boolean>(false);
@@ -99,7 +109,7 @@ export default function Correos() {
     tipoRespuesta: "RESPUESTA DERECHO DE PETICION",
     noSadeSalida: "",
     observaciones: "",
-    prelacionLegal: "DERECHOS DE PETICIÓN (15 DÍAS HÁBILES)",
+    prelacionLegal: "PETICIONES DE AUTORIDADES", // Inicializado con tu primer ítem nuevo
     fechaVencimiento: "",
     diasPendientes: "",
     semaforo: "",
@@ -172,7 +182,7 @@ export default function Correos() {
         tipoRespuesta: "RESPUESTA DERECHO DE PETICION",
         noSadeSalida: "",
         observaciones: "",
-        prelacionLegal: "DERECHOS DE PETICIÓN (15 DÍAS HÁBILES)",
+        prelacionLegal: "PETICIONES DE AUTORIDADES",
         fechaVencimiento: "",
         diasPendientes: "",
         semaforo: "",
@@ -217,260 +227,4 @@ export default function Correos() {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <Label>CANAL DE INGRESO</Label>
-                <Input name="canalIngreso" value={formData.canalIngreso} disabled className="bg-muted" />
-              </div>
-              <div>
-                <Label>MES</Label>
-                <select name="mes" value={formData.mes} onChange={handleChange} className="w-full p-2 border rounded-md text-sm bg-background focus:ring-1 focus:ring-primary" required>
-                  {["ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE"].map((m) => (
-                    <option key={m} value={m}>{m}</option>
-                  ))}
-                </select>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label>FECHA ASIGNACION</Label>
-                <Input type="date" name="fechaAsignacion" value={formData.fechaAsignacion} onChange={handleChange} required />
-              </div>
-              <div>
-                <Label>CORREO FUNCIONARIO ENCARGADO</Label>
-                <Input type="email" name="correoFuncionarioEncargado" value={formData.correoFuncionarioEncargado} onChange={handleChange} required />
-              </div>
-            </div>
-
-            <div>
-              <Label>FUNCIONARIO ENCARGADO</Label>
-              <select
-                name="funcionarioEncargado"
-                value={formData.funcionarioEncargado}
-                onChange={handleChange}
-                className="w-full p-2 border rounded-md text-sm bg-background focus:ring-1 focus:ring-primary"
-                required
-              >
-                <option value="">Seleccione un funcionario...</option>
-                {funcionariosList.map((funcionario) => (
-                  <option key={funcionario} value={funcionario}>
-                    {funcionario}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div>
-              <Label>ASUNTO CORREO</Label>
-              <textarea
-                name="asuntoCorreo"
-                value={formData.asuntoCorreo}
-                onChange={handleChange}
-                rows={2}
-                className="w-full p-2 border rounded-md text-sm bg-background resize-none focus:outline-none focus:ring-1 focus:ring-primary"
-                required
-              />
-            </div>
-
-            <div className="grid grid-cols-3 gap-4">
-              <div>
-                <Label>FECHA CORREO (DD-MM-AAAA)</Label>
-                <Input type="date" name="fechaCorreo" value={formData.fechaCorreo} onChange={handleChange} required />
-              </div>
-              <div>
-                <Label>CONTRIBUYENTE O SOLICITANTE</Label>
-                <Input type="text" name="contribuyenteSolicitante" value={formData.contribuyenteSolicitante} onChange={handleChange} required />
-              </div>
-              <div>
-                <Label>CORREO SOLICITANTE</Label>
-                {/* COMILLA CORREGIDA AQUÍ: name="correoSolicitante" */}
-                <Input type="email" name="correoSolicitante" value={formData.correoSolicitante} onChange={handleChange} required />
-              </div>
-            </div>
-
-            <div>
-              <Label>TIPO DE RENTA</Label>
-              <select 
-                name="tipoRenta" 
-                value={formData.tipoRenta} 
-                onChange={handleChange} 
-                className="w-full p-2 border rounded-md text-sm bg-background focus:ring-1 focus:ring-primary"
-                required
-              >
-                <option value="IMPUESTO SOBRE VEHÍCULOS AUTOMOTORES">IMPUESTO SOBRE VEHÍCULOS AUTOMOTORES</option>
-                <option value="IMPUESTO DE REGISTRO">IMPUESTO DE REGISTRO</option>
-                <option value="IMPUESTO AL DEGÜELLO DE GANADO MAYOR">IMPUESTO AL DEGÜELLO DE GANADO MAYOR</option>
-                <option value="TASA DE SEGURIDAD">TASA DE SEGURIDAD</option>
-                <option value="ESTAMPILLAS">ESTAMPILLAS</option>
-                <option value="APREHENSIÓN Y DECOMISO DE MERCANCÍAS">APREHENSIÓN Y DECOMISO DE MERCANCÍAS</option>
-                <option value="PASAPORTES">PASAPORTES</option>
-                <option value="OTROS (Felicitaciones, Quejas, Etc)">OTROS (Felicitaciones, Quejas, Etc)</option>
-              </select>
-            </div>
-
-            <div className="pt-2">
-              <button
-                type="button"
-                onClick={() => setMostrarCamposExtras(!mostrarCamposExtras)}
-                className="w-full flex items-center justify-between p-3 border border-dashed border-primary/50 rounded-lg bg-primary/5 hover:bg-primary/10 text-primary text-xs font-semibold uppercase tracking-wider transition-colors"
-              >
-                <span>SI EL TIPO DE RENTA ES OTRO (HUNDA AQUÍ PARA VER MÁS CAMPOS)</span>
-                {mostrarCamposExtras ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
-              </button>
-            </div>
-
-            {/* CAMPOS COMPLEMENTARIOS */}
-            {mostrarCamposExtras && (
-              <div className="space-y-4 pt-2 border-t border-dashed border-slate-200 mt-2 animate-in fade-in duration-200">
-                
-                {/* TIPO DE TRAMITE */}
-                <div>
-                  <Label>TIPO DE TRAMITE</Label>
-                  <select 
-                    name="tipoTramite" 
-                    value={formData.tipoTramite} 
-                    onChange={handleChange} 
-                    className="w-full p-2 border rounded-md text-sm bg-background focus:ring-1 focus:ring-primary"
-                  >
-                    {tipoTramiteList.map((tramite) => (
-                      <option key={tramite} value={tramite}>{tramite}</option>
-                    ))}
-                  </select>
-                </div>
-
-                {/* ITEM Y PLACA */}
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label>ITEM</Label>
-                    <select 
-                      name="item" 
-                      value={formData.item} 
-                      onChange={handleChange} 
-                      className="w-full p-2 border rounded-md text-sm bg-background focus:ring-1 focus:ring-primary"
-                    >
-                      {itemList.map((it) => (
-                        <option key={it} value={it}>{it}</option>
-                      ))}
-                    </select>
-                  </div>
-                  <div>
-                    <Label>PLACA</Label>
-                    <Input type="text" name="placa" value={formData.placa} onChange={handleChange} />
-                  </div>
-                </div>
-
-                {/* FECHA RESPUESTA Y TIPO DE RESPUESTA */}
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label>FECHA RESPUESTA (DD-MM-AAAA)</Label>
-                    <Input type="date" name="fechaRespuesta" value={formData.fechaRespuesta} onChange={handleChange} />
-                  </div>
-                  <div>
-                    <Label>TIPO DE RESPUESTA</Label>
-                    <select 
-                      name="tipoRespuesta" 
-                      value={formData.tipoRespuesta} 
-                      onChange={handleChange} 
-                      className="w-full p-2 border rounded-md text-sm bg-background focus:ring-1 focus:ring-primary"
-                    >
-                      {tipoRespuestaList.map((respuesta) => (
-                        <option key={respuesta} value={respuesta}>{respuesta}</option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-
-                <div>
-                  <Label>No DE SADE DE SALIDA</Label>
-                  <Input type="text" name="noSadeSalida" value={formData.noSadeSalida} onChange={handleChange} />
-                </div>
-
-                <div>
-                  <Label>OBSERVACIONES</Label>
-                  <textarea
-                    name="observaciones"
-                    value={formData.observaciones}
-                    onChange={handleChange}
-                    rows={2}
-                    className="w-full p-2 border rounded-md text-sm bg-background resize-none focus:outline-none focus:ring-1 focus:ring-primary"
-                  />
-                </div>
-
-                <div>
-                  <Label>PRELACIÓN LEGAL</Label>
-                  <select 
-                    name="prelacionLegal" 
-                    value={formData.prelacionLegal} 
-                    onChange={handleChange} 
-                    className="w-full p-2 border rounded-md text-sm bg-background mb-4 focus:ring-1 focus:ring-primary"
-                  >
-                    <option value="DERECHOS DE PETICIÓN (15 DÍAS HÁBILES)">DERECHOS DE PETICIÓN (15 DÍAS HÁBILES)</option>
-                    <option value="TUTELAS (48 HORAS O 10 DÍAS PRORROGABLES)">TUTELAS (48 HORAS O 10 DÍAS PRORROGABLES)</option>
-                    <option value="TRASLADOS (5 DÍAS HÁBILES)">TRASLADOS (5 DÍAS HÁBILES)</option>
-                    <option value="ENTIDADES PÚBLICAS (10 DÍAS HÁBILES)">ENTIDADES PÚBLICAS (10 DÍAS HÁBILES)</option>
-                    <option value="DERECHOS DE PETICIÓN ENTRE AUTORIDADES (10 DÍAS HÁBILES)">DERECHOS DE PETICIÓN ENTRE AUTORIDADES (10 DÍAS HÁBILES)</option>
-                    <option value="SOLICITUD DE INFORMACIÓN COMPLEMENTARIA (30 DÍAS DESDE RADICACIÓN)">SOLICITUD DE INFORMACIÓN COMPLEMENTARIA (30 DÍAS DESDE RADICACIÓN)</option>
-                    <option value="REVOCATORIA DIRECTA (2 MESES PARA RESOLVER)">REVOCATORIA DIRECTA (2 MESES PARA RESOLVER)</option>
-                    <option value="SILENCIO ADMINISTRATIVO POSITIVO (3 MESES SIN RESPUESTA VUR)">SILENCIO ADMINISTRATIVO POSITIVO (3 MESES SIN RESPUESTA VUR)</option>
-                    <option value="TÉRMINOS DE PRESCRIPCIÓN Y CADUCIDAD (DEPENDE DEL TRIBUTO)">TÉRMINOS DE PRESCRIPCIÓN Y CADUCIDAD (DEPENDE DEL TRIBUTO)</option>
-                    <option value="CORRECCIONES EX-OFICIO (SEGÚN EL ESTATUTO TRIBUTARIO)">CORRECCIONES EX-OFICIO (SEGÚN EL ESTATUTO TRIBUTARIO)</option>
-                  </select>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label>FECHA DE VENCIMIENTO</Label>
-                    <Input type="date" name="fechaVencimiento" value={formData.fechaVencimiento} onChange={handleChange} />
-                  </div>
-                  <div>
-                    <Label>DIAS PENDIENTES</Label>
-                    <Input type="number" name="diasPendientes" value={formData.diasPendientes} onChange={handleChange} />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-3 gap-4">
-                  <div>
-                    <Label>SEMAFORO</Label>
-                    <Input type="text" name="semaforo" value={formData.semaforo} onChange={handleChange} />
-                  </div>
-                  <div>
-                    <Label>NO EXPEDIENTE</Label>
-                    <Input type="text" name="noExpediente" value={formData.noExpediente} onChange={handleChange} />
-                  </div>
-                  <div>
-                    <Label>AÑO INGRESO</Label>
-                    <Input type="number" name="anoIngreso" value={formData.anoIngreso} onChange={handleChange} />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label>MES INGRESO</Label>
-                    <Input type="text" name="mesIngreso" value={formData.mesIngreso} onChange={handleChange} />
-                  </div>
-                  <div>
-                    <Label>SI ES FORMULA</Label>
-                    <Input type="text" name="siEsFormula" value={formData.siEsFormula} onChange={handleChange} />
-                  </div>
-                </div>
-
-              </div>
-            )}
-
-            {/* BOTONES */}
-            <div className="flex justify-end gap-2 pt-4 border-t border-slate-100">
-              <button type="button" onClick={() => setIsDialogOpen(false)} className="px-4 py-2 border rounded-md text-sm hover:bg-muted">
-                Cancelar
-              </button>
-              <button type="submit" className="px-4 py-2 bg-primary text-primary-foreground rounded-md text-sm hover:bg-primary/90">
-                Guardar Registro
-              </button>
-            </div>
-          </form>
-        </DialogContent>
-      </Dialog>
-
-      <div className="border rounded-md p-8 text-center text-muted-foreground bg-card">
-        Tabla de control de correos electrónicos de la A a la Z organizada por orden exacto.
-      </div>
-    </div>
-  );
-}
+                <Input name="canalIngreso" value={formData.canalIng
