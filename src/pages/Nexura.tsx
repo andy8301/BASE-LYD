@@ -1,139 +1,89 @@
-import { useState, useEffect } from "react";
-import { ProcessTable } from "@/components/common/ProcessTable";
-import { BaseNexura } from "@/types/processes";
-import { NexuraForm } from "@/components/forms/NexuraForm";
-import { Button } from "@/components/ui/button";
-import { Plus, RefreshCw } from "lucide-react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { toast } from "sonner";
-import { readSheet, SHEET_NAMES } from "@/lib/googleSheets";
+import React, { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { appendToSheet } from '@/lib/googleSheets';
+import { toast } from 'sonner';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
-function rowToNexura(row: Record<string, string>, index: number): BaseNexura {
-  const diasRestantes = parseInt(row['Días hábiles restantes'] || '0') || 0;
+export const NexuraForm = () => {
+  const { register, handleSubmit, reset } = useForm();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  return {
-    id: `row-${index + 2}`,
-    canalIngreso: row['CANAL DE INGRESO'] || row['Canal de ingreso'] || '',
-    funcionarioEncargado: row['FUNCIONARIO ENCARGADO'] || '',
-    tipoRenta: row['TIPO DE RENTA'] || '',
-    tipoTramite: row['TIPO DE TRAMITE'] || row['Tipo de solicitud'] || '',
-    fechaVencimiento: row['Fecha límite de respuesta'] || '',
-    diasPendientes: parseInt(row['DIAS PENDIENTES'] || '0') || 0,
-    semaforo: row['SEMAFORO DE VENCIMIENTO'] === 'VENCIDO' ? 'rojo' : diasRestantes <= 3 ? 'amarillo' : 'verde',
-    estado: row['Estado'] === 'Cerrado' ? 'resuelto' : diasRestantes < 0 ? 'vencido' : 'pendiente',
-    fechaIngreso: row['Fecha ingreso'] || '',
-    radicacion: row['No. radicación'] || '',
-    radicacionExterno: row['No. radicación externo'] || '',
-    secretaria: row['Secretaría'] || '',
-    tipoSolicitud: row['Tipo de solicitud'] || '',
-    condicionSolicitud: row['Condición de solicitud'] || '',
-    responsable: row['Responsable'] || '',
-    fechaLimiteRespuesta: row['Fecha límite de respuesta'] || '',
-    fechaRespuesta: row['Fecha de respuesta'] || row['FECHA DE RESPUESTA'] || '',
-    diasHabilesRestantes: diasRestantes,
-    diasHabilesTranscurridos: parseInt(row['Días hábiles transcurridos '] || '0') || 0,
-    nombreSolicitante: row['Nombre del solicitante'] || '',
-    telefono: row['Teléfono de contacto'] || '',
-    email: row['Email'] || '',
-    item: row['ITEM'] || '',
-    tipoRespuesta: row['TIPO DE RESPUESTA'] || '',
-    numeroSadeSalida: row['NUMERO DE SADE DE SALIDA (SI APLICA)'] || '',
-  };
-}
-
-export default function NexuraPage() {
-  const [data, setData] = useState<BaseNexura[]>([]);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [editingItem, setEditingItem] = useState<BaseNexura | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-
-  const columns = [
-    { key: 'radicacion', label: 'Radicación' },
-    { key: 'tipoSolicitud', label: 'Tipo Solicitud' },
-    { key: 'nombreSolicitante', label: 'Solicitante' },
-    { key: 'funcionarioEncargado', label: 'Funcionario' },
-    { key: 'responsable', label: 'Responsable' },
-    { key: 'fechaIngreso', label: 'Fecha Ingreso' },
-    { key: 'fechaLimiteRespuesta', label: 'Fecha Límite' },
-  ];
-
-  const fetchData = async () => {
-    setIsLoading(true);
+  const onSubmit = async (data: any) => {
+    setIsSubmitting(true);
     try {
-      const result = await readSheet(SHEET_NAMES.NEXURA);
-      const sheetData = result[SHEET_NAMES.NEXURA] || [];
-      const records = sheetData.map((row: Record<string, string>, index: number) => rowToNexura(row, index));
-      setData(records);
-      console.log(`Loaded ${records.length} records from Nexura`);
+      // Mapeo de los 46 campos en orden exacto según tu Excel
+      const rowData = [
+        data.canal_ingreso, data.base_informe, data.no, data.radicacion, data.radicacion_ext,
+        data.secretaria, data.tipo_solicitud, data.prioritaria, data.canal_ingreso_2,
+        data.tema, data.condicion, data.responsable, data.fecha_registro, data.fecha_ingreso,
+        data.fecha_limite, data.fecha_respuesta, data.dias_habiles_rest, data.dias_habiles_trans,
+        data.dias_habiles_trans_total, data.estado, data.tipo_persona, data.nit, data.digito,
+        data.tipo_doc, data.num_doc, data.duplicados, data.nombre_solicitante, data.telefono,
+        data.email, data.termino, data.requerimiento, data.func_encargado, data.tipo_renta,
+        data.tipo_tramite, data.item, data.tipo_renta_otro, data.tipo_respuesta, data.fecha_respuesta_final,
+        data.no_sade, data.prelacion, data.semaforo, data.dias_pendientes, data.no_expediente,
+        data.anio_ingreso, data.mes_ingreso, data.repetida
+      ];
+      
+      await appendToSheet('Base NEXURA', rowData);
+      toast.success('Registro guardado exitosamente');
+      reset();
     } catch (error) {
-      console.error("Error fetching data:", error);
-      toast.error("Error al cargar los datos de Nexura");
+      toast.error('Error al guardar en Google Sheets');
     } finally {
-      setIsLoading(false);
+      setIsSubmitting(false);
     }
-  };
-
-  useEffect(() => { fetchData(); }, []);
-
-  const handleSubmit = (formData: BaseNexura) => {
-    if (editingItem) {
-      setData(prev => prev.map(item => item.id === editingItem.id ? formData : item));
-      toast.success("Registro Nexura actualizado exitosamente");
-    } else {
-      setData(prev => [...prev, formData]);
-      toast.success("Registro Nexura creado exitosamente");
-    }
-    setIsDialogOpen(false);
-    setEditingItem(null);
-  };
-
-  const handleEdit = (item: BaseNexura) => {
-    setEditingItem(item);
-    setIsDialogOpen(true);
   };
 
   return (
-    <div className="p-6 max-w-7xl mx-auto space-y-6">
-      <div className="mb-8 flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground mb-2">Base Nexura</h1>
-          <p className="text-muted-foreground text-lg">Sistema de radicación y gestión de PQRSD</p>
-        </div>
-        <div className="flex gap-2">
-          <Button variant="outline" onClick={fetchData} disabled={isLoading} className="flex items-center gap-2">
-            <RefreshCw className={`h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
-            Actualizar
-          </Button>
-          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-            <DialogTrigger asChild>
-              <Button onClick={() => setEditingItem(null)}>
-                <Plus className="h-4 w-4 mr-2" /> Agregar Nuevo
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-              <DialogHeader>
-                <DialogTitle>{editingItem ? 'Editar PQRSD' : 'Nueva PQRSD'}</DialogTitle>
-              </DialogHeader>
-              <NexuraForm onSubmit={handleSubmit} initialData={editingItem || undefined} mode={editingItem ? 'edit' : 'create'} />
-            </DialogContent>
-          </Dialog>
-        </div>
-      </div>
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+      <Tabs defaultValue="ingreso">
+        <TabsList className="grid grid-cols-3 w-full">
+          <TabsTrigger value="ingreso">Datos Ingreso</TabsTrigger>
+          <TabsTrigger value="solicitante">Solicitante</TabsTrigger>
+          <TabsTrigger value="gestion">Gestión</TabsTrigger>
+        </TabsList>
 
-      {isLoading ? (
-        <div className="flex items-center justify-center py-12">
-          <RefreshCw className="h-8 w-8 animate-spin mr-2" />
-          <span>Cargando datos...</span>
-        </div>
-      ) : (
-        <ProcessTable
-          title="PQRSD y Radicación"
-          description={`Seguimiento de peticiones, quejas, reclamos, sugerencias y denuncias (${data.length} registros)`}
-          data={data}
-          columns={columns}
-          onEdit={handleEdit}
-        />
-      )}
-    </div>
+        <TabsContent value="ingreso" className="space-y-4">
+          <div className="grid grid-cols-2 gap-4">
+            <Input {...register("radicacion")} placeholder="No. Radicación" />
+            <Input {...register("radicacion_ext")} placeholder="No. Radicación Externo" />
+            <Select onValueChange={(v) => register("tipo_solicitud").onChange({ target: { value: v } })}>
+              <SelectTrigger><SelectValue placeholder="Tipo de Solicitud" /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Petición de interés general">Petición de interés general</SelectItem>
+                <SelectItem value="Reclamo">Reclamo</SelectItem>
+                <SelectItem value="Solicitud de información">Solicitud de información</SelectItem>
+              </SelectContent>
+            </Select>
+            <Input {...register("tema")} placeholder="Tema" />
+          </div>
+        </TabsContent>
+
+        <TabsContent value="solicitante" className="space-y-4">
+          <Input {...register("nombre_solicitante")} placeholder="Nombre del Solicitante" />
+          <Input {...register("email")} placeholder="Email" />
+          <Input {...register("telefono")} placeholder="Teléfono" />
+        </TabsContent>
+
+        <TabsContent value="gestion" className="space-y-4">
+          <Select onValueChange={(v) => register("estado").onChange({ target: { value: v } })}>
+            <SelectTrigger><SelectValue placeholder="Estado" /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="Atendida">Atendida</SelectItem>
+              <SelectItem value="En proceso">En proceso</SelectItem>
+            </SelectContent>
+          </Select>
+          <Input {...register("dias_pendientes")} placeholder="Días Pendientes" type="number" />
+        </TabsContent>
+      </Tabs>
+
+      <Button type="submit" disabled={isSubmitting} className="w-full">
+        {isSubmitting ? 'Guardando...' : 'Guardar Registro'}
+      </Button>
+    </form>
   );
-}
+};
