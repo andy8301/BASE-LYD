@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, ChangeEvent, FormEvent } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -6,6 +6,7 @@ import { Plus, ChevronDown, ChevronUp } from "lucide-react";
 import { toast } from "sonner";
 import { appendToSheet, SHEET_NAMES } from "@/lib/googleSheets";
 
+// 34 Funcionarios Oficiales
 const funcionariosList: string[] = [
   "Maira Alejandra Cardona",
   "Adalberto Vasquez",
@@ -43,7 +44,18 @@ const funcionariosList: string[] = [
   "Yuri Andrea Quintero"
 ];
 
-// Lista Dictada Exacta para el campo ITEM
+// Los 7 Trámites Reales
+const tipoTramiteList: string[] = [
+  "Derecho de Peticion",
+  "Exencion",
+  "Devolucion",
+  "copia boleta fiscal",
+  "recurso",
+  "certificacion",
+  "atencion PDTIR"
+];
+
+// Los 4 Ítems Dictados Exactos
 const itemList: string[] = [
   "copia boleta fiscal",
   "desglose impuesto de registro",
@@ -68,7 +80,7 @@ export default function Correos() {
     tipoRenta: "IMPUESTO SOBRE VEHÍCULOS AUTOMOTORES",
     tipoRentaOtro: "",
     tipoTramite: "Derecho de Peticion",
-    item: "copia boleta fiscal", // Inicializado con el primer ítem dictado
+    item: "copia boleta fiscal",
     placa: "",
     fechaRespuesta: "",
     tipoRespuesta: "LIQUIDACION",
@@ -84,14 +96,14 @@ export default function Correos() {
     siEsFormula: ""
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value
     });
   };
 
-  const manejarEnviar = async (e: React.FormEvent<HTMLFormElement>) => {
+  const manejarEnviar = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       toast.success("Guardando registro...");
@@ -271,20 +283,4 @@ export default function Correos() {
               >
                 <option value="IMPUESTO SOBRE VEHÍCULOS AUTOMOTORES">IMPUESTO SOBRE VEHÍCULOS AUTOMOTORES</option>
                 <option value="IMPUESTO DE REGISTRO">IMPUESTO DE REGISTRO</option>
-                <option value="IMPUESTO AL DEGÜELLO DE GANADO MAYOR">IMPUESTO AL DEGÜELLO DE GANADO MAYOR</option>
-                <option value="TASA DE SEGURIDAD">TASA DE SEGURIDAD</option>
-                <option value="ESTAMPILLAS">ESTAMPILLAS</option>
-                <option value="APREHENSIÓN Y DECOMISO DE MERCANCÍAS">APREHENSIÓN Y DECOMISO DE MERCANCÍAS</option>
-                <option value="PASAPORTES">PASAPORTES</option>
-                <option value="OTROS (Felicitaciones, Quejas, Etc)">OTROS (Felicitaciones, Quejas, Etc)</option>
-              </select>
-            </div>
-
-            <div className="pt-2">
-              <button
-                type="button"
-                onClick={() => setMostrarCamposExtras(!mostrarCamposExtras)}
-                className="w-full flex items-center justify-between p-3 border border-dashed border-primary/50 rounded-lg bg-primary/5 hover:bg-primary/10 text-primary text-xs font-semibold uppercase tracking-wider transition-colors"
-              >
-                <span>SI EL TIPO DE RENTA ES OTRO (HUNDA AQUÍ PARA VER MÁS CAMPOS)</span>
-                {mostrarCamposExtras ? <ChevronUp
+                <option value="IMPUESTO AL DEGÜELLO
