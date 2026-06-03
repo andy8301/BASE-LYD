@@ -9,7 +9,6 @@ export default function NexuraForm() {
   const onSubmit = async (data: any) => {
     setStatus('Guardando...');
     try {
-      // Orden exacto de los 46 campos de tu Excel
       const rowData = [
         data.canal_ingreso, data.base_informe, data.no, data.radicacion, data.radicacion_ext,
         data.secretaria, data.tipo_solicitud, data.prioritaria, data.canal_ingreso_2,
@@ -23,34 +22,40 @@ export default function NexuraForm() {
         data.anio_ingreso, data.mes_ingreso, data.repetida
       ];
       await appendToSheet('Base NEXURA', rowData);
-      setStatus('¡Éxito! Registro guardado.');
+      setStatus('¡Éxito! Registro completo guardado.');
       reset();
     } catch (e) {
-      setStatus('Error al guardar, revisa la conexión.');
+      setStatus('Error al guardar. Revisa los datos.');
     }
   };
 
-  const inputStyle = { display: 'block', width: '100%', padding: '8px', marginBottom: '10px', borderRadius: '4px', border: '1px solid #ccc' };
+  const inputStyle = { width: '100%', padding: '8px', marginBottom: '8px', borderRadius: '4px', border: '1px solid #ccc' };
+
+  // Helper para generar los 46 inputs
+  const fields = [
+    "canal_ingreso", "base_informe", "no", "radicacion", "radicacion_ext", "secretaria", "tipo_solicitud", 
+    "prioritaria", "canal_ingreso_2", "tema", "condicion", "responsable", "fecha_registro", "fecha_ingreso", 
+    "fecha_limite", "fecha_respuesta", "dias_habiles_rest", "dias_habiles_trans", "dias_habiles_trans_total", 
+    "estado", "tipo_persona", "nit", "digito", "tipo_doc", "num_doc", "duplicados", "nombre_solicitante", 
+    "telefono", "email", "termino", "requerimiento", "func_encargado", "tipo_renta", "tipo_tramite", 
+    "item", "tipo_renta_otro", "tipo_respuesta", "fecha_respuesta_final", "no_sade", "prelacion", 
+    "semaforo", "dias_pendientes", "no_expediente", "anio_ingreso", "mes_ingreso", "repetida"
+  ];
 
   return (
-    <div style={{ padding: '20px', maxWidth: '800px', margin: '0 auto' }}>
-      <h1>Módulo NEXURA - Registro Completo</h1>
+    <div style={{ padding: '20px' }}>
+      <h1>Registro Completo - Base NEXURA</h1>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
-          <input {...register("radicacion")} placeholder="No. Radicación" style={inputStyle} />
-          <input {...register("radicacion_ext")} placeholder="No. Radicación Externo" style={inputStyle} />
-          <input {...register("nombre_solicitante")} placeholder="Nombre Solicitante" style={inputStyle} />
-          <input {...register("email")} placeholder="Email" style={inputStyle} />
-          <select {...register("estado")} style={inputStyle}>
-            <option value="En proceso">En proceso</option>
-            <option value="Atendida">Atendida</option>
-          </select>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px' }}>
+          {fields.map((field) => (
+            <input key={field} {...register(field)} placeholder={field.replace('_', ' ').toUpperCase()} style={inputStyle} />
+          ))}
         </div>
-        <button type="submit" style={{ padding: '10px 20px', background: '#007bff', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer' }}>
-          Guardar Registro Completo
+        <button type="submit" style={{ marginTop: '20px', padding: '15px', width: '100%', background: '#28a745', color: 'white', border: 'none', borderRadius: '5px' }}>
+          GUARDAR TODOS LOS 46 CAMPOS
         </button>
       </form>
-      <p style={{ marginTop: '10px', fontWeight: 'bold' }}>{status}</p>
+      <p>{status}</p>
     </div>
   );
 }
