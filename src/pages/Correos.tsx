@@ -1,81 +1,64 @@
-import { useState, ChangeEvent, FormEvent } from "react";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Plus, ChevronDown, ChevronUp } from "lucide-react";
-import { toast } from "sonner";
-import { appendToSheet, SHEET_NAMES } from "@/lib/googleSheets";
-
-// 1. LISTADO DE LOS 34 FUNCIONARIOS
-const funcionariosList: string[] = [
-  "Maira Alejandra Cardona", "Adalberto Vasquez", "Benjamin Acosta Gordillo", "Carlos Peña", "Cesar Enrique Gomez", "Cristian Felipe Arana", "Claudia Mosquera", "Daniela Riascos", "Diego Fernando Ortiz", "Diego Fernando Lopez", "Eliana Salamanca", "Frank Mauricio Restrepo", "Gustavo Adolfo Valencia", "Ibeth Restrepo Espitia", "Isabel Cristina Quintero", "Jhon Helber Samboní", "Jorge Arias", "Jose Fernando Moreno", "Juan Manuel Pizo", "Katherine Salamanca", "Karol Tatiana Lopez", "Luis Andres Botia Riascos", "María Cristina Posso", "Maria Jose Cerquera", "Olga Lucía Gómez Aristizabal", "Robinson Rosero", "Samuel Orozco", "Sara Millán", "Wilson Quiñónez", "Yaleydy Mosquera", "Yamid Bolaños Manquillo", "Yohana Estrada", "Yurani Andrea Vivas", "Yuri Andrea Quintero"
-];
-
-const tipoTramiteList: string[] = ["Derecho de Peticion", "Exencion", "Devolucion", "copia boleta fiscal", "recurso", "certificacion", "atencion PDTIR"];
-const itemList: string[] = ["copia boleta fiscal", "desglose impuesto de registro", "solicitud de informacion", "respuesta del contribuyente"];
-const tipoRespuestaList: string[] = ["RESPUESTA DERECHO DE PETICION", "AUTO DE CIERRE", "TRASLADO", "LIQUIDACION OFICIAL", "SANCION", "AUTO INADMISORIO", "RESOLUCION RECHAZADA", "RESOLUCION CONCEDIDA", "NOTIFICACION"];
-const prelacionLegalList: string[] = ["PETICIONES DE AUTORIDADES", "PETICIONES DE PERIODISTAS", "RIESGO DE VIDA O SALUD", "POBLACION VULNERABLE", "DERECHOS FUNDAMENTALES", "N/A"];
-
-interface CorreoFormData {
-  canalIngreso: string; mes: string; fechaAsignacion: string; correoFuncionarioEncargado: string; funcionarioEncargado: string; asuntoCorreo: string; fechaCorreo: string; contribuyenteSolicitante: string; correoSolicitante: string; tipoRenta: string; tipoRentaOtro: string; tipoTramite: string; item: string; placa: string; fechaRespuesta: string; tipoRespuesta: string; noSadeSalida: string; observaciones: string; prelacionLegal: string; fechaVencimiento: string; diasPendientes: string; semaforo: string; noExpediente: string; anoIngreso: string; mesIngreso: string; siEsFormula: string;
-}
-
-const estadoInicial: CorreoFormData = {
-  canalIngreso: "CORREO ELECTRÓNICO", mes: "OCTUBRE", fechaAsignacion: "", correoFuncionarioEncargado: "respuestavur@valledelcauca.gov.co", funcionarioEncargado: "", asuntoCorreo: "", fechaCorreo: "", contribuyenteSolicitante: "", correoSolicitante: "", tipoRenta: "IMPUESTO SOBRE VEHÍCULOS AUTOMOTORES", tipoRentaOtro: "", tipoTramite: "Derecho de Peticion", item: "copia boleta fiscal", placa: "", fechaRespuesta: "", tipoRespuesta: "RESPUESTA DERECHO DE PETICION", noSadeSalida: "", observaciones: "", prelacionLegal: "PETICIONES DE AUTORIDADES", fechaVencimiento: "", diasPendientes: "", semaforo: "", noExpediente: "", anoIngreso: "", mesIngreso: "", siEsFormula: ""
-};
+import React, { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { appendToSheet } from '../lib/googleSheets';
 
 export default function Correos() {
-  const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
-  const [mostrarCamposExtras, setMostrarCamposExtras] = useState<boolean>(false);
-  const [formData, setFormData] = useState<CorreoFormData>(estadoInicial);
+  const { register, handleSubmit, reset } = useForm();
+  const [status, setStatus] = useState('');
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name as keyof CorreoFormData]: value }));
-  };
-
-  const manejarEnviar = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const onSubmit = async (data: any) => {
+    setStatus('Guardando...');
     try {
-      const nuevaFila: string[] = Object.values(formData);
-      await appendToSheet(SHEET_NAMES.CORREOS, nuevaFila);
-      setIsDialogOpen(false);
-      setMostrarCamposExtras(false);
-      toast.success("Registro guardado con éxito");
-      setFormData(estadoInicial);
-    } catch {
-      toast.error("Error al guardar el registro");
+      // Mapeo completo de las 26 columnas de tu base de correos
+      const rowData = [
+        data.canal_ingreso, data.mes, data.fecha_asignacion, data.correo_funcionario,
+        data.funcionario, data.asunto, data.fecha_correo, data.contribuyente,
+        data.correo_solicitante, data.tipo_renta, data.tipo_renta_otro, data.tipo_tramite,
+        data.item, data.placa, data.fecha_respuesta, data.tipo_respuesta,
+        data.no_sade, data.observaciones, data.prelacion, data.fecha_vencimiento,
+        data.dias_pendientes, data.semaforo, data.no_expediente, data.anio_ingreso,
+        data.mes_ingreso, data.es_formula
+      ];
+      
+      await appendToSheet('BASE CORREOS ELECTRONICOS', rowData);
+      setStatus('¡Guardado exitosamente!');
+      reset();
+    } catch (e) {
+      setStatus('Error al guardar, intenta de nuevo.');
     }
   };
 
-  return (
-    <div className="p-6 space-y-6">
-      <div className="flex justify-between items-center">
-        <div><h1 className="text-3xl font-bold tracking-tight">Correos Electrónicos</h1></div>
-        <button type="button" onClick={() => { setMostrarCamposExtras(false); setIsDialogOpen(true); }} className="bg-primary text-primary-foreground px-4 py-2 rounded-md hover:bg-primary/90 text-sm font-medium">Agregar Nuevo</button>
-      </div>
+  const inputStyle = { width: '100%', padding: '10px', marginBottom: '10px', borderRadius: '4px', border: '1px solid #ccc' };
 
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="sm:max-w-[750px] max-h-[90vh] overflow-y-auto">
-          <DialogHeader><DialogTitle>Registrar Correspondencia</DialogTitle></DialogHeader>
-          <form onSubmit={manejarEnviar} className="space-y-4 pt-2">
-            <div className="grid grid-cols-2 gap-4">
-              <div><Label>CANAL DE INGRESO</Label><Input name="canalIngreso" value={formData.canalIngreso} disabled className="bg-muted" /></div>
-              <div><Label>MES</Label><select name="mes" value={formData.mes} onChange={handleChange} className="w-full p-2 border rounded-md text-sm bg-background"><option>ENERO</option><option>FEBRERO</option><option>MARZO</option><option>ABRIL</option><option>MAYO</option><option>JUNIO</option><option>JULIO</option><option>AGOSTO</option><option>SEPTIEMBRE</option><option>OCTUBRE</option><option>NOVIEMBRE</option><option>DICIEMBRE</option></select></div>
-            </div>
-            {/* ... Resto de los campos obligatorios ... */}
-            <div className="pt-2"><button type="button" onClick={() => setMostrarCamposExtras(!mostrarCamposExtras)} className="w-full flex items-center justify-between p-3 border border-dashed rounded-lg bg-primary/5 text-primary text-xs font-semibold uppercase"><span>MÁS CAMPOS</span>{mostrarCamposExtras ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}</button></div>
-            
-            {mostrarCamposExtras && (
-              <div className="space-y-4 pt-2 border-t border-dashed mt-2">
-                {/* Campos visibles restantes como Tipo Tramite, Item, Placa, Observaciones, etc... */}
-                {/* DIAS PENDIENTES, SEMAFORO Y SI ES FORMULA HAN SIDO REMOVIDOS DE ESTA VISTA */}
-              </div>
-            )}
-            <div className="flex justify-end gap-2 pt-4 border-t"><button type="button" onClick={() => setIsDialogOpen(false)} className="px-4 py-2 border rounded-md text-sm">Cancelar</button><button type="submit" className="px-4 py-2 bg-primary text-primary-foreground rounded-md text-sm">Guardar</button></div>
-          </form>
-        </DialogContent>
-      </Dialog>
+  return (
+    <div style={{ padding: '20px', maxWidth: '1200px', margin: '0 auto' }}>
+      <h1>Módulo de Correos Electrónicos</h1>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '15px' }}>
+          {/* Campos clave del formulario */}
+          <div>
+            <label>CANAL DE INGRESO</label>
+            <input {...register("canal_ingreso")} style={inputStyle} />
+          </div>
+          <div>
+            <label>MES</label>
+            <input {...register("mes")} style={inputStyle} />
+          </div>
+          <div>
+            <label>ASUNTO CORREO</label>
+            <input {...register("asunto")} style={inputStyle} />
+          </div>
+          <div>
+            <label>CONTRIBUYENTE</label>
+            <input {...register("contribuyente")} style={inputStyle} />
+          </div>
+          {/* Agrega aquí el resto de los 26 campos siguiendo este mismo patrón */}
+        </div>
+        <button type="submit" style={{ padding: '15px 30px', background: '#007bff', color: 'white', border: 'none', borderRadius: '5px' }}>
+          GUARDAR REGISTRO
+        </button>
+      </form>
+      <p>{status}</p>
     </div>
   );
 }
