@@ -1,64 +1,142 @@
-import React, { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { appendToSheet } from '../lib/googleSheets';
+import { useState, useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Plus, Save } from "lucide-react";
+import { toast } from "sonner";
+import { readSheet, appendToSheet, updateSheetRow } from "@/lib/googleSheets";
 
-export default function Correos() {
-  const { register, handleSubmit, reset } = useForm();
-  const [status, setStatus] = useState('');
+export default function CorreosPage() {
+  const [data, setData] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [editingItem, setEditingItem] = useState<any | undefined>(undefined);
+  
+  const { register, handleSubmit, setValue, reset } = useForm();
 
-  const onSubmit = async (data: any) => {
-    setStatus('Guardando...');
+  const funcionarios = ["Adalberto Vásquez", "Benjamín Acosta Gordillo", "Carlos Peña", "César Enrique Gómez", "Cristiano Felipe Arana", "Claudia Mosquera", "Daniela Riascos", "Diego Fernando Ortiz", "Diego Fernando López", "Eliana Salamanca", "Frank Mauricio Restrepo", "Gustavo Adolfo Valencia", "Ibeth Restrepo Espitia", "Isabel Cristina Quintero", "Jhon Helber Samboni", "Jorge Arias", "Jose Fernando Moreno", "Juan Manuel Pizo", "Katherine Salamanca", "Karol Tatiana López", "Luis Andres Botia Riascos", "Maria Cristina Posso", "Maria Jose Cerquera", "Olga Lucia Gomez Aristizabal", "Robinson Rosero", "Samuel Orozco", "Sara Millán", "Wilson Quiñónez", "Yaleydy Mosquera", "Yamid Bolaños Manquillo", "Yohana Estrada", "Maira Alejandra Cardona", "Nailen Andrea Arias", "Diana Patricia Osorio Ospina"];
+  const estados = ["RECIBIDO", "EN TRÁMITE", "TRASLADADO", "CONTESTADO", "CERRADO"];
+  const clasesCorrespondencia = ["PETICIÓN", "TUTELA", "NOTIFICACIÓN", "SOLICITUD DE INFORMACIÓN", "OTRO"];
+
+  const fetchData = async () => {
+    setIsLoading(true);
     try {
-      // Mapeo completo de las 26 columnas de tu base de correos
-      const rowData = [
-        data.canal_ingreso, data.mes, data.fecha_asignacion, data.correo_funcionario,
-        data.funcionario, data.asunto, data.fecha_correo, data.contribuyente,
-        data.correo_solicitante, data.tipo_renta, data.tipo_renta_otro, data.tipo_tramite,
-        data.item, data.placa, data.fecha_respuesta, data.tipo_respuesta,
-        data.no_sade, data.observaciones, data.prelacion, data.fecha_vencimiento,
-        data.dias_pendientes, data.semaforo, data.no_expediente, data.anio_ingreso,
-        data.mes_ingreso, data.es_formula
-      ];
-      
-      await appendToSheet('BASE CORREOS ELECTRONICOS', rowData);
-      setStatus('¡Guardado exitosamente!');
-      reset();
-    } catch (e) {
-      setStatus('Error al guardar, intenta de nuevo.');
-    }
+      const result = await readSheet("BASE CORREOS ELECTRONICOS"); 
+      const records = (result["BASE CORREOS ELECTRONICOS"] || []).map((row: any, i: number) => ({
+        ...row,
+        id: `row-${i + 2}`
+      }));
+      setData(records);
+    } catch (error) { toast.error("Error al cargar los datos"); } finally { setIsLoading(false); }
   };
 
-  const inputStyle = { width: '100%', padding: '10px', marginBottom: '10px', borderRadius: '4px', border: '1px solid #ccc' };
+  useEffect(() => { fetchData(); }, []);
+
+  const onSubmit = async (formData: any) => {
+    try {
+      const rowData = [
+        "", // A - ID / Marca de tiempo
+        formData.radicado || "",          // B
+        formData.canalIngreso || "CORREO ELECTRÓNICO", // C
+        formData.claseCorrespondencia || "", // D
+        formData.fechaRecepcion || "",    // E
+        formData.mes || "",               // F 
+        formData.remitente || "",         // G
+        formData.correoDe || "",          // H
+        formData.asunto || "",            // I
+        formData.funcionario || "",       // J
+        formData.estado || "",            // K
+        formData.fechaVencimiento || "",  // L
+        formData.observaciones || "",     // M
+        formData.sadeSalida || ""         // N
+      ];
+
+      if (editingItem) {
+        const rowNumber = editingItem.id.replace('row-', '');
+        await updateSheetRow("BASE CORREOS ELECTRONICOS", `A${rowNumber}:N${rowNumber}`, rowData);
+      } else {
+        await appendToSheet("BASE CORREOS ELECTRONICOS", rowData);
+      }
+      setIsDialogOpen(false);
+      fetchData();
+      toast.success("¡Registro guardado exitosamente!");
+    } catch (error) { toast.error("Error al guardar en Sheets"); }
+  };
 
   return (
-    <div style={{ padding: '20px', maxWidth: '1200px', margin: '0 auto' }}>
-      <h1>Módulo de Correos Electrónicos</h1>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '15px' }}>
-          {/* Campos clave del formulario */}
-          <div>
-            <label>CANAL DE INGRESO</label>
-            <input {...register("canal_ingreso")} style={inputStyle} />
-          </div>
-          <div>
-            <label>MES</label>
-            <input {...register("mes")} style={inputStyle} />
-          </div>
-          <div>
-            <label>ASUNTO CORREO</label>
-            <input {...register("asunto")} style={inputStyle} />
-          </div>
-          <div>
-            <label>CONTRIBUYENTE</label>
-            <input {...register("contribuyente")} style={inputStyle} />
-          </div>
-          {/* Agrega aquí el resto de los 26 campos siguiendo este mismo patrón */}
+    <div className="p-6 space-y-6">
+      <div className="flex justify-between items-center bg-white p-4 rounded-lg shadow border">
+        <div>
+          <h1 className="text-2xl font-bold">Módulo de Correos Electrónicos</h1>
+          <p className="text-sm text-gray-500">Gestión de correspondencia y asignación de SADE</p>
         </div>
-        <button type="submit" style={{ padding: '15px 30px', background: '#007bff', color: 'white', border: 'none', borderRadius: '5px' }}>
-          GUARDAR REGISTRO
-        </button>
-      </form>
-      <p>{status}</p>
+        <Button onClick={() => { reset({}); setEditingItem(undefined); setIsDialogOpen(true); }} className="bg-blue-600 hover:bg-blue-700 text-white">
+          <Plus className="mr-2 h-4 w-4" /> Nuevo Registro
+        </Button>
+      </div>
+
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="max-w-4xl max-h-[92vh] overflow-y-auto">
+          <DialogHeader className="border-b pb-4">
+            <DialogTitle>Formulario de Registro de Correo</DialogTitle>
+          </DialogHeader>
+          
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-8 pt-4 pb-10">
+            
+            {/* 1. Datos de Ingreso */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-blue-50/50 rounded-lg border border-blue-100">
+              <h3 className="col-span-1 md:col-span-2 font-bold text-blue-800 border-b border-blue-200 pb-1 text-sm">1. Datos de Ingreso y Clasificación</h3>
+              <div className="space-y-1"><Label className="text-xs font-bold">No. Radicado / Consecutivo</Label><Input {...register("radicado")} className="bg-white h-8" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">Fecha de Recepción</Label><Input {...register("fechaRecepcion")} type="date" className="bg-white h-8" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">Canal de Ingreso</Label><Input {...register("canalIngreso")} defaultValue="CORREO ELECTRÓNICO" className="bg-white h-8" /></div>
+              <div className="space-y-1">
+                <Label className="text-xs font-bold">Clase de Correspondencia</Label>
+                <Select onValueChange={(v) => setValue("claseCorrespondencia", v)}>
+                  <SelectTrigger className="bg-white h-8"><SelectValue placeholder="Seleccione..." /></SelectTrigger>
+                  <SelectContent>{clasesCorrespondencia.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            {/* 2. Información del Remitente */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-indigo-50/50 rounded-lg border border-indigo-100">
+              <h3 className="col-span-1 md:col-span-2 font-bold text-indigo-800 border-b border-indigo-200 pb-1 text-sm">2. Información del Remitente</h3>
+              <div className="space-y-1"><Label className="text-xs font-bold">Remitente / Contribuyente</Label><Input {...register("remitente")} className="bg-white h-8" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">Correo Electrónico (De:)</Label><Input {...register("correoDe")} type="email" className="bg-white h-8" /></div>
+              <div className="space-y-1 md:col-span-2"><Label className="text-xs font-bold">Asunto</Label><Input {...register("asunto")} className="bg-white h-8" /></div>
+            </div>
+
+            {/* 3. Gestión, Asignación y Vencimientos */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-green-50/50 rounded-lg border border-green-100">
+              <h3 className="col-span-1 md:col-span-2 font-bold text-green-800 border-b border-green-200 pb-1 text-sm">3. Asignación y Gestión</h3>
+              <div className="space-y-1">
+                <Label className="text-xs font-bold">Funcionario Asignado</Label>
+                <Select onValueChange={(v) => setValue("funcionario", v)}>
+                  <SelectTrigger className="bg-white h-8"><SelectValue placeholder="Seleccione..." /></SelectTrigger>
+                  <SelectContent>{funcionarios.map(f => <SelectItem key={f} value={f}>{f}</SelectItem>)}</SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-1">
+                <Label className="text-xs font-bold">Estado del Trámite</Label>
+                <Select onValueChange={(v) => setValue("estado", v)}>
+                  <SelectTrigger className="bg-white h-8"><SelectValue placeholder="Seleccione..." /></SelectTrigger>
+                  <SelectContent>{estados.map(e => <SelectItem key={e} value={e}>{e}</SelectItem>)}</SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-1"><Label className="text-xs font-bold text-red-600">Fecha de Vencimiento</Label><Input {...register("fechaVencimiento")} type="date" className="bg-white h-8 border-red-200" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">SADE de Salida / Respuesta</Label><Input {...register("sadeSalida")} className="bg-white h-8" /></div>
+              <div className="space-y-1 md:col-span-2"><Label className="text-xs font-bold">Observaciones del Paso</Label><Input {...register("observaciones")} className="bg-white h-8" /></div>
+            </div>
+
+            <Button type="submit" className="w-full bg-slate-900 py-6 text-xl font-bold text-white hover:bg-black">
+              <Save className="mr-2 h-6 w-6" /> Guardar Registro en Sheets
+            </Button>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
