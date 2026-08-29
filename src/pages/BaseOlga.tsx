@@ -37,32 +37,52 @@ export default function BaseOlga() {
   const onSubmit = async (formData: any) => {
     try {
       const rowData = [
-        "", // A
-        formData.consecutivo || "", formData.canalIngreso || "", formData.areaRemitente || "", // B, C, D
-        formData.planilla || "", formData.expediente || "", formData.fechaRadicacion || "", // E, F, G
-        formData.actoAdministrativo || "", formData.numeroActo || "", formData.fechaActo || "", // H, I, J
-        "", // K (Fórmula Mes)
-        formData.placa || "", formData.identificacion || "", formData.contribuyente || "", // L, M, N
-        formData.ciudadDepartamento || "", formData.observaciones || "", formData.funcionarioEncargado || "", // O, P, Q
-        formData.nota || "", formData.fechaRecibido || "", formData.tipoRenta || "", // R, S, T
-        formData.tipoTramite || "", formData.item || "", formData.tipoRentaOtro || "", // U, V, W
-        formData.prelacionLegal || "", formData.baseFuncionario1ra || "", formData.numeroResolucion || "", // X, Y, Z
-        formData.numeroSadeSalida || "", formData.fechaResolucionSadeSalida || "", // AA, AB
-        formData.tipoRespuesta || "", formData.noPlanillaSalida || "", formData.fechaDePlanillaSalida || "", // AC, AD, AE
-        formData.fechaEjecutoria || "", formData.traslado || "", // AF, AG
-        formData.observacionAH || "", // AH
-        formData.baseFunc2daAI || "", // AI
-        formData.numResolucionAJ || "", // AJ
-        formData.numSadeAK || "", // AK
-        formData.fechaResolucionAL || "", // AL
-        formData.numPlanillaAM || "", // AM
-        formData.fechaPlanillaAN || "", // AN
-        formData.fechaEjecutoriaAO || "", // AO
-        formData.trasladoAP || "", // AP
-        formData.tipoRespuestaAQ || "", // AQ
-        formData.baseFunc3raAR || "", // AR
-        ...Array(11).fill(""), // AS a BC
-        formData.fechaVencimientoBD || "" // BD
+        "", // A (Timestamp / ID automático)
+        formData.consecutivo || "",         // B
+        formData.canalIngreso || "",        // C
+        formData.areaRemitente || "",       // D
+        formData.planilla || "",            // E
+        formData.expediente || "",          // F
+        formData.fechaRadicacion || "",     // G
+        formData.actoAdministrativo || "",  // H
+        formData.numeroActo || "",          // I
+        formData.fechaActo || "",           // J
+        "", // K (Fórmula Mes - Automática)
+        formData.placa || "",               // L
+        formData.identificacion || "",      // M
+        formData.contribuyente || "",       // N
+        formData.ciudadDepartamento || "",  // O
+        formData.observaciones || "",       // P
+        formData.funcionarioEncargado || "",// Q
+        formData.nota || "",                // R
+        formData.fechaRecibido || "",       // S
+        formData.tipoRenta || "",           // T
+        formData.tipoTramite || "",         // U
+        formData.item || "",                // V
+        formData.tipoRentaOtro || "",       // W
+        formData.prelacionLegal || "",      // X
+        formData.baseFuncionario1ra || "",  // Y
+        formData.numeroResolucion || "",    // Z
+        formData.numeroSadeSalida || "",    // AA
+        formData.fechaResolucionSadeSalida || "", // AB
+        formData.tipoRespuesta || "",       // AC
+        formData.noPlanillaSalida || "",    // AD
+        formData.fechaDePlanillaSalida || "", // AE
+        formData.fechaEjecutoria || "",     // AF
+        formData.traslado || "",            // AG
+        formData.observacionAH || "",       // AH
+        formData.baseFunc2daAI || "",       // AI
+        formData.numResolucionAJ || "",     // AJ
+        formData.numSadeAK || "",           // AK
+        formData.fechaResolucionAL || "",   // AL
+        formData.numPlanillaAM || "",       // AM
+        formData.fechaPlanillaAN || "",     // AN
+        formData.fechaEjecutoriaAO || "",   // AO
+        formData.trasladoAP || "",          // AP
+        formData.tipoRespuestaAQ || "",     // AQ
+        formData.baseFunc3raAR || "",       // AR
+        ...Array(11).fill(""),               // AS a BC (Omisión de celdas calculadas/intermedias)
+        formData.fechaVencimientoBD || ""   // BD
       ];
 
       if (editingItem) {
@@ -80,15 +100,18 @@ export default function BaseOlga() {
   return (
     <div className="p-6 space-y-6">
       <div className="flex justify-between items-center bg-white p-4 rounded-lg shadow border">
-        <h1 className="text-2xl font-bold">Traza Rentas - Base Olga</h1>
-        <Button onClick={() => { reset({}); setEditingItem(undefined); setIsDialogOpen(true); }}>
+        <div>
+          <h1 className="text-2xl font-bold">Traza Rentas - Base Olga</h1>
+          <p className="text-sm text-gray-500">Gestión gerencial e integral de expedientes y actos administrativos</p>
+        </div>
+        <Button onClick={() => { reset({}); setEditingItem(undefined); setIsDialogOpen(true); }} className="bg-slate-900 text-white hover:bg-black">
           <Plus className="mr-2 h-4 w-4" /> Nuevo Registro
         </Button>
       </div>
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="max-w-5xl max-h-[92vh] overflow-y-auto">
-          <DialogHeader className="border-b pb-4"><DialogTitle>Formulario de Gestión Integral</DialogTitle></DialogHeader>
+          <DialogHeader className="border-b pb-4"><DialogTitle>Formulario de Gestión Integral - Base Olga</DialogTitle></DialogHeader>
           
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-8 pt-4 pb-10">
             
@@ -103,7 +126,7 @@ export default function BaseOlga() {
               <div className="space-y-1"><Label className="text-xs font-bold">Fecha de Radicación</Label><Input {...register("fechaRadicacion")} type="date" className="bg-white h-8" /></div>
               <div className="space-y-1"><Label className="text-xs font-bold">Acto Administrativo</Label><Input {...register("actoAdministrativo")} className="bg-white h-8" /></div>
               <div className="space-y-1"><Label className="text-xs font-bold">No. Acto / SADE</Label><Input {...register("numeroActo")} className="bg-white h-8" /></div>
-              <div className="space-y-1"><Label className="text-xs font-bold text-blue-700">Fecha de Acto</Label><Input {...register("fechaActo")} type="date" className="bg-white h-8 border-blue-300" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold text-blue-700">Fecha del Acto</Label><Input {...register("fechaActo")} type="date" className="bg-white h-8 border-blue-300" /></div>
             </div>
 
             {/* 2. Contribuyente y Renta */}
@@ -123,13 +146,17 @@ export default function BaseOlga() {
               </div>
               <div className="space-y-1"><Label className="text-xs font-bold text-green-700">Nota</Label><Input {...register("nota")} className="bg-white h-8 border-green-300" /></div>
               <div className="space-y-1"><Label className="text-xs font-bold">Fecha de Recibido</Label><Input {...register("fechaRecibido")} type="date" className="bg-white h-8" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">Tipo de Renta</Label><Input {...register("tipoRenta")} className="bg-white h-8" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">Tipo de Trámite</Label><Input {...register("tipoTramite")} className="bg-white h-8" /></div>
             </div>
 
             {/* 3. Clasificación y Respuesta */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-orange-50/50 rounded-lg border border-orange-100">
-              <h3 className="col-span-3 font-bold text-orange-800 border-b border-orange-200 pb-1 text-sm">3. Clasificación y Respuesta</h3>
+              <h3 className="col-span-3 font-bold text-orange-800 border-b border-orange-200 pb-1 text-sm">3. Clasificación y Respuesta (1ra Instancia)</h3>
               <div className="space-y-1"><Label className="text-xs font-bold">Ítem</Label><Input {...register("item")} className="bg-white h-8" /></div>
               <div className="space-y-1"><Label className="text-xs font-bold">Tipo de Renta (Otro)</Label><Input {...register("tipoRentaOtro")} className="bg-white h-8" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">Prelación Legal</Label><Input {...register("prelacionLegal")} className="bg-white h-8" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">Base Funcionario 1ra</Label><Input {...register("baseFuncionario1ra")} className="bg-white h-8" /></div>
               <div className="space-y-1"><Label className="text-xs font-bold">No. Resolución</Label><Input {...register("numeroResolucion")} className="bg-white h-8" /></div>
               <div className="space-y-1"><Label className="text-xs font-bold">SADE de Salida</Label><Input {...register("numeroSadeSalida")} className="bg-white h-8" /></div>
               <div className="space-y-1"><Label className="text-xs font-bold">Fecha Res. Salida</Label><Input {...register("fechaResolucionSadeSalida")} type="date" className="bg-white h-8" /></div>
@@ -140,24 +167,26 @@ export default function BaseOlga() {
                   <SelectContent>{respuestas.map(r => <SelectItem key={r} value={r}>{r}</SelectItem>)}</SelectContent>
                 </Select>
               </div>
+              <div className="space-y-1"><Label className="text-xs font-bold">No. Planilla Salida</Label><Input {...register("noPlanillaSalida")} className="bg-white h-8" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">Fecha Planilla Salida</Label><Input {...register("fechaDePlanillaSalida")} type="date" className="bg-white h-8" /></div>
               <div className="space-y-1"><Label className="text-xs font-bold text-red-600">Fecha de Ejecutoria</Label><Input {...register("fechaEjecutoria")} type="date" className="bg-white h-8 border-red-200" /></div>
               <div className="space-y-1"><Label className="text-xs font-bold">Traslado</Label><Input {...register("traslado")} className="bg-white h-8" /></div>
             </div>
 
             {/* 4. Segunda y Tercera Instancia */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-purple-50/50 rounded-lg border border-purple-100">
-              <h3 className="col-span-3 font-bold text-purple-800 border-b border-purple-200 pb-1 text-sm">4. Instancias y Vencimiento</h3>
-              <div className="space-y-1"><Label className="text-xs font-bold">Observación</Label><Input {...register("observacionAH")} className="bg-white h-8" /></div>
+              <h3 className="col-span-3 font-bold text-purple-800 border-b border-purple-200 pb-1 text-sm">4. Instancias Posteriores y Vencimiento</h3>
+              <div className="space-y-1"><Label className="text-xs font-bold">Observación (2da Inst.)</Label><Input {...register("observacionAH")} className="bg-white h-8" /></div>
               <div className="space-y-1"><Label className="text-xs font-bold">Base Func. 2da Instancia</Label><Input {...register("baseFuncionario2daAI")} className="bg-white h-8" /></div>
               <div className="space-y-1"><Label className="text-xs font-bold">No. Resolución (2da Inst.)</Label><Input {...register("numResolucionAJ")} className="bg-white h-8" /></div>
               <div className="space-y-1"><Label className="text-xs font-bold">No. SADE (2da Inst.)</Label><Input {...register("numSadeAK")} className="bg-white h-8" /></div>
-              <div className="space-y-1"><Label className="text-xs font-bold">Fecha Res. / SADE</Label><Input {...register("fechaResolucionAL")} type="date" className="bg-white h-8" /></div>
-              <div className="space-y-1"><Label className="text-xs font-bold">No. Planilla</Label><Input {...register("numPlanillaAM")} className="bg-white h-8" /></div>
-              <div className="space-y-1"><Label className="text-xs font-bold">Fecha de Planilla</Label><Input {...register("fechaPlanillaAN")} type="date" className="bg-white h-8" /></div>
-              <div className="space-y-1"><Label className="text-xs font-bold">Fecha de Ejecutoria</Label><Input {...register("fechaEjecutoriaAO")} type="date" className="bg-white h-8" /></div>
-              <div className="space-y-1"><Label className="text-xs font-bold">Traslado</Label><Input {...register("trasladoAP")} className="bg-white h-8" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">Fecha Res. / SADE (2da)</Label><Input {...register("fechaResolucionAL")} type="date" className="bg-white h-8" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">No. Planilla (2da)</Label><Input {...register("numPlanillaAM")} className="bg-white h-8" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">Fecha Planilla (2da)</Label><Input {...register("fechaPlanillaAN")} type="date" className="bg-white h-8" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">Fecha Ejecutoria (2da)</Label><Input {...register("fechaEjecutoriaAO")} type="date" className="bg-white h-8" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">Traslado (2da)</Label><Input {...register("trasladoAP")} className="bg-white h-8" /></div>
               <div className="space-y-1">
-                <Label className="text-xs font-bold">Tipo de Respuesta</Label>
+                <Label className="text-xs font-bold">Tipo Respuesta (2da)</Label>
                 <Select onValueChange={(v) => setValue("tipoRespuestaAQ", v)}>
                   <SelectTrigger className="bg-white h-8"><SelectValue placeholder="Seleccione..." /></SelectTrigger>
                   <SelectContent>{respuestas.map(r => <SelectItem key={r} value={r}>{r}</SelectItem>)}</SelectContent>
