@@ -1,513 +1,134 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Calendar } from "@/components/ui/calendar";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { CalendarIcon } from "lucide-react";
-import { format } from "date-fns";
-import { cn } from "@/lib/utils";
-import { BaseCorreos } from "@/types/processes";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Plus, Save } from "lucide-react";
+import { toast } from "sonner";
+import { readSheet, appendToSheet, updateSheetRow, SHEET_NAMES } from "@/lib/googleSheets";
 
-const correosSchema = z.object({
-  canalIngreso: z.string().min(1, "Canal de ingreso es requerido"),
-  mes: z.string().min(1, "Mes es requerido"),
-  fechaAsignacion: z.date({ required_error: "Fecha de asignación es requerida" }),
-  correoFuncionario: z.string().email("Email válido es requerido"),
-  funcionarioEncargado: z.string().min(1, "Funcionario encargado es requerido"),
-  asuntoCorreo: z.string().min(1, "Asunto del correo es requerido"),
-  fechaCorreo: z.date({ required_error: "Fecha del correo es requerida" }),
-  contribuyenteSolicitante: z.string().min(1, "Contribuyente o solicitante es requerido"),
-  tipoRenta: z.string().min(1, "Tipo de renta es requerido"),
-  tipoTramite: z.string().min(1, "Tipo de trámite es requerido"),
-  item: z.string().optional(),
-  placa: z.string().optional(),
-  fechaRespuesta: z.date().optional(),
-  tipoRespuesta: z.string().optional(),
-  numeroSadeSalida: z.string().optional(),
-  observaciones: z.string().optional(),
-  fechaVencimiento: z.date({ required_error: "Fecha de vencimiento es requerida" }),
-});
+export default function Correos() {
+  const [data, setData] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [editingItem, setEditingItem] = useState<any | undefined>(undefined);
+  
+  const { register, handleSubmit, setValue, reset } = useForm();
 
-type CorreosFormData = z.infer<typeof correosSchema>;
+  // Lista de funcionarios (la misma de Base Olga para mantener consistencia)
+  const funcionarios = ["Adalberto Vásquez", "Benjamín Acosta Gordillo", "Carlos Peña", "César Enrique Gómez", "Cristiano Felipe Arana", "Claudia Mosquera", "Daniela Riascos", "Diego Fernando Ortiz", "Diego Fernando López", "Eliana Salamanca", "Frank Mauricio Restrepo", "Gustavo Adolfo Valencia", "Ibeth Restrepo Espitia", "Isabel Cristina Quintero", "Jhon Helber Samboni", "Jorge Arias", "Jose Fernando Moreno", "Juan Manuel Pizo", "Katherine Salamanca", "Karol Tatiana López", "Luis Andres Botia Riascos", "Maria Cristina Posso", "Maria Jose Cerquera", "Olga Lucia Gomez Aristizabal", "Robinson Rosero", "Samuel Orozco", "Sara Millán", "Wilson Quiñónez", "Yaleydy Mosquera", "Yamid Bolaños Manquillo", "Yohana Estrada", "Maira Alejandra Cardona", "Nailen Andrea Arias", "Diana Patricia Osorio Ospina"];
+  const estados = ["RECIBIDO", "EN TRÁMITE", "RESPONDIDO", "CERRADO"];
 
-interface CorreosFormProps {
-  onSubmit: (data: BaseCorreos) => void;
-  initialData?: Partial<BaseCorreos>;
-  mode?: 'create' | 'edit';
-}
+  const fetchData = async () => {
+    setIsLoading(true);
+    try {
+      // Asegúrate de que SHEET_NAMES.CORREOS exista en tu archivo googleSheets.ts
+      const result = await readSheet("CORREOS"); // Reemplaza "CORREOS" por la variable correcta si es diferente
+      const records = (result["CORREOS"] || []).map((row: any, i: number) => ({
+        ...row,
+        id: `row-${i + 2}`
+      }));
+      setData(records);
+    } catch (error) { toast.error("Error de carga"); } finally { setIsLoading(false); }
+  };
 
-export function CorreosForm({ onSubmit, initialData, mode = 'create' }: CorreosFormProps) {
-  const form = useForm<CorreosFormData>({
-    resolver: zodResolver(correosSchema),
-    defaultValues: {
-      canalIngreso: initialData?.canalIngreso || "",
-      mes: initialData?.mes || "",
-      correoFuncionario: initialData?.correoFuncionario || "",
-      funcionarioEncargado: initialData?.funcionarioEncargado || "",
-      asuntoCorreo: initialData?.asuntoCorreo || "",
-      contribuyenteSolicitante: initialData?.contribuyenteSolicitante || "",
-      tipoRenta: initialData?.tipoRenta || "",
-      tipoTramite: initialData?.tipoTramite || "",
-      item: initialData?.item || "",
-      placa: initialData?.placa || "",
-      tipoRespuesta: initialData?.tipoRespuesta || "",
-      numeroSadeSalida: initialData?.numeroSadeSalida || "",
-      observaciones: initialData?.observaciones || "",
-    },
-  });
+  useEffect(() => { fetchData(); }, []);
 
-  const handleSubmit = (data: CorreosFormData) => {
-    const processData: BaseCorreos = {
-      id: initialData?.id || crypto.randomUUID(),
-      canalIngreso: data.canalIngreso,
-      mes: data.mes,
-      fechaAsignacion: data.fechaAsignacion.toISOString(),
-      correoFuncionario: data.correoFuncionario,
-      funcionarioEncargado: data.funcionarioEncargado,
-      asuntoCorreo: data.asuntoCorreo,
-      fechaCorreo: data.fechaCorreo.toISOString(),
-      contribuyenteSolicitante: data.contribuyenteSolicitante,
-      tipoRenta: data.tipoRenta,
-      tipoTramite: data.tipoTramite,
-      item: data.item || "",
-      placa: data.placa || "",
-      fechaRespuesta: data.fechaRespuesta?.toISOString() || "",
-      tipoRespuesta: data.tipoRespuesta || "",
-      numeroSadeSalida: data.numeroSadeSalida || "",
-      observaciones: data.observaciones || "",
-      fechaVencimiento: data.fechaVencimiento.toISOString(),
-      fechaIngreso: data.fechaCorreo.toISOString(),
-      diasPendientes: Math.ceil((new Date(data.fechaVencimiento).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)),
-      semaforo: 'verde' as const,
-      estado: 'pendiente' as const,
-    };
-    onSubmit(processData);
+  const onSubmit = async (formData: any) => {
+    try {
+      // ATENCIÓN: Aquí mapeamos los campos a las columnas de Google Sheets.
+      // Ajusta el orden de este array para que coincida exactamente con las columnas de tu hoja "Correos".
+      const rowData = [
+        "", // A - ID o Timestamp automático
+        formData.consecutivo || "",       // B
+        formData.fechaRecepcion || "",    // C
+        formData.canalIngreso || "Correo Electrónico", // D
+        formData.contribuyente || "",     // E
+        formData.correoRemitente || "",   // F
+        formData.asunto || "",            // G
+        formData.funcionarioEncargado || "", // H
+        formData.estado || "",            // I
+        formData.fechaRespuesta || "",    // J
+        formData.observaciones || ""      // K
+      ];
+
+      if (editingItem) {
+        const rowNumber = editingItem.id.replace('row-', '');
+        await updateSheetRow("CORREOS", `A${rowNumber}:K${rowNumber}`, rowData);
+      } else {
+        await appendToSheet("CORREOS", rowData);
+      }
+      setIsDialogOpen(false);
+      fetchData();
+      toast.success("¡Correo registrado exitosamente!");
+    } catch (error) { toast.error("Error al guardar"); }
   };
 
   return (
-    <Card className="w-full max-w-4xl mx-auto">
-      <CardHeader>
-        <CardTitle>{mode === 'create' ? 'Nuevo' : 'Editar'} Correo Electrónico</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="canalIngreso"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Canal de Ingreso</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Seleccionar canal" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="correo">Correo Electrónico</SelectItem>
-                        <SelectItem value="chat">Chat en Línea</SelectItem>
-                        <SelectItem value="formulario">Formulario Web</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+    <div className="p-6 space-y-6">
+      <div className="flex justify-between items-center bg-white p-4 rounded-lg shadow border">
+        <div>
+          <h1 className="text-2xl font-bold">Gestión de Correos Electrónicos</h1>
+          <p className="text-sm text-gray-500">Control y trazabilidad de correspondencia digital</p>
+        </div>
+        <Button onClick={() => { reset({}); setEditingItem(undefined); setIsDialogOpen(true); }} className="bg-blue-600 hover:bg-blue-700 text-white">
+          <Plus className="mr-2 h-4 w-4" /> Registrar Correo
+        </Button>
+      </div>
 
-              <FormField
-                control={form.control}
-                name="mes"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Mes</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Seleccionar mes" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="enero">Enero</SelectItem>
-                        <SelectItem value="febrero">Febrero</SelectItem>
-                        <SelectItem value="marzo">Marzo</SelectItem>
-                        <SelectItem value="abril">Abril</SelectItem>
-                        <SelectItem value="mayo">Mayo</SelectItem>
-                        <SelectItem value="junio">Junio</SelectItem>
-                        <SelectItem value="julio">Julio</SelectItem>
-                        <SelectItem value="agosto">Agosto</SelectItem>
-                        <SelectItem value="septiembre">Septiembre</SelectItem>
-                        <SelectItem value="octubre">Octubre</SelectItem>
-                        <SelectItem value="noviembre">Noviembre</SelectItem>
-                        <SelectItem value="diciembre">Diciembre</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="correoFuncionario"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Correo Funcionario Encargado</FormLabel>
-                    <FormControl>
-                      <Input type="email" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="funcionarioEncargado"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Funcionario Encargado</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="contribuyenteSolicitante"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Contribuyente o Solicitante</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="tipoRenta"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Tipo de Renta</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Seleccionar tipo" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="vehicular">Vehicular</SelectItem>
-                        <SelectItem value="predial">Predial</SelectItem>
-                        <SelectItem value="industria_comercio">Industria y Comercio</SelectItem>
-                        <SelectItem value="otros">Otros</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="tipoTramite"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Tipo de Trámite</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Seleccionar trámite" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="consulta">Consulta</SelectItem>
-                        <SelectItem value="solicitud">Solicitud</SelectItem>
-                        <SelectItem value="reclamo">Reclamo</SelectItem>
-                        <SelectItem value="informacion">Información</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="fechaCorreo"
-                render={({ field }) => (
-                  <FormItem className="flex flex-col">
-                    <FormLabel>Fecha Correo</FormLabel>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <FormControl>
-                          <Button
-                            variant="outline"
-                            className={cn(
-                              "w-full pl-3 text-left font-normal",
-                              !field.value && "text-muted-foreground"
-                            )}
-                          >
-                            {field.value ? (
-                              format(field.value, "PPP")
-                            ) : (
-                              <span>Seleccionar fecha</span>
-                            )}
-                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                          </Button>
-                        </FormControl>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0" align="start">
-                        <Calendar
-                          mode="single"
-                          selected={field.value}
-                          onSelect={field.onChange}
-                          className="pointer-events-auto"
-                          initialFocus
-                        />
-                      </PopoverContent>
-                    </Popover>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="fechaAsignacion"
-                render={({ field }) => (
-                  <FormItem className="flex flex-col">
-                    <FormLabel>Fecha Asignación</FormLabel>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <FormControl>
-                          <Button
-                            variant="outline"
-                            className={cn(
-                              "w-full pl-3 text-left font-normal",
-                              !field.value && "text-muted-foreground"
-                            )}
-                          >
-                            {field.value ? (
-                              format(field.value, "PPP")
-                            ) : (
-                              <span>Seleccionar fecha</span>
-                            )}
-                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                          </Button>
-                        </FormControl>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0" align="start">
-                        <Calendar
-                          mode="single"
-                          selected={field.value}
-                          onSelect={field.onChange}
-                          className="pointer-events-auto"
-                          initialFocus
-                        />
-                      </PopoverContent>
-                    </Popover>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="item"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Item</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="placa"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Placa</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="fechaRespuesta"
-                render={({ field }) => (
-                  <FormItem className="flex flex-col">
-                    <FormLabel>Fecha Respuesta</FormLabel>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <FormControl>
-                          <Button
-                            variant="outline"
-                            className={cn(
-                              "w-full pl-3 text-left font-normal",
-                              !field.value && "text-muted-foreground"
-                            )}
-                          >
-                            {field.value ? (
-                              format(field.value, "PPP")
-                            ) : (
-                              <span>Seleccionar fecha</span>
-                            )}
-                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                          </Button>
-                        </FormControl>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0" align="start">
-                        <Calendar
-                          mode="single"
-                          selected={field.value}
-                          onSelect={field.onChange}
-                          className="pointer-events-auto"
-                          initialFocus
-                        />
-                      </PopoverContent>
-                    </Popover>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="tipoRespuesta"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Tipo de Respuesta</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Seleccionar tipo" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="informativa">Informativa</SelectItem>
-                        <SelectItem value="resolutiva">Resolutiva</SelectItem>
-                        <SelectItem value="remision">Remisión</SelectItem>
-                        <SelectItem value="archivo">Archivo</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="numeroSadeSalida"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>No. de SADE de Salida</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="fechaVencimiento"
-                render={({ field }) => (
-                  <FormItem className="flex flex-col">
-                    <FormLabel>Fecha de Vencimiento</FormLabel>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <FormControl>
-                          <Button
-                            variant="outline"
-                            className={cn(
-                              "w-full pl-3 text-left font-normal",
-                              !field.value && "text-muted-foreground"
-                            )}
-                          >
-                            {field.value ? (
-                              format(field.value, "PPP")
-                            ) : (
-                              <span>Seleccionar fecha</span>
-                            )}
-                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                          </Button>
-                        </FormControl>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0" align="start">
-                        <Calendar
-                          mode="single"
-                          selected={field.value}
-                          onSelect={field.onChange}
-                          className="pointer-events-auto"
-                          initialFocus
-                        />
-                      </PopoverContent>
-                    </Popover>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="max-w-4xl max-h-[92vh] overflow-y-auto">
+          <DialogHeader className="border-b pb-4">
+            <DialogTitle>Formulario de Registro de Correo</DialogTitle>
+          </DialogHeader>
+          
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-8 pt-4 pb-10">
+            
+            {/* 1. Datos de Ingreso */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-blue-50/50 rounded-lg border border-blue-100">
+              <h3 className="col-span-1 md:col-span-2 font-bold text-blue-800 border-b border-blue-200 pb-1 text-sm">1. Datos de Ingreso</h3>
+              <div className="space-y-1"><Label className="text-xs font-bold">No. Consecutivo</Label><Input {...register("consecutivo")} className="bg-white h-8" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">Fecha de Recepción</Label><Input {...register("fechaRecepcion")} type="date" className="bg-white h-8" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">Canal de Ingreso</Label><Input {...register("canalIngreso")} defaultValue="Correo Electrónico" className="bg-white h-8" /></div>
             </div>
 
-            <FormField
-              control={form.control}
-              name="asuntoCorreo"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Asunto del Correo</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="observaciones"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Observaciones</FormLabel>
-                  <FormControl>
-                    <Textarea {...field} className="min-h-[100px]" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <div className="flex justify-end space-x-2">
-              <Button type="submit">
-                {mode === 'create' ? 'Crear Registro' : 'Actualizar Registro'}
-              </Button>
+            {/* 2. Información del Remitente y Mensaje */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-indigo-50/50 rounded-lg border border-indigo-100">
+              <h3 className="col-span-1 md:col-span-2 font-bold text-indigo-800 border-b border-indigo-200 pb-1 text-sm">2. Información del Remitente y Mensaje</h3>
+              <div className="space-y-1"><Label className="text-xs font-bold">Contribuyente / Remitente</Label><Input {...register("contribuyente")} className="bg-white h-8" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">Correo del Remitente</Label><Input {...register("correoRemitente")} type="email" className="bg-white h-8" /></div>
+              <div className="space-y-1 md:col-span-2"><Label className="text-xs font-bold">Asunto del Correo</Label><Input {...register("asunto")} className="bg-white h-8" /></div>
             </div>
+
+            {/* 3. Gestión y Asignación */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-green-50/50 rounded-lg border border-green-100">
+              <h3 className="col-span-1 md:col-span-2 font-bold text-green-800 border-b border-green-200 pb-1 text-sm">3. Gestión y Asignación</h3>
+              <div className="space-y-1">
+                <Label className="text-xs font-bold">Funcionario Encargado</Label>
+                <Select onValueChange={(v) => setValue("funcionarioEncargado", v)}>
+                  <SelectTrigger className="bg-white h-8"><SelectValue placeholder="Seleccione funcionario..." /></SelectTrigger>
+                  <SelectContent>{funcionarios.map(f => <SelectItem key={f} value={f}>{f}</SelectItem>)}</SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-1">
+                <Label className="text-xs font-bold">Estado</Label>
+                <Select onValueChange={(v) => setValue("estado", v)}>
+                  <SelectTrigger className="bg-white h-8"><SelectValue placeholder="Seleccione estado..." /></SelectTrigger>
+                  <SelectContent>{estados.map(e => <SelectItem key={e} value={e}>{e}</SelectItem>)}</SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-1"><Label className="text-xs font-bold">Fecha de Respuesta (Si aplica)</Label><Input {...register("fechaRespuesta")} type="date" className="bg-white h-8" /></div>
+              <div className="space-y-1 md:col-span-2"><Label className="text-xs font-bold">Observaciones</Label><Input {...register("observaciones")} className="bg-white h-8" /></div>
+            </div>
+
+            <Button type="submit" className="w-full bg-blue-700 py-6 text-xl font-bold text-white hover:bg-blue-900">
+              <Save className="mr-2 h-6 w-6" /> Guardar Registro de Correo
+            </Button>
           </form>
-        </Form>
-      </CardContent>
-    </Card>
+        </DialogContent>
+      </Dialog>
+    </div>
   );
 }
