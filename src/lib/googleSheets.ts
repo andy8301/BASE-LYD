@@ -29,23 +29,19 @@ export async function getSheetNames(): Promise<SheetInfo[]> {
 export async function readSheet(sheetName?: string, range?: string): Promise<Record<string, any[]>> {
   try {
     const targetSheet = sheetName || "Base Olga";
-    const url = `${WEB_APP_URL}?sheetName=${encodeURIComponent(targetSheet)}`;
+    const targetUrl = `${WEB_APP_URL}?sheetName=${encodeURIComponent(targetSheet)}`;
     
-    // Usamos mode: 'cors' y cabeceras limpias
-    const response = await fetch(url, {
-      method: 'GET',
-      mode: 'cors',
-      redirect: 'follow'
-    });
+    // Usamos un proxy público gratuito para evitar restricciones de CORS del navegador
+    const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`;
     
-    const text = await response.text();
-    let result;
-    try {
-      result = JSON.parse(text);
-    } catch (e) {
-      console.error("Respuesta no es JSON válido:", text);
-      throw new Error("Respuesta inválida del servidor de Google");
+    const response = await fetch(proxyUrl);
+    const proxyData = await response.json();
+    
+    if (!proxyData.contents) {
+      throw new Error("No se pudo conectar con el servidor de Google");
     }
+
+    const result = JSON.parse(proxyData.contents);
     
     if (result.error) {
       throw new Error(result.error);
@@ -62,9 +58,9 @@ export async function readSheet(sheetName?: string, range?: string): Promise<Rec
 
 export async function appendToSheet(sheetName: string, rowData: any[]): Promise<any> {
   try {
+    // Los POST hacia Google Apps Script funcionan perfecto usando no-cors o texto plano
     const response = await fetch(WEB_APP_URL, {
       method: 'POST',
-      mode: 'cors',
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
       body: JSON.stringify({ action: 'append', sheetName, rowData })
     });
@@ -81,7 +77,6 @@ export async function updateSheetRow(sheetName: string, range: string, rowData: 
   try {
     const response = await fetch(WEB_APP_URL, {
       method: 'POST',
-      mode: 'cors',
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
       body: JSON.stringify({ action: 'update', sheetName, rangeStr: range, rowData })
     });
