@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Plus, RefreshCw, Search, Save, Edit } from "lucide-react";
+import { Plus, RefreshCw, Search, Save, Edit, Download, Filter } from "lucide-react";
 import { toast } from "sonner";
 import { readSheet, appendToSheet, updateSheetRow } from "@/lib/googleSheets";
 
@@ -48,55 +48,81 @@ export default function TrasladosPage() {
 
   useEffect(() => { fetchData(); }, []);
 
+  // Función de Exportación a CSV / Excel
+  const handleExport = () => {
+    if (data.length === 0) {
+      toast.error("No hay datos para exportar");
+      return;
+    }
+    try {
+      const headers = Object.keys(data[0]).filter(k => k !== 'id');
+      const csvRows = [
+        headers.join(","),
+        ...data.map(row => headers.map(h => `"${String(row[h] || '').replace(/"/g, '""')}"`).join(","))
+      ];
+      const blob = new Blob([csvRows.join("\n")], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.setAttribute("href", url);
+      link.setAttribute("download", `Base_Traslados_Fiscalizacion_${new Date().toISOString().split('T')[0]}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      toast.success("¡Datos exportados exitosamente!");
+    } catch (error) {
+      toast.error("Error al exportar los datos");
+    }
+  };
+
   const onSubmit = async (formData: any) => {
     try {
       const sheetName = "Base Traslados Fiscalizacion";
       const rowData = [
-        formData.canalIngreso || "SADE FISCALIZACIÓN", // A: CANAL DE INGRESO
-        formData.item || "",                          // B: IT.
-        formData.noPlanilla || "",                    // C: No. PLANILLA
-        formData.expediente || "",                    // D: No. EXPEDIENTE
-        formData.actoAdministrativo || "",            // E: ACTO ADMINISTRATIVO
-        formData.fechaPlanillaIngreso || "",          // F: FECHA PLANILLA INGRESO
-        formData.noActoSade || "",                    // G: No. ACTO ADMINISTRATIVO Y No. SADE
-        formData.fechaActo || "",                     // H: FECHA ACTO
-        formData.proceso || "",                       // I: PROCESO
-        formData.identificacion || "",                // J: No. DE IDENTIFICACION
-        formData.contribuyente || "",                 // K: CONTRIBUYENTE
-        formData.impuesto || "",                      // L: IMPUESTO
-        formData.tipoRenta || "",                     // M: TIPO DE RENTA
-        formData.tipoTramite || "",                   // N: TIPO DE TRAMITE
-        formData.itemDetalle || "",                   // O: ITEM
-        formData.tipoExtra || "",                     // P: TIPO
-        formData.direccion || "",                     // Q: DIRECCION
-        formData.ciudad || "",                        // R: CIUDAD
-        formData.periodo || "",                       // S: PERIODO (mes)
-        formData.vigencia || "",                      // T: VIGENCIA (año)
-        formData.fechaVencimientoInput || "",         // U: FECHA VENCIMIENTO
-        formData.capital || "",                       // V: CAPITAL
-        formData.sancion || "",                       // W: SANCION
-        formData.funcionarioEncargado || "",          // X: FUNCIONARIO ENCARGADO
-        formData.ubicacion || "",                     // Y: UBICACION
-        formData.observaciones || "",                 // Z: OBSERVACIONES
-        formData.estadoProceso || "",                 // AA: ESTADO DEL PROCESO
+        formData.canalIngreso || "SADE FISCALIZACIÓN", // A
+        formData.item || "",                          // B
+        formData.noPlanilla || "",                    // C
+        formData.expediente || "",                    // D
+        formData.actoAdministrativo || "",            // E
+        formData.fechaPlanillaIngreso || "",          // F
+        formData.noActoSade || "",                    // G
+        formData.fechaActo || "",                     // H
+        formData.proceso || "",                       // I
+        formData.identificacion || "",                // J
+        formData.contribuyente || "",                 // K
+        formData.impuesto || "",                      // L
+        formData.tipoRenta || "",                     // M
+        formData.tipoTramite || "",                   // N
+        formData.itemDetalle || "",                   // O
+        formData.tipoExtra || "",                     // P
+        formData.direccion || "",                     // Q
+        formData.ciudad || "",                        // R
+        formData.periodo || "",                       // S
+        formData.vigencia || "",                      // T
+        formData.fechaVencimientoInput || "",         // U
+        formData.capital || "",                       // V
+        formData.sancion || "",                       // W
+        formData.funcionarioEncargado || "",          // X
+        formData.ubicacion || "",                     // Y
+        formData.observaciones || "",                 // Z
+        formData.estadoProceso || "",                 // AA
         "",                                           // AB (Fórmula)
-        formData.resolucionSadeSalida || "",          // AC: RESOLUCION/SADE SALIDA
-        formData.fechaResolucionSade || "",           // AD: FECHA RESOLUCION/SADE
-        formData.numeroPlanilla || "",                // AE: NUMERO DE PLANILLA
-        formData.fechaPlanilla || "",                 // AF: FECHA PLANILLA
-        formData.fechaEjecutoria || "",               // AG: FECHA EJECUTORIA
+        formData.resolucionSadeSalida || "",          // AC
+        formData.fechaResolucionSade || "",           // AD
+        formData.numeroPlanilla || "",                // AE
+        formData.fechaPlanilla || "",                 // AF
+        formData.fechaEjecutoria || "",               // AG
         "",                                           // AH (Fórmula)
-        formData.dependencia || "",                   // AI: DEPENDENCIA
-        formData.tipoRespuesta || "",                 // AJ: TIPO DE RESPUESTA
-        "", "", "", "", "", "", "", "",               // AK a AR: Fórmulas
-        formData.ingresoExtra || "",                  // AS: INGRESO
-        formData.recursoArchivo || "",                // AT: RECURSO O ARCHIVO
-        formData.procesoAu || "",                     // AU: PROCESO
-        formData.resolucionSadeAv || "",              // AV: RESOLUCION/SADE
-        formData.fechaAw || "",                       // AW: FECHA
-        formData.planilaAx || "",                     // AX: PLANILLA
-        formData.fechaPlanillaAy || "",               // AY: FECHA PLANILLA
-        formData.procesoFinal || ""                   // AZ: PROCESO FINAL
+        formData.dependencia || "",                   // AI
+        formData.tipoRespuesta || "",                 // AJ
+        "", "", "", "", "", "", "", "",               // AK a AR
+        formData.ingresoExtra || "",                  // AS
+        formData.recursoArchivo || "",                // AT
+        formData.procesoAu || "",                     // AU
+        formData.resolucionSadeAv || "",              // AV
+        formData.fechaAw || "",                       // AW
+        formData.planilaAx || "",                     // AX
+        formData.fechaPlanillaAy || "",               // AY
+        formData.procesoFinal || ""                   // AZ
       ];
 
       if (editingItem) {
@@ -130,7 +156,10 @@ export default function TrasladosPage() {
           <p className="text-sm text-gray-500">Gestión completa de planillas, actos y control tributario</p>
         </div>
         <div className="flex gap-2">
-          <Button onClick={fetchData} variant="outline" className="border-slate-300">
+          <Button onClick={handleExport} variant="outline" className="border-slate-300 text-slate-700 hover:bg-slate-50">
+            <Download className="mr-2 h-4 w-4" /> Exportar
+          </Button>
+          <Button onClick={fetchData} variant="outline" className="border-slate-300 text-slate-700 hover:bg-slate-50">
             <RefreshCw className={`mr-2 h-4 w-4 ${isLoading ? "animate-spin" : ""}`} /> Actualizar
           </Button>
           <Button onClick={() => { reset({}); setEditingItem(undefined); setIsDialogOpen(true); }} className="bg-blue-600 hover:bg-blue-700 text-white">
@@ -139,6 +168,7 @@ export default function TrasladosPage() {
         </div>
       </div>
 
+      {/* Barra de Búsqueda y Filtros Avanzados */}
       <div className="bg-white p-4 rounded-lg shadow border flex flex-col md:flex-row gap-4 items-center justify-between">
         <div className="relative w-full md:w-96">
           <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
@@ -149,13 +179,14 @@ export default function TrasladosPage() {
             className="pl-9 bg-white h-9"
           />
         </div>
-        <div className="flex gap-2 w-full md:w-auto">
+        <div className="flex gap-2 w-full md:w-auto items-center">
+          <Filter className="h-4 w-4 text-gray-400 hidden md:block" />
           <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="w-full md:w-56 bg-white h-9">
+            <SelectTrigger className="w-full md:w-64 bg-white h-9">
               <SelectValue placeholder="Filtrar por acto administrativo" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="ALL">Todos los actos</SelectItem>
+              <SelectItem value="ALL">Todos los actos administrativos</SelectItem>
               {actosAdministrativos.map(act => <SelectItem key={act} value={act}>{act}</SelectItem>)}
             </SelectContent>
           </Select>
@@ -220,7 +251,6 @@ export default function TrasladosPage() {
       </div>
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        {/* Ancho ampliado a max-w-5xl idéntico al de Nexura para solucionar el problema visual de estrechez */}
         <DialogContent className="max-w-5xl max-h-[92vh] overflow-y-auto">
           <DialogHeader className="border-b pb-4">
             <DialogTitle>{editingItem ? "Editar Registro Completo - Traslados" : "Nuevo Registro - Base Traslados Fiscalización"}</DialogTitle>
