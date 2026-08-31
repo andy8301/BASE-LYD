@@ -68,7 +68,7 @@ export default function BaseOlga() {
         formData.item || "",                // V
         formData.tipoRentaOtro || "",       // W
         formData.prelacionLegal || "",      // X
-        "",                                 // Y (Base Funcionario 1ra - Oculto/Automático)
+        "",                                 // Y (Base Funcionario 1ra - Oculto)
         formData.numeroResolucion || "",    // Z
         formData.numeroSadeSalida || "",    // AA
         formData.fechaResolucionSadeSalida || "", // AB
@@ -78,7 +78,7 @@ export default function BaseOlga() {
         formData.fechaEjecutoria || "",     // AF
         formData.traslado || "",            // AG
         formData.observacionAH || "",       // AH
-        formData.baseFunc2daAI || "",       // AI
+        "",                                 // AI (Base Func. 2da Instancia - Oculto)
         formData.numResolucionAJ || "",     // AJ
         formData.numSadeAK || "",           // AK
         formData.fechaResolucionAL || "",   // AL
@@ -87,7 +87,7 @@ export default function BaseOlga() {
         formData.fechaEjecutoriaAO || "",   // AO
         formData.trasladoAP || "",          // AP
         formData.tipoRespuestaAQ || "",     // AQ
-        formData.baseFunc3raAR || "",       // AR
+        "",                                 // AR (Base Func. 3ra Instancia - Oculto)
         ...Array(11).fill(""),               // AS a BC
         formData.fechaVencimientoBD || ""   // BD
       ];
@@ -193,7 +193,6 @@ export default function BaseOlga() {
                   <SelectContent>{prelacionOpciones.map(p => <SelectItem key={p} value={p}>{p}</SelectItem>)}</SelectContent>
                 </Select>
               </div>
-              {/* Nota: 'Base Funcionario 1ra' se ha omitido visualmente de la interfaz tal como solicitaste */}
               <div className="space-y-1"><Label className="text-xs font-bold">No. Resolución</Label><Input {...register("numeroResolucion")} className="bg-white h-8" /></div>
               <div className="space-y-1"><Label className="text-xs font-bold">SADE de Salida</Label><Input {...register("numeroSadeSalida")} className="bg-white h-8" /></div>
               <div className="space-y-1"><Label className="text-xs font-bold">Fecha Res. Salida</Label><Input {...register("fechaResolucionSadeSalida")} type="date" className="bg-white h-8" /></div>
@@ -228,7 +227,6 @@ export default function BaseOlga() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-purple-50/50 rounded-lg border border-purple-100 animate-fadeIn">
                 <h3 className="col-span-3 font-bold text-purple-800 border-b border-purple-200 pb-1 text-sm">4. Instancias Posteriores y Vencimiento</h3>
                 <div className="space-y-1"><Label className="text-xs font-bold">Observación (2da Inst.)</Label><Input {...register("observacionAH")} className="bg-white h-8" /></div>
-                <div className="space-y-1"><Label className="text-xs font-bold">Base Func. 2da Instancia</Label><Input {...register("baseFuncionario2daAI")} className="bg-white h-8" /></div>
                 <div className="space-y-1"><Label className="text-xs font-bold">No. Resolución (2da Inst.)</Label><Input {...register("numResolucionAJ")} className="bg-white h-8" /></div>
                 <div className="space-y-1"><Label className="text-xs font-bold">No. SADE (2da Inst.)</Label><Input {...register("numSadeAK")} className="bg-white h-8" /></div>
                 <div className="space-y-1"><Label className="text-xs font-bold">Fecha Res. / SADE (2da)</Label><Input {...register("fechaResolucionAL")} type="date" className="bg-white h-8" /></div>
@@ -243,8 +241,7 @@ export default function BaseOlga() {
                     <SelectContent>{respuestas.map(r => <SelectItem key={r} value={r}>{r}</SelectItem>)}</SelectContent>
                   </Select>
                 </div>
-                <div className="space-y-1"><Label className="text-xs font-bold">Base Func. 3ra Instancia</Label><Input {...register("baseFunc3raAR")} className="bg-white h-8 border-purple-200" /></div>
-                <div className="space-y-1">
+                <div className="space-y-1 md:col-span-2">
                   <Label className="text-xs font-bold text-red-700">Fecha de Vencimiento</Label>
                   <Input {...register("fechaVencimientoBD")} type="date" className="bg-white h-8 border-red-300" />
                 </div>
