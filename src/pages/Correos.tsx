@@ -20,6 +20,7 @@ export default function CorreosPage() {
   const funcionarios = ["Adalberto Vásquez", "Benjamín Acosta Gordillo", "Carlos Peña", "César Enrique Gómez", "Cristiano Felipe Arana", "Claudia Mosquera", "Daniela Riascos", "Diego Fernando Ortiz", "Diego Fernando López", "Eliana Salamanca", "Frank Mauricio Restrepo", "Gustavo Adolfo Valencia", "Ibeth Restrepo Espitia", "Isabel Cristina Quintero", "Jhon Helber Samboni", "Jorge Arias", "Jose Fernando Moreno", "Juan Manuel Pizo", "Katherine Salamanca", "Karol Tatiana López", "Luis Andres Botia Riascos", "Maria Cristina Posso", "Maria Jose Cerquera", "Olga Lucia Gomez Aristizabal", "Robinson Rosero", "Samuel Orozco", "Sara Millán", "Wilson Quiñónez", "Yaleydy Mosquera", "Yamid Bolaños Manquillo", "Yohana Estrada", "Maira Alejandra Cardona", "Nailen Andrea Arias", "Diana Patricia Osorio Ospina"];
   const estados = ["RECIBIDO", "EN TRÁMITE", "TRASLADADO", "CONTESTADO", "CERRADO"];
   const clasesCorrespondencia = ["PETICIÓN", "TUTELA", "NOTIFICACIÓN", "SOLICITUD DE INFORMACIÓN", "OTRO"];
+  const canalesIngreso = ["CORREO ELECTRÓNICO", "VENTANILLA", "OFICIO", "SADE", "FISCALIZACIÓN"];
 
   const fetchData = async () => {
     setIsLoading(true);
@@ -39,19 +40,19 @@ export default function CorreosPage() {
     try {
       const rowData = [
         "", // A - ID / Marca de tiempo
-        formData.radicado || "",          // B
-        formData.canalIngreso || "CORREO ELECTRÓNICO", // C
-        formData.claseCorrespondencia || "", // D
-        formData.fechaRecepcion || "",    // E
-        formData.mes || "",               // F 
-        formData.remitente || "",         // G
-        formData.correoDe || "",          // H
-        formData.asunto || "",            // I
-        formData.funcionario || "",       // J
-        formData.estado || "",            // K
-        formData.fechaVencimiento || "",  // L
-        formData.observaciones || "",     // M
-        formData.sadeSalida || ""         // N
+        formData.radicado || "",          // B - Radicado
+        formData.canalIngreso || "CORREO ELECTRÓNICO", // C - Canal de Ingreso
+        formData.claseCorrespondencia || "", // D - Clase de Correspondencia
+        formData.fechaRecepcion || "",    // E - Fecha de Recepción
+        "",                               // F - Mes (Fórmula automática de la hoja)
+        formData.remitente || "",         // G - Remitente
+        formData.correoDe || "",          // H - Correo De:
+        formData.asunto || "",            // I - Asunto
+        formData.funcionario || "",       // J - Funcionario Asignado
+        formData.estado || "",            // K - Estado
+        formData.fechaVencimiento || "",  // L - Fecha Vencimiento
+        formData.observaciones || "",     // M - Observaciones
+        formData.sadeSalida || ""         // N - SADE Salida
       ];
 
       if (editingItem) {
@@ -62,7 +63,7 @@ export default function CorreosPage() {
       }
       setIsDialogOpen(false);
       fetchData();
-      toast.success("¡Registro guardado exitosamente!");
+      toast.success("¡Registro de correo guardado exitosamente!");
     } catch (error) { toast.error("Error al guardar en Sheets"); }
   };
 
@@ -81,7 +82,7 @@ export default function CorreosPage() {
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="max-w-4xl max-h-[92vh] overflow-y-auto">
           <DialogHeader className="border-b pb-4">
-            <DialogTitle>Formulario de Registro de Correo</DialogTitle>
+            <DialogTitle>Formulario de Registro - BASE CORREOS ELECTRONICOS</DialogTitle>
           </DialogHeader>
           
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-8 pt-4 pb-10">
@@ -91,7 +92,15 @@ export default function CorreosPage() {
               <h3 className="col-span-1 md:col-span-2 font-bold text-blue-800 border-b border-blue-200 pb-1 text-sm">1. Datos de Ingreso y Clasificación</h3>
               <div className="space-y-1"><Label className="text-xs font-bold">No. Radicado / Consecutivo</Label><Input {...register("radicado")} className="bg-white h-8" /></div>
               <div className="space-y-1"><Label className="text-xs font-bold">Fecha de Recepción</Label><Input {...register("fechaRecepcion")} type="date" className="bg-white h-8" /></div>
-              <div className="space-y-1"><Label className="text-xs font-bold">Canal de Ingreso</Label><Input {...register("canalIngreso")} defaultValue="CORREO ELECTRÓNICO" className="bg-white h-8" /></div>
+              
+              <div className="space-y-1">
+                <Label className="text-xs font-bold">Canal de Ingreso</Label>
+                <Select onValueChange={(v) => setValue("canalIngreso", v)} defaultValue="CORREO ELECTRÓNICO">
+                  <SelectTrigger className="bg-white h-8"><SelectValue placeholder="Seleccione..." /></SelectTrigger>
+                  <SelectContent>{canalesIngreso.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent>
+                </Select>
+              </div>
+
               <div className="space-y-1">
                 <Label className="text-xs font-bold">Clase de Correspondencia</Label>
                 <Select onValueChange={(v) => setValue("claseCorrespondencia", v)}>
