@@ -48,14 +48,14 @@ export default function NexuraPage() {
   const onSubmit = async (formData: any) => {
     try {
       const rowData = [
-        "",                                         // A
+        "",                                         // A: Vacía
         formData.baseInformeNexura || "NEXURA",     // B: NEXURA
         formData.numero || "",                      // C: No.
         formData.noRadicacion || "",                // D: No. radicación
         formData.noRadicacionExterno || "",         // E: No. radicación externo
         formData.secretaria || "",                  // F: Secretaría
         formData.tipoSolicitud || "",               // G: Tipo de solicitud
-        formData.prioritaria || "No",               // H: Prioritaria
+        formData.prioritaria || "NO",               // H: Prioritaria
         formData.canalIngreso || "",                // I: Canal de ingreso
         formData.tema || "",                        // J: Tema
         formData.condicionSolicitud || "",          // K: Condición de solicitud
@@ -63,8 +63,8 @@ export default function NexuraPage() {
         formData.fechaRegistro || "",               // M: Fecha de Registro
         formData.fechaIngreso || "",                // N: Fecha ingreso
         formData.fechaLimiteRespuesta || "",        // O: Fecha límite de respuesta
-        formData.fechaRespuestaA || "",             // P: Fecha de respuesta a
-        "", "", "", "",                             // Q, R, S, T: Fórmulas de días y estado
+        formData.fechaRespuestaP || "",             // P: Fecha de respuesta a (gestión)
+        "", "", "", "",                             // Q, R, S, T: Fórmulas de estadísticas y días
         formData.tipoPersona || "",                 // U: Tipo de persona
         formData.nit || "",                         // V: Nit
         formData.digitoVerificacion || "",          // W: Dígito de verificación
@@ -74,16 +74,17 @@ export default function NexuraPage() {
         formData.nombreSolicitante || "",           // AA: Nombre del solicitante
         formData.telefonoContacto || "",            // AB: Teléfono de contacto
         formData.email || "",                       // AC: Email
-        "", "",                                     // AD, AE: Término, Requerimiento
-        formData.responsable || "",                 // AF: FUNCIONARIO ENCARGADO
-        formData.tipoRenta || "",                   // AG: TIPO DE RENTA
-        formData.tipoTramite || "",                 // AH: TIPO DE TRAMITE
-        formData.item || "",                        // AI: ITEM
-        formData.tipoRentaOtro || "",               // AJ: SI EL TIPO DE RENTA ES OTRO
-        formData.tipoRespuesta || "",               // AK: TIPO DE RESPUESTA
-        formData.fechaRespuestaAL || "",            // AL: FECHA DE RESPUESTA
-        formData.numeroSadeSalida || "",            // AM: NUMERO DE SADE DE SALIDA
-        formData.prelacionLegal || "N/A"            // AN: PRELACIÓN LEGAL
+        "", "",                                     // AD, AE: Fórmulas de término y requerimiento
+        formData.responsable || "",                 // AF: Funcionario encargado (espejo L)
+        formData.tipoRenta || "",                   // AG: Tipo de renta
+        formData.tipoTramite || "",                 // AH: Tipo de trámite
+        formData.item || "",                        // AI: Item
+        formData.tipoRentaOtro || "",               // AJ: Si es otro (renta)
+        formData.tipoRespuesta || "",               // AK: Tipo de respuesta
+        formData.fechaRespuestaP || "",             // AL: Fecha respuesta (espejo P)
+        formData.numeroSadeSalida || "",            // AM: No. SADE de salida
+        formData.prelacionLegal || "N/A"            // AN: Prelación legal
+        // AO en adelante: Fórmulas automáticas del Dashboard
       ];
 
       if (editingItem) {
@@ -113,12 +114,12 @@ export default function NexuraPage() {
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="max-w-5xl max-h-[92vh] overflow-y-auto">
           <DialogHeader className="border-b pb-4">
-            <DialogTitle>Formulario de Registro Integral - Base NEXURA</DialogTitle>
+            <DialogTitle>Formulario de Registro - Base NEXURA</DialogTitle>
           </DialogHeader>
           
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-8 pt-4 pb-10">
             
-            {/* 1. Radicación e Identificación */}
+            {/* 1. Radicación y Secretaría (Cols B a H) */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-blue-50/50 rounded-lg border border-blue-100">
               <h3 className="col-span-3 font-bold text-blue-800 border-b border-blue-200 pb-1 text-sm">1. Radicación y Secretaría</h3>
               <div className="space-y-1"><Label className="text-xs font-bold">NEXURA / Base</Label><Input {...register("baseInformeNexura")} defaultValue="NEXURA" className="bg-white h-8" /></div>
@@ -144,44 +145,16 @@ export default function NexuraPage() {
 
               <div className="space-y-1">
                 <Label className="text-xs font-bold">Prioritaria</Label>
-                <Select onValueChange={(v) => setValue("prioritaria", v)} defaultValue="No">
+                <Select onValueChange={(v) => setValue("prioritaria", v)} defaultValue="NO">
                   <SelectTrigger className="bg-white h-8"><SelectValue placeholder="Seleccione..." /></SelectTrigger>
                   <SelectContent>{prioritariaOpciones.map(p => <SelectItem key={p} value={p}>{p}</SelectItem>)}</SelectContent>
                 </Select>
               </div>
             </div>
 
-            {/* 2. Datos del Solicitante */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-indigo-50/50 rounded-lg border border-indigo-100">
-              <h3 className="col-span-3 font-bold text-indigo-800 border-b border-indigo-200 pb-1 text-sm">2. Datos del Solicitante</h3>
-              <div className="space-y-1 md:col-span-2"><Label className="text-xs font-bold">Nombre del Solicitante</Label><Input {...register("nombreSolicitante")} className="bg-white h-8" /></div>
-              <div className="space-y-1"><Label className="text-xs font-bold">Teléfono de Contacto</Label><Input {...register("telefonoContacto")} className="bg-white h-8" /></div>
-              <div className="space-y-1 md:col-span-2"><Label className="text-xs font-bold">Email</Label><Input {...register("email")} type="email" className="bg-white h-8" /></div>
-
-              <div className="space-y-1">
-                <Label className="text-xs font-bold">Tipo de Persona</Label>
-                <Select onValueChange={(v) => setValue("tipoPersona", v)}>
-                  <SelectTrigger className="bg-white h-8"><SelectValue placeholder="Seleccione..." /></SelectTrigger>
-                  <SelectContent>{tiposPersona.map(tp => <SelectItem key={tp} value={tp}>{tp}</SelectItem>)}</SelectContent>
-                </Select>
-              </div>
-
-              <div className="space-y-1">
-                <Label className="text-xs font-bold">Tipo de Documento</Label>
-                <Select onValueChange={(v) => setValue("tipoDocumento", v)}>
-                  <SelectTrigger className="bg-white h-8"><SelectValue placeholder="Seleccione..." /></SelectTrigger>
-                  <SelectContent>{tiposDocumento.map(td => <SelectItem key={td} value={td}>{td}</SelectItem>)}</SelectContent>
-                </Select>
-              </div>
-
-              <div className="space-y-1"><Label className="text-xs font-bold">Número de Documento</Label><Input {...register("numeroDocumento")} className="bg-white h-8" /></div>
-              <div className="space-y-1"><Label className="text-xs font-bold">Nit</Label><Input {...register("nit")} className="bg-white h-8" /></div>
-              <div className="space-y-1"><Label className="text-xs font-bold">Dígito de Verificación</Label><Input {...register("digitoVerificacion")} className="bg-white h-8" /></div>
-            </div>
-
-            {/* 3. Detalle, Trámite y Gestión */}
+            {/* 2. Detalle y Trámite (Cols I a L) */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-orange-50/50 rounded-lg border border-orange-100">
-              <h3 className="col-span-3 font-bold text-orange-800 border-b border-orange-200 pb-1 text-sm">3. Detalle y Trámite</h3>
+              <h3 className="col-span-3 font-bold text-orange-800 border-b border-orange-200 pb-1 text-sm">2. Detalle y Trámite</h3>
               
               <div className="space-y-1">
                 <Label className="text-xs font-bold">Canal de Ingreso</Label>
@@ -238,7 +211,36 @@ export default function NexuraPage() {
               </div>
             </div>
 
-            {/* 4. Fechas y Respuesta */}
+            {/* 3. Datos del Solicitante (Cols U a AC) */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-indigo-50/50 rounded-lg border border-indigo-100">
+              <h3 className="col-span-3 font-bold text-indigo-800 border-b border-indigo-200 pb-1 text-sm">3. Datos del Solicitante</h3>
+              
+              <div className="space-y-1">
+                <Label className="text-xs font-bold">Tipo de Persona</Label>
+                <Select onValueChange={(v) => setValue("tipoPersona", v)}>
+                  <SelectTrigger className="bg-white h-8"><SelectValue placeholder="Seleccione..." /></SelectTrigger>
+                  <SelectContent>{tiposPersona.map(tp => <SelectItem key={tp} value={tp}>{tp}</SelectItem>)}</SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-1"><Label className="text-xs font-bold">Nit</Label><Input {...register("nit")} className="bg-white h-8" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">Dígito de Verificación</Label><Input {...register("digitoVerificacion")} className="bg-white h-8" /></div>
+
+              <div className="space-y-1">
+                <Label className="text-xs font-bold">Tipo de Documento</Label>
+                <Select onValueChange={(v) => setValue("tipoDocumento", v)}>
+                  <SelectTrigger className="bg-white h-8"><SelectValue placeholder="Seleccione..." /></SelectTrigger>
+                  <SelectContent>{tiposDocumento.map(td => <SelectItem key={td} value={td}>{td}</SelectItem>)}</SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-1"><Label className="text-xs font-bold">Número de Documento</Label><Input {...register("numeroDocumento")} className="bg-white h-8" /></div>
+              <div className="space-y-1 md:col-span-2"><Label className="text-xs font-bold">Nombre del Solicitante</Label><Input {...register("nombreSolicitante")} className="bg-white h-8" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">Teléfono de Contacto</Label><Input {...register("telefonoContacto")} className="bg-white h-8" /></div>
+              <div className="space-y-1 md:col-span-2"><Label className="text-xs font-bold">Email</Label><Input {...register("email")} type="email" className="bg-white h-8" /></div>
+            </div>
+
+            {/* 4. Fechas y Control de Respuesta (Cols M, N, O, P, AK, AM) */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-green-50/50 rounded-lg border border-green-100">
               <h3 className="col-span-3 font-bold text-green-800 border-b border-green-200 pb-1 text-sm">4. Fechas y Control de Respuesta</h3>
               
@@ -254,7 +256,7 @@ export default function NexuraPage() {
                 </Select>
               </div>
 
-              <div className="space-y-1"><Label className="text-xs font-bold">Fecha de Respuesta (Gestión)</Label><Input {...register("fechaRespuestaAL")} type="date" className="bg-white h-8" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">Fecha de Respuesta (Gestión)</Label><Input {...register("fechaRespuestaP")} type="date" className="bg-white h-8" /></div>
               <div className="space-y-1"><Label className="text-xs font-bold">No. SADE de Salida</Label><Input {...register("numeroSadeSalida")} className="bg-white h-8" /></div>
             </div>
 
