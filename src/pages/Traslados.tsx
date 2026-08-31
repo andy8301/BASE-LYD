@@ -79,51 +79,58 @@ export default function TrasladosPage() {
     try {
       const sheetName = "Base Traslados Fiscalizacion";
       const rowData = [
-        formData.canalIngreso || "SADE FISCALIZACIÓN", // A: CANAL DE INGRESO
-        formData.item || "",                          // B: IT.
-        formData.noPlanilla || "",                    // C: No. PLANILLA
-        formData.expediente || "",                    // D: No. EXPEDIENTE
-        formData.actoAdministrativo || "",            // E: ACTO ADMINISTRATIVO
-        formData.fechaPlanillaIngreso || "",          // F: FECHA PLANILLA INGRESO
-        formData.noActoSade || "",                    // G: No. ACTO Y No. SADE
-        formData.fechaActo || "",                     // H: FECHA ACTO
-        formData.proceso || "",                       // I: PROCESO
-        formData.identificacion || "",                // J: No. DE IDENTIFICACION
-        formData.contribuyente || "",                 // K: CONTRIBUYENTE
-        formData.impuesto || "",                      // L: IMPUESTO
-        formData.tipoRenta || "",                     // M: TIPO DE RENTA
-        formData.tipoTramite || "",                   // N: TIPO DE TRAMITE
-        formData.itemDetalle || "",                   // O: ITEM
-        formData.tipoExtra || "",                     // P: TIPO
-        formData.direccion || "",                     // Q: DIRECCION
-        formData.ciudad || "",                        // R: CIUDAD
-        formData.periodo || "",                       // S: PERIODO (mes)
-        formData.vigencia || "",                      // T: VIGENCIA (año)
-        formData.fechaVencimientoInput || "",         // U: FECHA VENCIMIENTO
-        formData.capital || "",                       // V: CAPITAL
-        formData.sancion || "",                       // W: SANCION
-        formData.funcionarioEncargado || "",          // X: FUNCIONARIO ENCARGADO
-        formData.ubicacion || "",                     // Y: UBICACION
-        formData.observaciones || "",                 // Z: OBSERVACIONES
-        formData.estadoProceso || "",                 // AA: ESTADO DEL PROCESO
-        "",                                           // AB: (Fórmula)
-        formData.resolucionSadeSalida || "",          // AC: RESOLUCION/SADE SALIDA
-        formData.fechaResolucionSade || "",           // AD: FECHA RESOLUCION/SADE
-        formData.numeroPlanilla || "",                // AE: NUMERO DE PLANILLA
-        formData.fechaPlanilla || "",                 // AF: FECHA PLANILLA
-        formData.fechaEjecutoria || "",               // AG: FECHA EJECUTORIA
-        "",                                           // AH: (Fórmula)
-        formData.dependencia || "",                   // AI: DEPENDENCIA
-        formData.tipoRespuesta || "",                 // AJ: TIPO DE RESPUESTA
-        "", "", "", "", "", "", "", "",               // AK a AR: (Fórmulas)
-        formData.ingresoExtra || "",                  // AS: INGRESO
-        formData.recursoArchivo || "",                // AT: RECURSO O ARCHIVO
-        formData.procesoAu || "",                     // AU: PROCESO
-        formData.resolucionSadeAv || "",              // AV: RESOLUCION/SADE
-        formData.fechaAw || "",                       // AW: FECHA
-        formData.planilaAx || "",                     // AX: PLANILLA
-        formData.fechaPlanillaAy || "",               // AY: FECHA PLANILLA
-        formData.procesoFinal || ""                   // AZ: PROCESO FINAL
+        formData.canalIngreso || "SADE FISCALIZACIÓN", // 1. CANAL DE INGRESO
+        formData.item || "",                          // 2. IT.
+        formData.noPlanilla || "",                    // 3. No. PLANILLA
+        formData.expediente || "",                    // 4. No. EXPEDIENTE
+        formData.actoAdministrativo || "",            // 5. ACTO ADMINISTRATIVO
+        formData.fechaPlanillaIngreso || "",          // 6. FECHA PLANILLA INGRESO
+        formData.noActoSade || "",                    // 7. No. ACTO ADMINISTRATIVO Y No. SADE
+        formData.fechaActo || "",                     // 8. FECHA ACTO (DD-MM-AAAA)
+        formData.proceso || "",                       // 9. PROCESO
+        formData.identificacion || "",                // 10. No. DE IDENTIFICACION
+        formData.contribuyente || "",                 // 11. CONTRIBUYENTE
+        formData.impuesto || "",                      // 12. IMPUESTO
+        formData.tipoRenta || "",                     // 13. TIPO DE RENTA
+        formData.tipoTramite || "",                   // 14. TIPO DE TRAMITE
+        formData.itemDetalle || "",                   // 15. ITEM
+        formData.tipoExtra || "",                     // 16. TIPO
+        formData.direccion || "",                     // 17. DIRECCION
+        formData.ciudad || "",                        // 18. CIUDAD
+        formData.periodo || "",                       // 19. PERIODO (mes)
+        formData.vigencia || "",                      // 20. VIGENCIA (año)
+        formData.fechaVencimiento || "",              // 21. FECHA VENCIMIENTO
+        formData.capital || "",                       // 22. CAPITAL
+        formData.sancion || "",                       // 23. SANCION
+        formData.funcionarioEncargado || "",          // 24. FUNCIONARIO ENCARGADO
+        formData.ubicacion || "",                     // 25. UBICACIÓN
+        formData.observaciones || "",                 // 26. OBSERVACIONES
+        formData.estadoProceso || "",                 // 27. ESTADO DEL PROCESO
+        formData.procesoAb || "",                     // 28. PROCESO
+        formData.resolucionSadeSalida || "",          // 29. RESOLUCION/SADE SALIDA
+        formData.fechaResolucionSade || "",           // 30. FECHA RESOLUCION/SADE DE SALIDA
+        formData.numeroPlanilla || "",                // 31. NUMERO DE PLANILLA
+        formData.fechaPlanilla || "",                 // 32. FECHA PLANILLA
+        formData.fechaEjecutoria || "",               // 33. FECHA EJECUTORIA
+        formData.diasPendientesEjecutoria || "",      // 34. DIAS PENDIENTES EJECUTORIA
+        formData.dependencia || "",                   // 35. DEPENDENCIA
+        formData.tipoRespuesta || "",                 // 36. TIPO DE RESPUESTA
+        formData.ingresoAk || "",                     // 37. INGRESO
+        formData.procesoAl || "",                     // 38. PROCESO
+        formData.resolucionSadeAm || "",              // 39. RESOLUCION/SADE
+        formData.fechaAn || "",                       // 40. FECHA
+        formData.planillaAo || "",                    // 41. PLANILLA
+        formData.fechaPlanillaAp || "",               // 42. FECHA PLANILLA
+        formData.dependenciaAq || "",                 // 43. DEPENDENCIA
+        formData.respuestaRecursoAr || "",            // 44. RESPUESTA (RECURSO)
+        formData.ingresoAs || "",                     // 45. INGRESO
+        formData.recursoArchivo || "",                // 46. RECURSO O ARCHIVO
+        formData.procesoAu || "",                     // 47. PROCESO
+        formData.resolucionSadeAv || "",              // 48. RESOLUCION/SADE
+        formData.fechaAw || "",                       // 49. FECHA
+        formData.planillaAx || "",                    // 50. PLANILLA
+        formData.fechaPlanillaAy || "",               // 51. FECHA PLANILLA
+        formData.procesoFinal || ""                   // 52. PROCESO FINAL
       ];
 
       if (editingItem) {
@@ -259,45 +266,45 @@ export default function TrasladosPage() {
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 pt-4 pb-6">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               
-              {/* Bloque 1: Ingreso y Radicación (A - H) */}
+              {/* Bloque 1: Ingreso y Radicación */}
               <div className="space-y-1">
-                <Label className="text-xs font-bold">Canal de Ingreso</Label>
+                <Label className="text-xs font-bold">CANAL DE INGRESO</Label>
                 <Select onValueChange={(v) => setValue("canalIngreso", v)} defaultValue={editingItem?.canalIngreso || "SADE FISCALIZACIÓN"}>
                   <SelectTrigger className="bg-white h-8"><SelectValue placeholder="Seleccione..." /></SelectTrigger>
                   <SelectContent>{canalesIngreso.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent>
                 </Select>
               </div>
 
-              <div className="space-y-1"><Label className="text-xs font-bold">Item (IT.)</Label><Input {...register("item")} className="bg-white h-8" /></div>
-              <div className="space-y-1"><Label className="text-xs font-bold">No. Planilla</Label><Input {...register("noPlanilla")} className="bg-white h-8" /></div>
-              <div className="space-y-1"><Label className="text-xs font-bold">No. Expediente</Label><Input {...register("expediente")} className="bg-white h-8" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">IT.</Label><Input {...register("item")} className="bg-white h-8" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">No. PLANILLA</Label><Input {...register("noPlanilla")} className="bg-white h-8" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">No. EXPEDIENTE</Label><Input {...register("expediente")} className="bg-white h-8" /></div>
 
               <div className="space-y-1 md:col-span-2">
-                <Label className="text-xs font-bold">Acto Administrativo</Label>
+                <Label className="text-xs font-bold">ACTO ADMINISTRATIVO</Label>
                 <Select onValueChange={(v) => setValue("actoAdministrativo", v)} defaultValue={editingItem?.actoAdministrativo}>
                   <SelectTrigger className="bg-white h-8"><SelectValue placeholder="Seleccione..." /></SelectTrigger>
                   <SelectContent>{actosAdministrativos.map(a => <SelectItem key={a} value={a}>{a}</SelectItem>)}</SelectContent>
                 </Select>
               </div>
 
-              <div className="space-y-1"><Label className="text-xs font-bold">Fecha Planilla Ingreso</Label><Input {...register("fechaPlanillaIngreso")} type="date" className="bg-white h-8" /></div>
-              <div className="space-y-1"><Label className="text-xs font-bold">No. Acto y No. SADE</Label><Input {...register("noActoSade")} className="bg-white h-8" /></div>
-              <div className="space-y-1"><Label className="text-xs font-bold">Fecha Acto</Label><Input {...register("fechaActo")} type="date" className="bg-white h-8" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">FECHA PLANILLA INGRESO</Label><Input {...register("fechaPlanillaIngreso")} type="date" className="bg-white h-8" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">No. ACTO ADMINISTRATIVO Y No. SADE</Label><Input {...register("noActoSade")} className="bg-white h-8" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">FECHA ACTO (DD-MM-AAAA)</Label><Input {...register("fechaActo")} type="date" className="bg-white h-8" /></div>
 
-              {/* Bloque 2: Contribuyente y Renta (I - M) */}
+              {/* Bloque 2: Contribuyente y Renta */}
               <div className="space-y-1">
-                <Label className="text-xs font-bold">Proceso</Label>
+                <Label className="text-xs font-bold">PROCESO</Label>
                 <Select onValueChange={(v) => setValue("proceso", v)} defaultValue={editingItem?.proceso}>
                   <SelectTrigger className="bg-white h-8"><SelectValue placeholder="Seleccione..." /></SelectTrigger>
                   <SelectContent>{procesos.map(pr => <SelectItem key={pr} value={pr}>{pr}</SelectItem>)}</SelectContent>
                 </Select>
               </div>
 
-              <div className="space-y-1"><Label className="text-xs font-bold">No. Identificación</Label><Input {...register("identificacion")} className="bg-white h-8" /></div>
-              <div className="space-y-1 md:col-span-2"><Label className="text-xs font-bold">Contribuyente</Label><Input {...register("contribuyente")} className="bg-white h-8" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">No. DE IDENTIFICACION</Label><Input {...register("identificacion")} className="bg-white h-8" /></div>
+              <div className="space-y-1 md:col-span-2"><Label className="text-xs font-bold">CONTRIBUYENTE</Label><Input {...register("contribuyente")} className="bg-white h-8" /></div>
 
               <div className="space-y-1">
-                <Label className="text-xs font-bold">Impuesto</Label>
+                <Label className="text-xs font-bold">IMPUESTO</Label>
                 <Select onValueChange={(v) => setValue("impuesto", v)} defaultValue={editingItem?.impuesto}>
                   <SelectTrigger className="bg-white h-8"><SelectValue placeholder="Seleccione..." /></SelectTrigger>
                   <SelectContent>{impuestos.map(imp => <SelectItem key={imp} value={imp}>{imp}</SelectItem>)}</SelectContent>
@@ -305,27 +312,30 @@ export default function TrasladosPage() {
               </div>
 
               <div className="space-y-1 md:col-span-2">
-                <Label className="text-xs font-bold">Tipo de Renta</Label>
+                <Label className="text-xs font-bold">TIPO DE RENTA</Label>
                 <Select onValueChange={(v) => setValue("tipoRenta", v)} defaultValue={editingItem?.tipoRenta}>
                   <SelectTrigger className="bg-white h-8"><SelectValue placeholder="Seleccione..." /></SelectTrigger>
                   <SelectContent>{tiposRenta.map(tr => <SelectItem key={tr} value={tr}>{tr}</SelectItem>)}</SelectContent>
                 </Select>
               </div>
 
-              {/* Bloque 3: Detalles, Ubicación y Capital (N - Z) */}
-              <div className="space-y-1"><Label className="text-xs font-bold">Tipo de Trámite</Label><Input {...register("tipoTramite")} className="bg-white h-8" /></div>
-              <div className="space-y-1"><Label className="text-xs font-bold">Dirección</Label><Input {...register("direccion")} className="bg-white h-8" /></div>
-              <div className="space-y-1"><Label className="text-xs font-bold">Ciudad</Label><Input {...register("ciudad")} className="bg-white h-8" /></div>
+              {/* Bloque 3: Detalles y Ubicación */}
+              <div className="space-y-1"><Label className="text-xs font-bold">TIPO DE TRAMITE</Label><Input {...register("tipoTramite")} className="bg-white h-8" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">ITEM</Label><Input {...register("itemDetalle")} className="bg-white h-8" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">TIPO</Label><Input {...register("tipoExtra")} className="bg-white h-8" /></div>
 
-              <div className="space-y-1"><Label className="text-xs font-bold">Periodo (mes)</Label><Input {...register("periodo")} className="bg-white h-8" /></div>
-              <div className="space-y-1"><Label className="text-xs font-bold">Vigencia (año)</Label><Input {...register("vigencia")} className="bg-white h-8" /></div>
-              <div className="space-y-1"><Label className="text-xs font-bold">Fecha Vencimiento</Label><Input {...register("fechaVencimientoInput")} type="date" className="bg-white h-8" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">DIRECCION</Label><Input {...register("direccion")} className="bg-white h-8" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">CIUDAD</Label><Input {...register("ciudad")} className="bg-white h-8" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">PERIODO (mes)</Label><Input {...register("periodo")} className="bg-white h-8" /></div>
 
-              <div className="space-y-1"><Label className="text-xs font-bold">Capital</Label><Input {...register("capital")} className="bg-white h-8" /></div>
-              <div className="space-y-1"><Label className="text-xs font-bold">Sanción</Label><Input {...register("sancion")} className="bg-white h-8" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">VIGENCIA (año)</Label><Input {...register("vigencia")} className="bg-white h-8" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">FECHA VENCIMIENTO</Label><Input {...register("fechaVencimiento")} type="date" className="bg-white h-8" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">CAPITAL</Label><Input {...register("capital")} className="bg-white h-8" /></div>
 
+              <div className="space-y-1"><Label className="text-xs font-bold">SANCION</Label><Input {...register("sancion")} className="bg-white h-8" /></div>
+              
               <div className="space-y-1">
-                <Label className="text-xs font-bold">Funcionario Encargado</Label>
+                <Label className="text-xs font-bold">FUNCIONARIO ENCARGADO</Label>
                 <Select onValueChange={(v) => setValue("funcionarioEncargado", v)} defaultValue={editingItem?.funcionarioEncargado}>
                   <SelectTrigger className="bg-white h-8"><SelectValue placeholder="Seleccione..." /></SelectTrigger>
                   <SelectContent>{funcionarios.map(f => <SelectItem key={f} value={f}>{f}</SelectItem>)}</SelectContent>
@@ -333,26 +343,29 @@ export default function TrasladosPage() {
               </div>
 
               <div className="space-y-1">
-                <Label className="text-xs font-bold">Ubicación</Label>
+                <Label className="text-xs font-bold">UBICACIÓN</Label>
                 <Select onValueChange={(v) => setValue("ubicacion", v)} defaultValue={editingItem?.ubicacion}>
                   <SelectTrigger className="bg-white h-8"><SelectValue placeholder="Seleccione..." /></SelectTrigger>
                   <SelectContent>{ubicaciones.map(u => <SelectItem key={u} value={u}>{u}</SelectItem>)}</SelectContent>
                 </Select>
               </div>
 
-              <div className="space-y-1 md:col-span-2"><Label className="text-xs font-bold">Observaciones</Label><Input {...register("observaciones")} className="bg-white h-8" /></div>
+              <div className="space-y-1 md:col-span-3"><Label className="text-xs font-bold">OBSERVACIONES</Label><Input {...register("observaciones")} className="bg-white h-8" /></div>
 
-              {/* Bloque 4: Resolución y Salidas (AA - AJ) */}
-              <div className="space-y-1"><Label className="text-xs font-bold">Estado del Proceso</Label><Input {...register("estadoProceso")} className="bg-white h-8" /></div>
-              <div className="space-y-1"><Label className="text-xs font-bold">Resolución / SADE Salida</Label><Input {...register("resolucionSadeSalida")} className="bg-white h-8" /></div>
-              <div className="space-y-1"><Label className="text-xs font-bold">Fecha Resolución / SADE</Label><Input {...register("fechaResolucionSade")} type="date" className="bg-white h-8" /></div>
+              {/* Bloque 4: Resolución y Salidas */}
+              <div className="space-y-1"><Label className="text-xs font-bold">ESTADO DEL PROCESO</Label><Input {...register("estadoProceso")} className="bg-white h-8" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">PROCESO</Label><Input {...register("procesoAb")} className="bg-white h-8" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">RESOLUCION/SADE SALIDA</Label><Input {...register("resolucionSadeSalida")} className="bg-white h-8" /></div>
 
-              <div className="space-y-1"><Label className="text-xs font-bold">Número de Planilla</Label><Input {...register("numeroPlanilla")} className="bg-white h-8" /></div>
-              <div className="space-y-1"><Label className="text-xs font-bold">Fecha Planilla</Label><Input {...register("fechaPlanilla")} type="date" className="bg-white h-8" /></div>
-              <div className="space-y-1"><Label className="text-xs font-bold">Fecha Ejecutoria</Label><Input {...register("fechaEjecutoria")} type="date" className="bg-white h-8" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">FECHA RESOLUCION/SADE DE SALIDA</Label><Input {...register("fechaResolucionSade")} type="date" className="bg-white h-8" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">NUMERO DE PLANILLA</Label><Input {...register("numeroPlanilla")} className="bg-white h-8" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">FECHA PLANILLA</Label><Input {...register("fechaPlanilla")} type="date" className="bg-white h-8" /></div>
 
+              <div className="space-y-1"><Label className="text-xs font-bold">FECHA EJECUTORIA</Label><Input {...register("fechaEjecutoria")} type="date" className="bg-white h-8" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">DIAS PENDIENTES EJECUTORIA</Label><Input {...register("diasPendientesEjecutoria")} className="bg-white h-8" /></div>
+              
               <div className="space-y-1">
-                <Label className="text-xs font-bold">Dependencia</Label>
+                <Label className="text-xs font-bold">DEPENDENCIA</Label>
                 <Select onValueChange={(v) => setValue("dependencia", v)} defaultValue={editingItem?.dependencia}>
                   <SelectTrigger className="bg-white h-8"><SelectValue placeholder="Seleccione..." /></SelectTrigger>
                   <SelectContent>{dependencias.map(d => <SelectItem key={d} value={d}>{d}</SelectItem>)}</SelectContent>
@@ -360,30 +373,42 @@ export default function TrasladosPage() {
               </div>
 
               <div className="space-y-1">
-                <Label className="text-xs font-bold">Tipo de Respuesta</Label>
+                <Label className="text-xs font-bold">TIPO DE RESPUESTA</Label>
                 <Select onValueChange={(v) => setValue("tipoRespuesta", v)} defaultValue={editingItem?.tipoRespuesta}>
                   <SelectTrigger className="bg-white h-8"><SelectValue placeholder="Seleccione..." /></SelectTrigger>
                   <SelectContent>{tiposRespuesta.map(tr => <SelectItem key={tr} value={tr}>{tr}</SelectItem>)}</SelectContent>
                 </Select>
               </div>
 
-              {/* Bloque 5: Tramo Final Operativo (AS - AZ) */}
-              <div className="space-y-1"><Label className="text-xs font-bold">Ingreso (AS)</Label><Input {...register("ingresoExtra")} className="bg-white h-8" /></div>
+              {/* Bloque 5: Tramo Final Operativo */}
+              <div className="space-y-1"><Label className="text-xs font-bold">INGRESO</Label><Input {...register("ingresoAk")} className="bg-white h-8" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">PROCESO</Label><Input {...register("procesoAl")} className="bg-white h-8" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">RESOLUCION/SADE</Label><Input {...register("resolucionSadeAm")} className="bg-white h-8" /></div>
+
+              <div className="space-y-1"><Label className="text-xs font-bold">FECHA</Label><Input {...register("fechaAn")} type="date" className="bg-white h-8" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">PLANILLA</Label><Input {...register("planillaAo")} className="bg-white h-8" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">FECHA PLANILLA</Label><Input {...register("fechaPlanillaAp")} type="date" className="bg-white h-8" /></div>
+
+              <div className="space-y-1"><Label className="text-xs font-bold">DEPENDENCIA</Label><Input {...register("dependenciaAq")} className="bg-white h-8" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">RESPUESTA (RECURSO)</Label><Input {...register("respuestaRecursoAr")} className="bg-white h-8" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">INGRESO</Label><Input {...register("ingresoAs")} className="bg-white h-8" /></div>
 
               <div className="space-y-1">
-                <Label className="text-xs font-bold">Recurso o Archivo</Label>
+                <Label className="text-xs font-bold">RECURSO O ARCHIVO</Label>
                 <Select onValueChange={(v) => setValue("recursoArchivo", v)} defaultValue={editingItem?.recursoArchivo}>
                   <SelectTrigger className="bg-white h-8"><SelectValue placeholder="Seleccione..." /></SelectTrigger>
                   <SelectContent>{recursosArchivo.map(ra => <SelectItem key={ra} value={ra}>{ra}</SelectItem>)}</SelectContent>
                 </Select>
               </div>
 
-              <div className="space-y-1"><Label className="text-xs font-bold">Proceso (AU)</Label><Input {...register("procesoAu")} className="bg-white h-8" /></div>
-              <div className="space-y-1"><Label className="text-xs font-bold">Resolución / SADE (AV)</Label><Input {...register("resolucionSadeAv")} className="bg-white h-8" /></div>
-              <div className="space-y-1"><Label className="text-xs font-bold">Fecha (AW)</Label><Input {...register("fechaAw")} type="date" className="bg-white h-8" /></div>
-              <div className="space-y-1"><Label className="text-xs font-bold">Planilla (AX)</Label><Input {...register("planilaAx")} className="bg-white h-8" /></div>
-              <div className="space-y-1"><Label className="text-xs font-bold">Fecha Planilla (AY)</Label><Input {...register("fechaPlanillaAy")} type="date" className="bg-white h-8" /></div>
-              <div className="space-y-1 md:col-span-2"><Label className="text-xs font-bold">Proceso Final (AZ)</Label><Input {...register("procesoFinal")} className="bg-white h-8" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">PROCESO</Label><Input {...register("procesoAu")} className="bg-white h-8" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">RESOLUCION/SADE</Label><Input {...register("resolucionSadeAv")} className="bg-white h-8" /></div>
+
+              <div className="space-y-1"><Label className="text-xs font-bold">FECHA</Label><Input {...register("fechaAw")} type="date" className="bg-white h-8" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">PLANILLA</Label><Input {...register("planillaAx")} className="bg-white h-8" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">FECHA PLANILLA</Label><Input {...register("fechaPlanillaAy")} type="date" className="bg-white h-8" /></div>
+
+              <div className="space-y-1 md:col-span-3"><Label className="text-xs font-bold">PROCESO FINAL</Label><Input {...register("procesoFinal")} className="bg-white h-8" /></div>
 
             </div>
 
