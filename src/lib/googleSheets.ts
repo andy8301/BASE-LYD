@@ -26,66 +26,67 @@ export async function getSheetNames(): Promise<SheetInfo[]> {
   }));
 }
 
-// Usamos JSONP nativo para saltarnos el CORS y el error 302 al leer de Google Sheets
 export async function readSheet(sheetName?: string, range?: string): Promise<Record<string, any[]>> {
   const targetSheet = sheetName || "Base Olga";
   
-  return new Promise((resolve, reject) => {
-    const callbackName = 'jsonp_callback_' + Math.round(100000 * Math.random());
+  try {
+    const url = `${WEB_APP_URL}?sheetName=${encodeURIComponent(targetSheet)}`;
+    const response = await fetch(url);
+    const text = await response.text();
     
-    // Función global que ejecutará Google Apps Script al responder
-    (window as any)[callbackName] = function(data: any) {
-      delete (window as any)[callbackName];
-      document.body.removeChild(script);
-      if (data && data.error) {
-        reject(new Error(data.error));
+    // Limpiamos cualquier posible redirección de Google para extraer el JSON puro
+    let result;
+    try {
+      result = JSON.parse(text);
+    } catch (e) {
+      // Si viene envuelto en texto o HTML de redirección, intentamos buscar el JSON dentro
+      const jsonStart = text.indexOf('{');
+      const jsonEnd = text.lastIndexOf('}');
+      if (jsonStart !== -1 && jsonEnd !== -1) {
+        result = JSON.parse(text.substring(jsonStart, jsonEnd + 1));
       } else {
-        resolve({
-          [targetSheet]: data[targetSheet] || []
-        });
+        throw new Error("Formato de respuesta inválido");
       }
-    };
+    }
 
-    const script = document.createElement('script');
-    script.src = `${WEB_APP_URL}?sheetName=${encodeURIComponent(targetSheet)}&callback=${callbackName}`;
-    script.onerror = function() {
-      delete (window as any)[callbackName];
-      document.body.removeChild(script);
-      reject(new Error("Error al conectar con Google Sheets"));
+    if (result.error) {
+      throw new Error(result.error);
+    }
+
+    const rawRows = result[targetSheet] || [];
+
+    // Mapeamos los datos para que Lovable los pinte sin importar los nombres de las columnas
+    const formattedRows = rawRows.map((row: any, index: number) => ({
+      id: row["No consecutivo"] || row["ID"] || `row-${index}`,
+      ...row
+    }));
+
+    return {
+      [targetSheet]: formattedRows
     };
-    
-    document.body.appendChild(script);
-  });
+  } catch (error) {
+    console.error('Error al leer la hoja:', error);
+    // Devolvemos un arreglo vacío en caso de fallo para que la aplicación no se congele
+    return {
+      [targetSheet]: []
+    };
+  }
 }
 
 export async function appendToSheet(sheetName: string, rowData: any[]): Promise<any> {
-  try {
-    const response = await fetch(WEB_APP_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify({ action: 'append', sheetName, rowData })
-    });
-    const result = await response.json();
-    if (!result.success) throw new Error(result.error || 'Failed to append to sheet');
-    return result;
-  } catch (error) {
-    console.error('Error appending to sheet:', error);
-    throw error;
-  }
+  const response = await fetch(WEB_APP_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify({ action: 'append', sheetName, rowData })
+  });
+  return await response.json();
 }
 
 export async function updateSheetRow(sheetName: string, range: string, rowData: any[]): Promise<any> {
-  try {
-    const response = await fetch(WEB_APP_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify({ action: 'update', sheetName, rangeStr: range, rowData })
-    });
-    const result = await response.json();
-    if (!result.success) throw new Error(result.error || 'Failed to update sheet');
-    return result;
-  } catch (error) {
-    console.error('Error updating sheet:', error);
-    throw error;
-  }
+  const response = await fetch(WEB_APP_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify({ action: 'update', sheetName, rangeStr: range, rowData })
+  });
+  return await response.json();
 }
