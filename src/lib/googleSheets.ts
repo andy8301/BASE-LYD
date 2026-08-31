@@ -17,16 +17,10 @@ export interface SheetInfo {
   index: number;
 }
 
-// URL de tu Apps Script implementado
 const WEB_APP_URL = "https://script.google.com/macros/s/AKfycby06Oi2pADk8qxOk_v892vIXEpkuh6XSBirwg7xT_mSjKNwMlRsvSt1kG5L1dVqn3m49Q/exec";
 
 export async function getSheetNames(): Promise<SheetInfo[]> {
   try {
-    const response = await fetch(`${WEB_APP_URL}?sheetName=Base%20Olga`);
-    const result = await response.json();
-    if (result.error) throw new Error(result.error);
-    
-    // Retorna las hojas disponibles basadas en los nombres definidos
     return Object.values(SHEET_NAMES).map((name, index) => ({
       title: name,
       sheetId: index,
@@ -48,7 +42,10 @@ export async function readSheet(sheetName?: string, range?: string): Promise<Rec
       throw new Error(result.error);
     }
     
-    return result;
+    // Aseguramos que devuelva el objeto con la clave exacta de la hoja
+    return {
+      [targetSheet]: result[targetSheet] || []
+    };
   } catch (error) {
     console.error('Error reading sheet:', error);
     throw error;
