@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Plus, Save } from "lucide-react";
+import { Plus, Save, ChevronDown, ChevronUp } from "lucide-react";
 import { toast } from "sonner";
 import { readSheet, appendToSheet, updateSheetRow, SHEET_NAMES } from "@/lib/googleSheets";
 
@@ -14,6 +14,7 @@ export default function BaseOlga() {
   const [isLoading, setIsLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<any | undefined>(undefined);
+  const [mostrarSegundaInstancia, setMostrarSegundaInstancia] = useState(false);
   
   const { register, handleSubmit, setValue, reset } = useForm();
 
@@ -43,7 +44,7 @@ export default function BaseOlga() {
   const onSubmit = async (formData: any) => {
     try {
       const rowData = [
-        "", // A (Timestamp / ID automático)
+        "", // A
         formData.consecutivo || "",         // B
         formData.canalIngreso || "",        // C
         formData.areaRemitente || "",       // D
@@ -53,7 +54,7 @@ export default function BaseOlga() {
         formData.actoAdministrativo || "",  // H
         formData.numeroActo || "",          // I
         formData.fechaActo || "",           // J
-        "", // K (Fórmula Mes - Automática)
+        "", // K (Fórmula Mes)
         formData.placa || "",               // L
         formData.identificacion || "",      // M
         formData.contribuyente || "",       // N
@@ -87,7 +88,7 @@ export default function BaseOlga() {
         formData.trasladoAP || "",          // AP
         formData.tipoRespuestaAQ || "",     // AQ
         formData.baseFunc3raAR || "",       // AR
-        ...Array(11).fill(""),               // AS a BC (Omisión de celdas calculadas/intermedias)
+        ...Array(11).fill(""),               // AS a BC
         formData.fechaVencimientoBD || ""   // BD
       ];
 
@@ -108,9 +109,9 @@ export default function BaseOlga() {
       <div className="flex justify-between items-center bg-white p-4 rounded-lg shadow border">
         <div>
           <h1 className="text-2xl font-bold">Traza Rentas - Base Olga</h1>
-          <p className="text-sm text-gray-500">Gestión gerencial e integral de expedientes y actos administrativos</p>
+          <p className="text-sm text-gray-500">Gestión gerencial e integral de expedientes</p>
         </div>
-        <Button onClick={() => { reset({}); setEditingItem(undefined); setIsDialogOpen(true); }} className="bg-slate-900 text-white hover:bg-black">
+        <Button onClick={() => { reset({}); setEditingItem(undefined); setMostrarSegundaInstancia(false); setIsDialogOpen(true); }} className="bg-slate-900 text-white hover:bg-black">
           <Plus className="mr-2 h-4 w-4" /> Nuevo Registro
         </Button>
       </div>
@@ -125,7 +126,6 @@ export default function BaseOlga() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-blue-50/50 rounded-lg border border-blue-100">
               <h3 className="col-span-3 font-bold text-blue-800 border-b border-blue-200 pb-1 text-sm">1. Radicación e Ingreso</h3>
               <div className="space-y-1"><Label className="text-xs font-bold">No. Consecutivo</Label><Input {...register("consecutivo")} className="bg-white h-8" /></div>
-              
               <div className="space-y-1">
                 <Label className="text-xs font-bold">Canal de Ingreso</Label>
                 <Select onValueChange={(v) => setValue("canalIngreso", v)}>
@@ -133,7 +133,6 @@ export default function BaseOlga() {
                   <SelectContent>{canalesIngreso.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent>
                 </Select>
               </div>
-
               <div className="space-y-1">
                 <Label className="text-xs font-bold">Área Remitente</Label>
                 <Select onValueChange={(v) => setValue("areaRemitente", v)}>
@@ -141,7 +140,6 @@ export default function BaseOlga() {
                   <SelectContent>{areasRemitentes.map(a => <SelectItem key={a} value={a}>{a}</SelectItem>)}</SelectContent>
                 </Select>
               </div>
-
               <div className="space-y-1"><Label className="text-xs font-bold">No. Planilla</Label><Input {...register("planilla")} className="bg-white h-8" /></div>
               <div className="space-y-1"><Label className="text-xs font-bold">No. Expediente</Label><Input {...register("expediente")} className="bg-white h-8" /></div>
               <div className="space-y-1"><Label className="text-xs font-bold">Fecha de Radicación</Label><Input {...register("fechaRadicacion")} type="date" className="bg-white h-8" /></div>
@@ -158,7 +156,6 @@ export default function BaseOlga() {
               <div className="space-y-1"><Label className="text-xs font-bold">Contribuyente</Label><Input {...register("contribuyente")} className="bg-white h-8" /></div>
               <div className="space-y-1"><Label className="text-xs font-bold">Ciudad / Departamento</Label><Input {...register("ciudadDepartamento")} className="bg-white h-8" /></div>
               <div className="space-y-1"><Label className="text-xs font-bold">Observaciones</Label><Input {...register("observaciones")} className="bg-white h-8" /></div>
-              
               <div className="space-y-1">
                 <Label className="text-xs font-bold">Funcionario Encargado</Label>
                 <Select onValueChange={(v) => setValue("funcionarioEncargado", v)}>
@@ -166,10 +163,8 @@ export default function BaseOlga() {
                   <SelectContent>{funcionarios.map(f => <SelectItem key={f} value={f}>{f}</SelectItem>)}</SelectContent>
                 </Select>
               </div>
-
               <div className="space-y-1"><Label className="text-xs font-bold text-green-700">Nota</Label><Input {...register("nota")} className="bg-white h-8 border-green-300" /></div>
               <div className="space-y-1"><Label className="text-xs font-bold">Fecha de Recibido</Label><Input {...register("fechaRecibido")} type="date" className="bg-white h-8" /></div>
-
               <div className="space-y-1">
                 <Label className="text-xs font-bold">Tipo de Renta</Label>
                 <Select onValueChange={(v) => setValue("tipoRenta", v)}>
@@ -177,7 +172,6 @@ export default function BaseOlga() {
                   <SelectContent>{tiposRenta.map(tr => <SelectItem key={tr} value={tr}>{tr}</SelectItem>)}</SelectContent>
                 </Select>
               </div>
-
               <div className="space-y-1">
                 <Label className="text-xs font-bold">Tipo de Trámite</Label>
                 <Select onValueChange={(v) => setValue("tipoTramite", v)}>
@@ -192,7 +186,6 @@ export default function BaseOlga() {
               <h3 className="col-span-3 font-bold text-orange-800 border-b border-orange-200 pb-1 text-sm">3. Clasificación y Respuesta (1ra Instancia)</h3>
               <div className="space-y-1"><Label className="text-xs font-bold">Ítem</Label><Input {...register("item")} className="bg-white h-8" /></div>
               <div className="space-y-1"><Label className="text-xs font-bold">Tipo de Renta (Otro)</Label><Input {...register("tipoRentaOtro")} className="bg-white h-8" /></div>
-              
               <div className="space-y-1">
                 <Label className="text-xs font-bold">Prelación Legal</Label>
                 <Select onValueChange={(v) => setValue("prelacionLegal", v)}>
@@ -200,12 +193,10 @@ export default function BaseOlga() {
                   <SelectContent>{prelacionOpciones.map(p => <SelectItem key={p} value={p}>{p}</SelectItem>)}</SelectContent>
                 </Select>
               </div>
-
               <div className="space-y-1"><Label className="text-xs font-bold">Base Funcionario 1ra</Label><Input {...register("baseFuncionario1ra")} className="bg-white h-8" /></div>
               <div className="space-y-1"><Label className="text-xs font-bold">No. Resolución</Label><Input {...register("numeroResolucion")} className="bg-white h-8" /></div>
               <div className="space-y-1"><Label className="text-xs font-bold">SADE de Salida</Label><Input {...register("numeroSadeSalida")} className="bg-white h-8" /></div>
               <div className="space-y-1"><Label className="text-xs font-bold">Fecha Res. Salida</Label><Input {...register("fechaResolucionSadeSalida")} type="date" className="bg-white h-8" /></div>
-              
               <div className="space-y-1">
                 <Label className="text-xs font-bold">Tipo de Respuesta</Label>
                 <Select onValueChange={(v) => setValue("tipoRespuesta", v)}>
@@ -213,40 +204,52 @@ export default function BaseOlga() {
                   <SelectContent>{respuestas.map(r => <SelectItem key={r} value={r}>{r}</SelectItem>)}</SelectContent>
                 </Select>
               </div>
-
               <div className="space-y-1"><Label className="text-xs font-bold">No. Planilla Salida</Label><Input {...register("noPlanillaSalida")} className="bg-white h-8" /></div>
               <div className="space-y-1"><Label className="text-xs font-bold">Fecha Planilla Salida</Label><Input {...register("fechaDePlanillaSalida")} type="date" className="bg-white h-8" /></div>
               <div className="space-y-1"><Label className="text-xs font-bold text-red-600">Fecha de Ejecutoria</Label><Input {...register("fechaEjecutoria")} type="date" className="bg-white h-8 border-red-200" /></div>
               <div className="space-y-1"><Label className="text-xs font-bold">Traslado</Label><Input {...register("traslado")} className="bg-white h-8" /></div>
             </div>
 
-            {/* 4. Segunda y Tercera Instancia */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-purple-50/50 rounded-lg border border-purple-100">
-              <h3 className="col-span-3 font-bold text-purple-800 border-b border-purple-200 pb-1 text-sm">4. Instancias Posteriores y Vencimiento</h3>
-              <div className="space-y-1"><Label className="text-xs font-bold">Observación (2da Inst.)</Label><Input {...register("observacionAH")} className="bg-white h-8" /></div>
-              <div className="space-y-1"><Label className="text-xs font-bold">Base Func. 2da Instancia</Label><Input {...register("baseFuncionario2daAI")} className="bg-white h-8" /></div>
-              <div className="space-y-1"><Label className="text-xs font-bold">No. Resolución (2da Inst.)</Label><Input {...register("numResolucionAJ")} className="bg-white h-8" /></div>
-              <div className="space-y-1"><Label className="text-xs font-bold">No. SADE (2da Inst.)</Label><Input {...register("numSadeAK")} className="bg-white h-8" /></div>
-              <div className="space-y-1"><Label className="text-xs font-bold">Fecha Res. / SADE (2da)</Label><Input {...register("fechaResolucionAL")} type="date" className="bg-white h-8" /></div>
-              <div className="space-y-1"><Label className="text-xs font-bold">No. Planilla (2da)</Label><Input {...register("numPlanillaAM")} className="bg-white h-8" /></div>
-              <div className="space-y-1"><Label className="text-xs font-bold">Fecha Planilla (2da)</Label><Input {...register("fechaPlanillaAN")} type="date" className="bg-white h-8" /></div>
-              <div className="space-y-1"><Label className="text-xs font-bold">Fecha Ejecutoria (2da)</Label><Input {...register("fechaEjecutoriaAO")} type="date" className="bg-white h-8" /></div>
-              <div className="space-y-1"><Label className="text-xs font-bold">Traslado (2da)</Label><Input {...register("trasladoAP")} className="bg-white h-8" /></div>
-              
-              <div className="space-y-1">
-                <Label className="text-xs font-bold">Tipo Respuesta (2da)</Label>
-                <Select onValueChange={(v) => setValue("tipoRespuestaAQ", v)}>
-                  <SelectTrigger className="bg-white h-8"><SelectValue placeholder="Seleccione..." /></SelectTrigger>
-                  <SelectContent>{respuestas.map(r => <SelectItem key={r} value={r}>{r}</SelectItem>)}</SelectContent>
-                </Select>
-              </div>
-
-              <div className="space-y-1"><Label className="text-xs font-bold">Base Func. 3ra Instancia</Label><Input {...register("baseFunc3raAR")} className="bg-white h-8 border-purple-200" /></div>
-              <div className="space-y-1">
-                <Label className="text-xs font-bold text-red-700">Fecha de Vencimiento</Label>
-                <Input {...register("fechaVencimientoBD")} type="date" className="bg-white h-8 border-red-300" />
-              </div>
+            {/* BOTÓN DESPLEGABLE PARA INSTANCIAS POSTERIORES */}
+            <div className="pt-2">
+              <Button 
+                type="button" 
+                variant="outline" 
+                onClick={() => setMostrarSegundaInstancia(!mostrarSegundaInstancia)}
+                className="w-full flex justify-between items-center bg-purple-50 hover:bg-purple-100 text-purple-900 border-purple-200 font-bold py-3"
+              >
+                <span>{mostrarSegundaInstancia ? "Ocultar Segunda y Tercera Instancia" : "+ Agregar Segunda / Tercera Instancia (Opcional)"}</span>
+                {mostrarSegundaInstancia ? <ChevronUp className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}
+              </Button>
             </div>
+
+            {/* 4. Segunda y Tercera Instancia (Condicional / Desplegable) */}
+            {mostrarSegundaInstancia && (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-purple-50/50 rounded-lg border border-purple-100 animate-fadeIn">
+                <h3 className="col-span-3 font-bold text-purple-800 border-b border-purple-200 pb-1 text-sm">4. Instancias Posteriores y Vencimiento</h3>
+                <div className="space-y-1"><Label className="text-xs font-bold">Observación (2da Inst.)</Label><Input {...register("observacionAH")} className="bg-white h-8" /></div>
+                <div className="space-y-1"><Label className="text-xs font-bold">Base Func. 2da Instancia</Label><Input {...register("baseFuncionario2daAI")} className="bg-white h-8" /></div>
+                <div className="space-y-1"><Label className="text-xs font-bold">No. Resolución (2da Inst.)</Label><Input {...register("numResolucionAJ")} className="bg-white h-8" /></div>
+                <div className="space-y-1"><Label className="text-xs font-bold">No. SADE (2da Inst.)</Label><Input {...register("numSadeAK")} className="bg-white h-8" /></div>
+                <div className="space-y-1"><Label className="text-xs font-bold">Fecha Res. / SADE (2da)</Label><Input {...register("fechaResolucionAL")} type="date" className="bg-white h-8" /></div>
+                <div className="space-y-1"><Label className="text-xs font-bold">No. Planilla (2da)</Label><Input {...register("numPlanillaAM")} className="bg-white h-8" /></div>
+                <div className="space-y-1"><Label className="text-xs font-bold">Fecha Planilla (2da)</Label><Input {...register("fechaPlanillaAN")} type="date" className="bg-white h-8" /></div>
+                <div className="space-y-1"><Label className="text-xs font-bold">Fecha Ejecutoria (2da)</Label><Input {...register("fechaEjecutoriaAO")} type="date" className="bg-white h-8" /></div>
+                <div className="space-y-1"><Label className="text-xs font-bold">Traslado (2da)</Label><Input {...register("trasladoAP")} className="bg-white h-8" /></div>
+                <div className="space-y-1">
+                  <Label className="text-xs font-bold">Tipo Respuesta (2da)</Label>
+                  <Select onValueChange={(v) => setValue("tipoRespuestaAQ", v)}>
+                    <SelectTrigger className="bg-white h-8"><SelectValue placeholder="Seleccione..." /></SelectTrigger>
+                    <SelectContent>{respuestas.map(r => <SelectItem key={r} value={r}>{r}</SelectItem>)}</SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-1"><Label className="text-xs font-bold">Base Func. 3ra Instancia</Label><Input {...register("baseFunc3raAR")} className="bg-white h-8 border-purple-200" /></div>
+                <div className="space-y-1">
+                  <Label className="text-xs font-bold text-red-700">Fecha de Vencimiento</Label>
+                  <Input {...register("fechaVencimientoBD")} type="date" className="bg-white h-8 border-red-300" />
+                </div>
+              </div>
+            )}
 
             <Button type="submit" className="w-full bg-slate-900 py-6 text-xl font-bold text-white hover:bg-black"><Save className="mr-2 h-6 w-6" /> Guardar Todo en Sheets</Button>
           </form>
