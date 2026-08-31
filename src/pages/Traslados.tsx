@@ -52,59 +52,51 @@ export default function TrasladosPage() {
     try {
       const sheetName = "Base Traslados Fiscalizacion";
       const rowData = [
-        formData.canalIngreso || "SADE FISCALIZACIÓN", // A
-        formData.item || "",                          // B
-        formData.noPlanilla || "",                    // C
-        formData.expediente || "",                    // D
-        formData.actoAdministrativo || "",            // E
-        formData.fechaPlanillaIngreso || "",          // F
-        formData.noActoSade || "",                    // G
-        formData.fechaActo || "",                     // H
-        formData.proceso || "",                       // I
-        formData.identificacion || "",                // J
-        formData.contribuyente || "",                 // K
-        formData.impuesto || "",                      // L
-        formData.tipoRenta || "",                     // M
-        formData.tipoTramite || "",                   // N
-        formData.itemDetalle || "",                   // O
-        formData.tipoExtra || "",                     // P
-        formData.direccion || "",                     // Q
-        formData.ciudad || "",                        // R
-        formData.periodo || "",                       // S
-        formData.vigencia || "",                      // T
-        formData.fechaVencimientoInput || "",         // U
-        formData.capital || "",                       // V
-        formData.sancion || "",                       // W
-        formData.funcionarioEncargado || "",          // X
-        formData.ubicacion || "",                     // Y
-        formData.observaciones || "",                 // Z
-        formData.estadoProceso || "",                 // AA
+        formData.canalIngreso || "SADE FISCALIZACIÓN", // A: CANAL DE INGRESO
+        formData.item || "",                          // B: IT.
+        formData.noPlanilla || "",                    // C: No. PLANILLA
+        formData.expediente || "",                    // D: No. EXPEDIENTE
+        formData.actoAdministrativo || "",            // E: ACTO ADMINISTRATIVO
+        formData.fechaPlanillaIngreso || "",          // F: FECHA PLANILLA INGRESO
+        formData.noActoSade || "",                    // G: No. ACTO ADMINISTRATIVO Y No. SADE
+        formData.fechaActo || "",                     // H: FECHA ACTO
+        formData.proceso || "",                       // I: PROCESO
+        formData.identificacion || "",                // J: No. DE IDENTIFICACION
+        formData.contribuyente || "",                 // K: CONTRIBUYENTE
+        formData.impuesto || "",                      // L: IMPUESTO
+        formData.tipoRenta || "",                     // M: TIPO DE RENTA
+        formData.tipoTramite || "",                   // N: TIPO DE TRAMITE
+        formData.itemDetalle || "",                   // O: ITEM
+        formData.tipoExtra || "",                     // P: TIPO
+        formData.direccion || "",                     // Q: DIRECCION
+        formData.ciudad || "",                        // R: CIUDAD
+        formData.periodo || "",                       // S: PERIODO (mes)
+        formData.vigencia || "",                      // T: VIGENCIA (año)
+        formData.fechaVencimientoInput || "",         // U: FECHA VENCIMIENTO
+        formData.capital || "",                       // V: CAPITAL
+        formData.sancion || "",                       // W: SANCION
+        formData.funcionarioEncargado || "",          // X: FUNCIONARIO ENCARGADO
+        formData.ubicacion || "",                     // Y: UBICACION
+        formData.observaciones || "",                 // Z: OBSERVACIONES
+        formData.estadoProceso || "",                 // AA: ESTADO DEL PROCESO
         "",                                           // AB (Fórmula)
-        formData.resolucionSadeSalida || "",          // AC
-        formData.fechaResolucionSade || "",           // AD
-        formData.numeroPlanilla || "",                // AE
-        formData.fechaPlanilla || "",                 // AF
-        formData.fechaEjecutoria || "",               // AG
+        formData.resolucionSadeSalida || "",          // AC: RESOLUCION/SADE SALIDA
+        formData.fechaResolucionSade || "",           // AD: FECHA RESOLUCION/SADE
+        formData.numeroPlanilla || "",                // AE: NUMERO DE PLANILLA
+        formData.fechaPlanilla || "",                 // AF: FECHA PLANILLA
+        formData.fechaEjecutoria || "",               // AG: FECHA EJECUTORIA
         "",                                           // AH (Fórmula)
-        formData.dependencia || "",                   // AI
-        formData.tipoRespuesta || "",                 // AJ
-        "",                                           // AK (Fórmula)
-        "",                                           // AL (Fórmula)
-        "",                                           // AM (Fórmula)
-        "",                                           // AN (Fórmula)
-        "",                                           // AO (Fórmula)
-        "",                                           // AP (Fórmula)
-        "",                                           // AQ (Fórmula)
-        "",                                           // AR (Fórmula)
-        formData.ingresoExtra || "",                  // AS
-        formData.recursoArchivo || "",                // AT
-        formData.procesoAu || "",                     // AU
-        formData.resolucionSadeAv || "",              // AV
-        formData.fechaAw || "",                       // AW
-        formData.planilaAx || "",                     // AX
-        formData.fechaPlanillaAy || "",               // AY
-        formData.procesoFinal || ""                   // AZ
-        // BA hasta BF: Se omiten porque son fórmulas gerenciales de fecha de vencimiento, días, semáforos, año, mes y 'es formula'
+        formData.dependencia || "",                   // AI: DEPENDENCIA
+        formData.tipoRespuesta || "",                 // AJ: TIPO DE RESPUESTA
+        "", "", "", "", "", "", "", "",               // AK a AR: Fórmulas
+        formData.ingresoExtra || "",                  // AS: INGRESO
+        formData.recursoArchivo || "",                // AT: RECURSO O ARCHIVO
+        formData.procesoAu || "",                     // AU: PROCESO
+        formData.resolucionSadeAv || "",              // AV: RESOLUCION/SADE
+        formData.fechaAw || "",                       // AW: FECHA
+        formData.planilaAx || "",                     // AX: PLANILLA
+        formData.fechaPlanillaAy || "",               // AY: FECHA PLANILLA
+        formData.procesoFinal || ""                   // AZ: PROCESO FINAL
       ];
 
       if (editingItem) {
@@ -228,6 +220,7 @@ export default function TrasladosPage() {
       </div>
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        {/* Ancho ampliado a max-w-5xl idéntico al de Nexura para solucionar el problema visual de estrechez */}
         <DialogContent className="max-w-5xl max-h-[92vh] overflow-y-auto">
           <DialogHeader className="border-b pb-4">
             <DialogTitle>{editingItem ? "Editar Registro Completo - Traslados" : "Nuevo Registro - Base Traslados Fiscalización"}</DialogTitle>
@@ -236,7 +229,6 @@ export default function TrasladosPage() {
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 pt-4 pb-6">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               
-              {/* Bloque Inicial */}
               <div className="space-y-1">
                 <Label className="text-xs font-bold">Canal de Ingreso</Label>
                 <Select onValueChange={(v) => setValue("canalIngreso", v)} defaultValue={editingItem?.canalIngreso || "SADE FISCALIZACIÓN"}>
@@ -288,7 +280,6 @@ export default function TrasladosPage() {
                 </Select>
               </div>
 
-              {/* Tramo Intermedio y Final */}
               <div className="space-y-1"><Label className="text-xs font-bold">Tipo de Trámite</Label><Input {...register("tipoTramite")} className="bg-white h-8" /></div>
               <div className="space-y-1"><Label className="text-xs font-bold">Dirección</Label><Input {...register("direccion")} className="bg-white h-8" /></div>
               <div className="space-y-1"><Label className="text-xs font-bold">Ciudad</Label><Input {...register("ciudad")} className="bg-white h-8" /></div>
@@ -339,7 +330,7 @@ export default function TrasladosPage() {
                 </Select>
               </div>
 
-              <div className="space-y-1"><Label className="text-xs font-bold">Proceso Final (AZ)</Label><Input {...register("procesoFinal")} className="bg-white h-8" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">Proceso Final</Label><Input {...register("procesoFinal")} className="bg-white h-8" /></div>
 
               <div className="space-y-1 md:col-span-3">
                 <Label className="text-xs font-bold">Observaciones</Label>
