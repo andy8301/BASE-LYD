@@ -1,4 +1,3 @@
-// Mapping of internal base names to actual Google Sheet names
 export const SHEET_NAMES = {
   BASE_OLGA: 'Base Olga',
   CORREOS: 'BASE CORREOS ELECTRONICOS',
@@ -20,29 +19,38 @@ export interface SheetInfo {
 const WEB_APP_URL = "https://script.google.com/macros/s/AKfycby06Oi2pADk8qxOk_v892vIXEpkuh6XSBirwg7xT_mSjKNwMlRsvSt1kG5L1dVqn3m49Q/exec";
 
 export async function getSheetNames(): Promise<SheetInfo[]> {
-  try {
-    return Object.values(SHEET_NAMES).map((name, index) => ({
-      title: name,
-      sheetId: index,
-      index: index
-    }));
-  } catch (error) {
-    console.error('Error fetching sheet names:', error);
-    throw error;
-  }
+  return Object.values(SHEET_NAMES).map((name, index) => ({
+    title: name,
+    sheetId: index,
+    index: index
+  }));
 }
 
 export async function readSheet(sheetName?: string, range?: string): Promise<Record<string, any[]>> {
   try {
     const targetSheet = sheetName || "Base Olga";
-    const response = await fetch(`${WEB_APP_URL}?sheetName=${encodeURIComponent(targetSheet)}`);
-    const result = await response.json();
+    const url = `${WEB_APP_URL}?sheetName=${encodeURIComponent(targetSheet)}`;
+    
+    // Usamos mode: 'cors' y cabeceras limpias
+    const response = await fetch(url, {
+      method: 'GET',
+      mode: 'cors',
+      redirect: 'follow'
+    });
+    
+    const text = await response.text();
+    let result;
+    try {
+      result = JSON.parse(text);
+    } catch (e) {
+      console.error("Respuesta no es JSON válido:", text);
+      throw new Error("Respuesta inválida del servidor de Google");
+    }
     
     if (result.error) {
       throw new Error(result.error);
     }
     
-    // Aseguramos que devuelva el objeto con la clave exacta de la hoja
     return {
       [targetSheet]: result[targetSheet] || []
     };
@@ -56,12 +64,9 @@ export async function appendToSheet(sheetName: string, rowData: any[]): Promise<
   try {
     const response = await fetch(WEB_APP_URL, {
       method: 'POST',
+      mode: 'cors',
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify({
-        action: 'append',
-        sheetName: sheetName,
-        rowData: rowData
-      })
+      body: JSON.stringify({ action: 'append', sheetName, rowData })
     });
     const result = await response.json();
     if (!result.success) throw new Error(result.error || 'Failed to append to sheet');
@@ -76,13 +81,9 @@ export async function updateSheetRow(sheetName: string, range: string, rowData: 
   try {
     const response = await fetch(WEB_APP_URL, {
       method: 'POST',
+      mode: 'cors',
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify({
-        action: 'update',
-        sheetName: sheetName,
-        rangeStr: range,
-        rowData: rowData
-      })
+      body: JSON.stringify({ action: 'update', sheetName, rangeStr: range, rowData })
     });
     const result = await response.json();
     if (!result.success) throw new Error(result.error || 'Failed to update sheet');
