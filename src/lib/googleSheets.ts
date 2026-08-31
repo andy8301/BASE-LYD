@@ -30,8 +30,6 @@ export async function readSheet(sheetName?: string, range?: string): Promise<Rec
   try {
     const targetSheet = sheetName || "Base Olga";
     const targetUrl = `${WEB_APP_URL}?sheetName=${encodeURIComponent(targetSheet)}`;
-    
-    // Usamos un proxy público gratuito para evitar restricciones de CORS del navegador
     const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`;
     
     const response = await fetch(proxyUrl);
@@ -42,13 +40,15 @@ export async function readSheet(sheetName?: string, range?: string): Promise<Rec
     }
 
     const result = JSON.parse(proxyData.contents);
-    
     if (result.error) {
       throw new Error(result.error);
     }
     
+    // Extraemos los datos asegurando que sea un array plano para la tabla
+    const rawData = result[targetSheet] || result.data || [];
+    
     return {
-      [targetSheet]: result[targetSheet] || []
+      [targetSheet]: Array.isArray(rawData) ? rawData : []
     };
   } catch (error) {
     console.error('Error reading sheet:', error);
@@ -58,7 +58,6 @@ export async function readSheet(sheetName?: string, range?: string): Promise<Rec
 
 export async function appendToSheet(sheetName: string, rowData: any[]): Promise<any> {
   try {
-    // Los POST hacia Google Apps Script funcionan perfecto usando no-cors o texto plano
     const response = await fetch(WEB_APP_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
