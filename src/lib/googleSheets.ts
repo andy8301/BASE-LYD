@@ -20,7 +20,7 @@ export interface SheetInfo {
 }
 
 export async function getSheetNames(): Promise<SheetInfo[]> {
-  const { data, error } = await supabase.functions.invoke('google-sheets', {
+  const { data, error } = await supabase.functions.invoke('https://script.google.com/macros/s/AKfycbwoLZrIOBl7ShEQjVkf6kilNb31ntWy0ejH0qFRTXTbp8sGeoBRPjhypt4DvFgwAg0-/exec', {
     body: { action: 'getSheetNames' },
   });
 
