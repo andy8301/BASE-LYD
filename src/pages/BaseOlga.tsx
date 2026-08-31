@@ -68,7 +68,7 @@ export default function BaseOlga() {
         formData.item || "",                // V
         formData.tipoRentaOtro || "",       // W
         formData.prelacionLegal || "",      // X
-        formData.baseFuncionario1ra || "",  // Y
+        "",                                 // Y (Base Funcionario 1ra - Oculto/Automático)
         formData.numeroResolucion || "",    // Z
         formData.numeroSadeSalida || "",    // AA
         formData.fechaResolucionSadeSalida || "", // AB
@@ -193,7 +193,7 @@ export default function BaseOlga() {
                   <SelectContent>{prelacionOpciones.map(p => <SelectItem key={p} value={p}>{p}</SelectItem>)}</SelectContent>
                 </Select>
               </div>
-              <div className="space-y-1"><Label className="text-xs font-bold">Base Funcionario 1ra</Label><Input {...register("baseFuncionario1ra")} className="bg-white h-8" /></div>
+              {/* Nota: 'Base Funcionario 1ra' se ha omitido visualmente de la interfaz tal como solicitaste */}
               <div className="space-y-1"><Label className="text-xs font-bold">No. Resolución</Label><Input {...register("numeroResolucion")} className="bg-white h-8" /></div>
               <div className="space-y-1"><Label className="text-xs font-bold">SADE de Salida</Label><Input {...register("numeroSadeSalida")} className="bg-white h-8" /></div>
               <div className="space-y-1"><Label className="text-xs font-bold">Fecha Res. Salida</Label><Input {...register("fechaResolucionSadeSalida")} type="date" className="bg-white h-8" /></div>
