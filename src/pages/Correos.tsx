@@ -127,7 +127,6 @@ export default function CorreosPage() {
 
   return (
     <div className="p-6 space-y-6">
-      {/* Cabecera del Módulo */}
       <div className="flex justify-between items-center bg-white p-4 rounded-lg shadow border">
         <div>
           <h1 className="text-2xl font-bold">Módulo de Correos Electrónicos</h1>
@@ -146,7 +145,6 @@ export default function CorreosPage() {
         </div>
       </div>
 
-      {/* Controles de Búsqueda y Filtros */}
       <div className="bg-white p-4 rounded-lg shadow border flex flex-col md:flex-row gap-4 items-center justify-between">
         <div className="relative w-full md:w-96">
           <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
@@ -171,7 +169,6 @@ export default function CorreosPage() {
         </div>
       </div>
 
-      {/* Tabla de Consulta Principal */}
       <div className="bg-white rounded-lg shadow border overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse min-w-[900px]">
@@ -224,7 +221,6 @@ export default function CorreosPage() {
         </div>
       </div>
 
-      {/* Modal del Formulario */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="max-w-4xl max-h-[92vh] overflow-y-auto">
           <DialogHeader className="border-b pb-4">
@@ -233,7 +229,6 @@ export default function CorreosPage() {
           
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-8 pt-4 pb-10">
             
-            {/* 1. Ingreso y Fechas */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-blue-50/50 rounded-lg border border-blue-100">
               <h3 className="col-span-3 font-bold text-blue-800 border-b border-blue-200 pb-1 text-sm">1. Ingreso y Fechas</h3>
               <div className="space-y-1">
@@ -247,7 +242,6 @@ export default function CorreosPage() {
               <div className="space-y-1"><Label className="text-xs font-bold">Fecha Correo</Label><Input {...register("fechaCorreo")} type="date" className="bg-white h-8" /></div>
             </div>
 
-            {/* 2. Asignación de Funcionario */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-green-50/50 rounded-lg border border-green-100">
               <h3 className="col-span-1 md:col-span-2 font-bold text-green-800 border-b border-green-200 pb-1 text-sm">2. Asignación de Funcionario</h3>
               <div className="space-y-1">
@@ -260,7 +254,66 @@ export default function CorreosPage() {
               <div className="space-y-1"><Label className="text-xs font-bold">Correo Funcionario Encargado</Label><Input {...register("correoFuncionario")} type="email" className="bg-white h-8" /></div>
             </div>
 
-            {/* 3. Solicitante y Detalle */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-indigo-50/50 rounded-lg border border-indigo-100">
               <h3 className="col-span-1 md:col-span-2 font-bold text-indigo-800 border-b border-indigo-200 pb-1 text-sm">3. Solicitante y Detalle</h3>
-              <div className="space-y-1"><Label className="text-xs font-bold">Contrib
+              <div className="space-y-1"><Label className="text-xs font-bold">Contribuyente o Solicitante</Label><Input {...register("contribuyente")} className="bg-white h-8" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">Correo Solicitante</Label><Input {...register("correoSolicitante")} type="email" className="bg-white h-8" /></div>
+              <div className="space-y-1 md:col-span-2"><Label className="text-xs font-bold">Asunto Correo</Label><Input {...register("asunto")} className="bg-white h-8" /></div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-orange-50/50 rounded-lg border border-orange-100">
+              <h3 className="col-span-3 font-bold text-orange-800 border-b border-orange-200 pb-1 text-sm">4. Clasificación, Trámite y Respuesta</h3>
+              
+              <div className="space-y-1">
+                <Label className="text-xs font-bold">Tipo de Renta</Label>
+                <Select onValueChange={(v) => setValue("tipoRenta", v)} defaultValue={editingItem?.tipoRenta}>
+                  <SelectTrigger className="bg-white h-8"><SelectValue placeholder="Seleccione..." /></SelectTrigger>
+                  <SelectContent>{tiposRenta.map(tr => <SelectItem key={tr} value={tr}>{tr}</SelectItem>)}</SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-1"><Label className="text-xs font-bold">Si es Otro (Especificar)</Label><Input {...register("tipoRentaOtro")} className="bg-white h-8" /></div>
+
+              <div className="space-y-1">
+                <Label className="text-xs font-bold">Tipo de Trámite</Label>
+                <Select onValueChange={(v) => setValue("tipoTramite", v)} defaultValue={editingItem?.tipoTramite}>
+                  <SelectTrigger className="bg-white h-8"><SelectValue placeholder="Seleccione..." /></SelectTrigger>
+                  <SelectContent>{tiposTramite.map(tt => <SelectItem key={tt} value={tt}>{tt}</SelectItem>)}</SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-1"><Label className="text-xs font-bold">Ítem</Label><Input {...register("item")} className="bg-white h-8" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">Placa</Label><Input {...register("placa")} className="bg-white h-8" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">Fecha de Respuesta</Label><Input {...register("fechaRespuesta")} type="date" className="bg-white h-8" /></div>
+
+              <div className="space-y-1">
+                <Label className="text-xs font-bold">Tipo de Respuesta</Label>
+                <Select onValueChange={(v) => setValue("tipoRespuesta", v)} defaultValue={editingItem?.tipoRespuesta}>
+                  <SelectTrigger className="bg-white h-8"><SelectValue placeholder="Seleccione..." /></SelectTrigger>
+                  <SelectContent>{tiposRespuesta.map(tr => <SelectItem key={tr} value={tr}>{tr}</SelectItem>)}</SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-1"><Label className="text-xs font-bold">No. de SADE de Salida</Label><Input {...register("noSadeSalida")} className="bg-white h-8" /></div>
+
+              <div className="space-y-1">
+                <Label className="text-xs font-bold">Prelación Legal</Label>
+                <Select onValueChange={(v) => setValue("prelacionLegal", v)} defaultValue={editingItem?.prelacionLegal}>
+                  <SelectTrigger className="bg-white h-8"><SelectValue placeholder="Seleccione..." /></SelectTrigger>
+                  <SelectContent>{prelacionOpciones.map(p => <SelectItem key={p} value={p}>{p}</SelectItem>)}</SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-1"><Label className="text-xs font-bold text-red-600">Fecha de Vencimiento</Label><Input {...register("fechaVencimiento")} type="date" className="bg-white h-8 border-red-200" /></div>
+              <div className="space-y-1 md:col-span-2"><Label className="text-xs font-bold">Observaciones</Label><Input {...register("observaciones")} className="bg-white h-8" /></div>
+            </div>
+
+            <Button type="submit" className="w-full bg-slate-900 py-6 text-xl font-bold text-white hover:bg-black">
+              <Save className="mr-2 h-6 w-6" /> Guardar Registro en Sheets
+            </Button>
+          </form>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+}
