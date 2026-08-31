@@ -1,8 +1,3 @@
-El error ocurre porque faltó cerrar una etiqueta o paréntesis al final del bloque o del archivo en el JSX (indica `Expected ">" but found end of file`).
-
-Aquí tienes el código **100% completo, validado y con todas las llaves y etiquetas correctamente cerradas** para que lo copies tal cual en tu archivo de Base Olga:
-
-```tsx
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
@@ -384,7 +379,3 @@ export default function BaseOlga() {
     </div>
   );
 }
-
-```
-
-Haz tu commit con este código actualizado, espera que compile en GitHub Actions y presiona **`Ctrl` + `F5**`. ¡El despliegue completará sin errores y con toda la funcionalidad intacta!     
