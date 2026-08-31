@@ -19,11 +19,11 @@ export default function BaseOlga() {
 
   const funcionarios = ["Adalberto Vásquez", "Benjamín Acosta Gordillo", "Carlos Peña", "César Enrique Gómez", "Cristiano Felipe Arana", "Claudia Mosquera", "Daniela Riascos", "Diego Fernando Ortiz", "Diego Fernando López", "Eliana Salamanca", "Frank Mauricio Restrepo", "Gustavo Adolfo Valencia", "Ibeth Restrepo Espitia", "Isabel Cristina Quintero", "Jhon Helber Samboni", "Jorge Arias", "Jose Fernando Moreno", "Juan Manuel Pizo", "Katherine Salamanca", "Karol Tatiana López", "Luis Andres Botia Riascos", "Maria Cristina Posso", "Maria Jose Cerquera", "Olga Lucia Gomez Aristizabal", "Robinson Rosero", "Samuel Orozco", "Sara Millán", "Wilson Quiñónez", "Yaleydy Mosquera", "Yamid Bolaños Manquillo", "Yohana Estrada", "Maira Alejandra Cardona", "Nailen Andrea Arias", "Diana Patricia Osorio Ospina"];
   
-  // Listas desplegables para estandarizar los datos del Dashboard
   const canalesIngreso = ["CORREO ELECTRÓNICO", "VENTANILLA", "OFICIO", "SADE", "FISCALIZACIÓN"];
   const areasRemitentes = ["COACTIVA", "LIQUIDACIÓN", "FISCALIZACIÓN", "RECAUDO", "JURÍDICA", "DESPACHO"];
   const tiposRenta = ["VEHICULOS", "DEGUELLO", "LOTERIAS", "ESTAMPILLAS", "CERVEZA", "LICORES"];
   const tiposTramite = ["RECURSO DE RECONSIDERACIÓN", "REVOCATORIA DIRECTA", "REQUERIMIENTO ORDINARIO", "TRASLADO", "PETICIÓN"];
+  const prelacionOpciones = ["SÍ", "NO", "URGENTE", "PRIORITARIO"];
   const respuestas = ["PETICIÓN", "TRASLADO", "RESPUESTA", "NOTIFICACIÓN", "AUTO DE CIERRE", "REVOCATORIA", "CONTESTADO"];
 
   const fetchData = async () => {
@@ -192,7 +192,15 @@ export default function BaseOlga() {
               <h3 className="col-span-3 font-bold text-orange-800 border-b border-orange-200 pb-1 text-sm">3. Clasificación y Respuesta (1ra Instancia)</h3>
               <div className="space-y-1"><Label className="text-xs font-bold">Ítem</Label><Input {...register("item")} className="bg-white h-8" /></div>
               <div className="space-y-1"><Label className="text-xs font-bold">Tipo de Renta (Otro)</Label><Input {...register("tipoRentaOtro")} className="bg-white h-8" /></div>
-              <div className="space-y-1"><Label className="text-xs font-bold">Prelación Legal</Label><Input {...register("prelacionLegal")} className="bg-white h-8" /></div>
+              
+              <div className="space-y-1">
+                <Label className="text-xs font-bold">Prelación Legal</Label>
+                <Select onValueChange={(v) => setValue("prelacionLegal", v)}>
+                  <SelectTrigger className="bg-white h-8"><SelectValue placeholder="Seleccione..." /></SelectTrigger>
+                  <SelectContent>{prelacionOpciones.map(p => <SelectItem key={p} value={p}>{p}</SelectItem>)}</SelectContent>
+                </Select>
+              </div>
+
               <div className="space-y-1"><Label className="text-xs font-bold">Base Funcionario 1ra</Label><Input {...register("baseFuncionario1ra")} className="bg-white h-8" /></div>
               <div className="space-y-1"><Label className="text-xs font-bold">No. Resolución</Label><Input {...register("numeroResolucion")} className="bg-white h-8" /></div>
               <div className="space-y-1"><Label className="text-xs font-bold">SADE de Salida</Label><Input {...register("numeroSadeSalida")} className="bg-white h-8" /></div>
