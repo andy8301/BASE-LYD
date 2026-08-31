@@ -23,6 +23,10 @@ export default function TutelasPage() {
   const meses = ["DICIEMBRE", "ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE"];
   const funcionarios = ["Adalberto Vásquez", "Benjamín Acosta Gordillo", "Carlos Peña", "César Enrique Gómez", "Cristiano Felipe Arana", "Claudia Mosquera", "Daniela Riascos", "Diego Fernando Ortiz", "Diego Fernando López", "Eliana Salamanca", "Frank Mauricio Restrepo", "Gustavo Adolfo Valencia", "Ibeth Restrepo Espitia", "Isabel Cristina Quintero", "Jhon Helber Samboni", "Jorge Arias", "Jose Fernando Moreno", "Juan Manuel Pizo", "Katherine Salamanca", "Karol Tatiana López", "Luis Andres Botia Riascos", "Maria Cristina Posso", "Maria Jose Cerquera", "Olga Lucia Gomez Aristizabal", "Robinson Rosero", "Samuel Orozco", "Sara Millán", "Wilson Quiñónez", "Yaleydy Mosquera", "Yamid Bolaños Manquillo", "Yohana Estrada", "Maira Alejandra Cardona", "Nailen Andrea Arias", "Diana Patricia Osorio Ospina"];
   const tiposRenta = ["IMPUESTO AL CONSUMO", "IMPUESTO DE VEHÍCULOS", "DEGÜELLO", "LOTERÍAS", "ESTAMPILLAS", "N/A"];
+  
+  // Nuevos desplegables solicitados para tipo de trámite e ítem
+  const tiposTramites = ["DERECHO DE PETICIÓN", "ACCIÓN DE TUTELA", "SOLICITUD DE INFORMACIÓN", "RECURSO", "QUEJA"];
+  const itemsOpciones = ["EXPEDIENTE", "DERECHO DE PETICIÓN", "TUTELA", "OTRO"];
 
   const fetchData = async () => {
     setIsLoading(true);
@@ -100,8 +104,8 @@ export default function TutelasPage() {
         formData.contribuyente || "",            // H: CONTRIBUYENTE O SOLICITANTE
         formData.correoSolicitante || "",        // I: CORREO SOLICITANTE
         formData.tipoRenta || "",                // J: TIPO DE RENTA
-        formData.tipoTramite || "",              // K: TIPO DE TRÁMITE
-        formData.item || "",                     // L: ÍTEM
+        formData.tipoTramite || "",              // K: TIPO DE TRÁMITE (Desplegable)
+        formData.item || "",                     // L: ÍTEM (Desplegable)
         formData.placa || "",                    // M: PLACA
         formData.remitente || "",                // N: REMITENTE
         formData.correoRemitente || "",          // O: CORREO REMITENTE
@@ -300,14 +304,22 @@ export default function TutelasPage() {
                 </Select>
               </div>
 
+              {/* Campo cambiado a Desplegable (Select) */}
               <div className="space-y-1">
                 <Label className="text-xs font-bold">Tipo de Trámite</Label>
-                <Input {...register("tipoTramite")} className="bg-white h-8" />
+                <Select onValueChange={(v) => setValue("tipoTramite", v)} defaultValue={editingItem?.tipoTramite}>
+                  <SelectTrigger className="bg-white h-8"><SelectValue placeholder="Seleccione trámite..." /></SelectTrigger>
+                  <SelectContent>{tiposTramites.map(tt => <SelectItem key={tt} value={tt}>{tt}</SelectItem>)}</SelectContent>
+                </Select>
               </div>
 
+              {/* Campo cambiado a Desplegable (Select) */}
               <div className="space-y-1">
                 <Label className="text-xs font-bold">Ítem</Label>
-                <Input {...register("item")} className="bg-white h-8" />
+                <Select onValueChange={(v) => setValue("item", v)} defaultValue={editingItem?.item}>
+                  <SelectTrigger className="bg-white h-8"><SelectValue placeholder="Seleccione ítem..." /></SelectTrigger>
+                  <SelectContent>{itemsOpciones.map(it => <SelectItem key={it} value={it}>{it}</SelectItem>)}</SelectContent>
+                </Select>
               </div>
 
               <div className="space-y-1">
