@@ -1,5 +1,3 @@
-import { supabase } from "@/integrations/supabase/client";
-
 // Mapping of internal base names to actual Google Sheet names
 export const SHEET_NAMES = {
   BASE_OLGA: 'Base Olga',
@@ -19,70 +17,81 @@ export interface SheetInfo {
   index: number;
 }
 
-export async function getSheetNames(): Promise<SheetInfo[]> {
-  const { data, error } = await supabase.functions.invoke('https://script.google.com/macros/s/AKfycbz1WcsmeV2TfiJ-y2IQBZ4D3E_i2CHpKrRxLw8i7MoMXjKt4jJUgxgW6EiWO_SvZNf2bg/exec', {
-    body: { action: 'getSheetNames' },
-  });
+// URL de tu Apps Script implementado
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycby06Oi2pADk8qxOk_v892vIXEpkuh6XSBirwg7xT_mSjKNwMlRsvSt1kG5L1dVqn3m49Q/exec";
 
-  if (error) {
+export async function getSheetNames(): Promise<SheetInfo[]> {
+  try {
+    const response = await fetch(`${WEB_APP_URL}?sheetName=Base%20Olga`);
+    const result = await response.json();
+    if (result.error) throw new Error(result.error);
+    
+    // Retorna las hojas disponibles basadas en los nombres definidos
+    return Object.values(SHEET_NAMES).map((name, index) => ({
+      title: name,
+      sheetId: index,
+      index: index
+    }));
+  } catch (error) {
     console.error('Error fetching sheet names:', error);
     throw error;
   }
-
-  if (!data.success) {
-    throw new Error(data.error || 'Failed to fetch sheet names');
-  }
-
-  return data.data;
 }
 
 export async function readSheet(sheetName?: string, range?: string): Promise<Record<string, any[]>> {
-  const { data, error } = await supabase.functions.invoke('google-sheets', {
-    body: { action: 'read', sheetName, range },
-  });
-
-  if (error) {
+  try {
+    const targetSheet = sheetName || "Base Olga";
+    const response = await fetch(`${WEB_APP_URL}?sheetName=${encodeURIComponent(targetSheet)}`);
+    const result = await response.json();
+    
+    if (result.error) {
+      throw new Error(result.error);
+    }
+    
+    return result;
+  } catch (error) {
     console.error('Error reading sheet:', error);
     throw error;
   }
-
-  if (!data.success) {
-    throw new Error(data.error || 'Failed to read sheet');
-  }
-
-  return data.data;
 }
 
-export async function appendToSheet(sheetName: string, rowData: string[]): Promise<any> {
-  const { data, error } = await supabase.functions.invoke('google-sheets', {
-    body: { action: 'append', sheetName, data: rowData },
-  });
-
-  if (error) {
+export async function appendToSheet(sheetName: string, rowData: any[]): Promise<any> {
+  try {
+    const response = await fetch(WEB_APP_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({
+        action: 'append',
+        sheetName: sheetName,
+        rowData: rowData
+      })
+    });
+    const result = await response.json();
+    if (!result.success) throw new Error(result.error || 'Failed to append to sheet');
+    return result;
+  } catch (error) {
     console.error('Error appending to sheet:', error);
     throw error;
   }
-
-  if (!data.success) {
-    throw new Error(data.error || 'Failed to append to sheet');
-  }
-
-  return data.data;
 }
 
-export async function updateSheetRow(sheetName: string, range: string, rowData: string[]): Promise<any> {
-  const { data, error } = await supabase.functions.invoke('google-sheets', {
-    body: { action: 'update', sheetName, range, data: rowData },
-  });
-
-  if (error) {
+export async function updateSheetRow(sheetName: string, range: string, rowData: any[]): Promise<any> {
+  try {
+    const response = await fetch(WEB_APP_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({
+        action: 'update',
+        sheetName: sheetName,
+        rangeStr: range,
+        rowData: rowData
+      })
+    });
+    const result = await response.json();
+    if (!result.success) throw new Error(result.error || 'Failed to update sheet');
+    return result;
+  } catch (error) {
     console.error('Error updating sheet:', error);
     throw error;
   }
-
-  if (!data.success) {
-    throw new Error(data.error || 'Failed to update sheet');
-  }
-
-  return data.data;
 }
