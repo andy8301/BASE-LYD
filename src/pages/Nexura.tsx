@@ -84,7 +84,7 @@ export default function NexuraPage() {
         formData.tipoRespuesta || "",               // AK: TIPO DE RESPUESTA
         formData.fechaRespuestaAL || "",            // AL: FECHA DE RESPUESTA
         formData.numeroSadeSalida || "",            // AM: NUMERO DE SADE DE SALIDA
-        formData.prelacionLegal || "N/A"            // AN: PRELACIÓN LEGAL (Con desplegable)
+        formData.prelacionLegal || "N/A"            // AN: PRELACIÓN LEGAL
       ];
 
       if (editingItem) {
@@ -119,9 +119,9 @@ export default function NexuraPage() {
           
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-8 pt-4 pb-10">
             
-            {/* Seccion 1: Cols B a H */}
+            {/* Seccion 1 */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-blue-50/50 rounded-lg border border-blue-100">
-              <h3 className="col-span-3 font-bold text-blue-800 border-b border-blue-200 pb-1 text-sm">1. Radicación y Secretaría (Cols. B - H)</h3>
+              <h3 className="col-span-3 font-bold text-blue-800 border-b border-blue-200 pb-1 text-sm">1. Radicación y Secretaría</h3>
               <div className="space-y-1"><Label className="text-xs font-bold">NEXURA / Base</Label><Input {...register("baseInformeNexura")} defaultValue="NEXURA" className="bg-white h-8" /></div>
               <div className="space-y-1"><Label className="text-xs font-bold">No.</Label><Input {...register("numero")} className="bg-white h-8" /></div>
               <div className="space-y-1"><Label className="text-xs font-bold">No. Radicación</Label><Input {...register("noRadicacion")} className="bg-white h-8" /></div>
@@ -152,9 +152,9 @@ export default function NexuraPage() {
               </div>
             </div>
 
-            {/* Seccion 2: Cols I a L */}
+            {/* Seccion 2 */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-orange-50/50 rounded-lg border border-orange-100">
-              <h3 className="col-span-3 font-bold text-orange-800 border-b border-orange-200 pb-1 text-sm">2. Detalle y Trámite (Cols. I - L)</h3>
+              <h3 className="col-span-3 font-bold text-orange-800 border-b border-orange-200 pb-1 text-sm">2. Detalle y Trámite</h3>
               
               <div className="space-y-1">
                 <Label className="text-xs font-bold">Canal de Ingreso</Label>
@@ -183,18 +183,18 @@ export default function NexuraPage() {
               </div>
             </div>
 
-            {/* Seccion 3: Cols M a P */}
+            {/* Seccion 3 */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-green-50/50 rounded-lg border border-green-100">
-              <h3 className="col-span-3 font-bold text-green-800 border-b border-green-200 pb-1 text-sm">3. Fechas Principales de Control (Cols. M - P)</h3>
+              <h3 className="col-span-3 font-bold text-green-800 border-b border-green-200 pb-1 text-sm">3. Fechas Principales de Control</h3>
               <div className="space-y-1"><Label className="text-xs font-bold">Fecha de Registro</Label><Input {...register("fechaRegistro")} type="date" className="bg-white h-8" /></div>
               <div className="space-y-1"><Label className="text-xs font-bold">Fecha Ingreso</Label><Input {...register("fechaIngreso")} type="date" className="bg-white h-8" /></div>
               <div className="space-y-1"><Label className="text-xs font-bold text-red-600">Fecha Límite de Respuesta</Label><Input {...register("fechaLimiteRespuesta")} type="date" className="bg-white h-8 border-red-200" /></div>
               <div className="space-y-1"><Label className="text-xs font-bold">Fecha de Respuesta (Gestión)</Label><Input {...register("fechaRespuestaP")} type="date" className="bg-white h-8" /></div>
             </div>
 
-            {/* Seccion 4: Cols U a AC */}
+            {/* Seccion 4 */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-indigo-50/50 rounded-lg border border-indigo-100">
-              <h3 className="col-span-3 font-bold text-indigo-800 border-b border-indigo-200 pb-1 text-sm">4. Datos del Solicitante (Cols. U - AC)</h3>
+              <h3 className="col-span-3 font-bold text-indigo-800 border-b border-indigo-200 pb-1 text-sm">4. Datos del Solicitante</h3>
               
               <div className="space-y-1">
                 <Label className="text-xs font-bold">Tipo de Persona</Label>
@@ -221,9 +221,9 @@ export default function NexuraPage() {
               <div className="space-y-1 md:col-span-2"><Label className="text-xs font-bold">Email</Label><Input {...register("email")} type="email" className="bg-white h-8" /></div>
             </div>
 
-            {/* Seccion 5: Cols AE a AN (Último Tramo Validado) */}
+            {/* Seccion 5 */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-purple-50/50 rounded-lg border border-purple-100">
-              <h3 className="col-span-3 font-bold text-purple-800 border-b border-purple-200 pb-1 text-sm">5. Detalle Final y Cierre (Cols. AE - AN)</h3>
+              <h3 className="col-span-3 font-bold text-purple-800 border-b border-purple-200 pb-1 text-sm">5. Detalle Final y Cierre</h3>
 
               <div className="space-y-1"><Label className="text-xs font-bold">Requerimiento</Label><Input {...register("requerimiento")} className="bg-white h-8" /></div>
 
