@@ -20,7 +20,7 @@ export interface SheetInfo {
 }
 
 export async function getSheetNames(): Promise<SheetInfo[]> {
-  const { data, error } = await supabase.functions.invoke('https://script.google.com/macros/s/AKfycbwoLZrIOBl7ShEQjVkf6kilNb31ntWy0ejH0qFRTXTbp8sGeoBRPjhypt4DvFgwAg0-/exec', {
+  const { data, error } = await supabase.functions.invoke('https://script.google.com/macros/s/AKfycbz1WcsmeV2TfiJ-y2IQBZ4D3E_i2CHpKrRxLw8i7MoMXjKt4jJUgxgW6EiWO_SvZNf2bg/exec', {
     body: { action: 'getSheetNames' },
   });
 
