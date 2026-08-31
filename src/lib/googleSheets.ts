@@ -16,7 +16,6 @@ export interface SheetInfo {
   index: number;
 }
 
-// Tu URL oficial que termina en /exec
 const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbz1WcsmeV2TfiJ-y2IQBZ4D3E_i2CHpKrRxLw8i7MoMXjKt4jJUgxgW6EiWO_SvZNf2bg/exec";
 
 export async function getSheetNames(): Promise<SheetInfo[]> {
@@ -32,8 +31,6 @@ export async function readSheet(sheetName?: string, range?: string): Promise<Rec
   
   try {
     const url = `${WEB_APP_URL}?sheetName=${encodeURIComponent(targetSheet)}`;
-    
-    // Usamos el proxy libre de CORS para que capture la redirección de Google sin bloquear el frontend
     const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`;
     
     const response = await fetch(proxyUrl);
@@ -44,15 +41,13 @@ export async function readSheet(sheetName?: string, range?: string): Promise<Rec
     }
 
     const result = JSON.parse(proxyData.contents);
-    if (result.error) {
-      throw new Error(result.error);
-    }
+    const rawRows = result[targetSheet] || result.data || [];
 
-    const rawRows = result[targetSheet] || [];
-    const formattedRows = rawRows.map((row: any, index: number) => ({
+    // Formateamos las filas para que la tabla de Lovable las lea de inmediato
+    const formattedRows = Array.isArray(rawRows) ? rawRows.map((row: any, index: number) => ({
       id: row["No consecutivo"] || row["ID"] || `row-${index}`,
       ...row
-    }));
+    })) : [];
 
     return {
       [targetSheet]: formattedRows
