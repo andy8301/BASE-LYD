@@ -26,34 +26,36 @@ export async function getSheetNames(): Promise<SheetInfo[]> {
   }));
 }
 
+// Usamos JSONP nativo para saltarnos el CORS y el error 302 al leer de Google Sheets
 export async function readSheet(sheetName?: string, range?: string): Promise<Record<string, any[]>> {
-  try {
-    const targetSheet = sheetName || "Base Olga";
-    const targetUrl = `${WEB_APP_URL}?sheetName=${encodeURIComponent(targetSheet)}`;
-    const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`;
+  const targetSheet = sheetName || "Base Olga";
+  
+  return new Promise((resolve, reject) => {
+    const callbackName = 'jsonp_callback_' + Math.round(100000 * Math.random());
     
-    const response = await fetch(proxyUrl);
-    const proxyData = await response.json();
-    
-    if (!proxyData.contents) {
-      throw new Error("No se pudo conectar con el servidor de Google");
-    }
-
-    const result = JSON.parse(proxyData.contents);
-    if (result.error) {
-      throw new Error(result.error);
-    }
-    
-    // Extraemos los datos asegurando que sea un array plano para la tabla
-    const rawData = result[targetSheet] || result.data || [];
-    
-    return {
-      [targetSheet]: Array.isArray(rawData) ? rawData : []
+    // Función global que ejecutará Google Apps Script al responder
+    (window as any)[callbackName] = function(data: any) {
+      delete (window as any)[callbackName];
+      document.body.removeChild(script);
+      if (data && data.error) {
+        reject(new Error(data.error));
+      } else {
+        resolve({
+          [targetSheet]: data[targetSheet] || []
+        });
+      }
     };
-  } catch (error) {
-    console.error('Error reading sheet:', error);
-    throw error;
-  }
+
+    const script = document.createElement('script');
+    script.src = `${WEB_APP_URL}?sheetName=${encodeURIComponent(targetSheet)}&callback=${callbackName}`;
+    script.onerror = function() {
+      delete (window as any)[callbackName];
+      document.body.removeChild(script);
+      reject(new Error("Error al conectar con Google Sheets"));
+    };
+    
+    document.body.appendChild(script);
+  });
 }
 
 export async function appendToSheet(sheetName: string, rowData: any[]): Promise<any> {
