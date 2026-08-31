@@ -129,10 +129,10 @@ export default function NexuraPage() {
       if (editingItem) {
         const rowNumber = editingItem.id.replace('row-', '');
         await updateSheetRow(sheetName, `A${rowNumber}:AN${rowNumber}`, rowData);
-        toast.success("¡Registro de Base Nexura actualizado exitosamente!");
+        toast.success("¡Registro actualizado exitosamente!");
       } else {
         await appendToSheet(sheetName, rowData);
-        toast.success("¡Registro de Base Nexura guardado exitosamente!");
+        toast.success("¡Registro guardado exitosamente!");
       }
       setIsDialogOpen(false);
       fetchData();
@@ -151,7 +151,6 @@ export default function NexuraPage() {
 
   return (
     <div className="p-6 space-y-6">
-      {/* Cabecera del Módulo */}
       <div className="flex justify-between items-center bg-white p-4 rounded-lg shadow border">
         <div>
           <h1 className="text-2xl font-bold">Módulo Base NEXURA</h1>
@@ -170,7 +169,6 @@ export default function NexuraPage() {
         </div>
       </div>
 
-      {/* Controles de Búsqueda y Filtros */}
       <div className="bg-white p-4 rounded-lg shadow border flex flex-col md:flex-row gap-4 items-center justify-between">
         <div className="relative w-full md:w-96">
           <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
@@ -195,7 +193,6 @@ export default function NexuraPage() {
         </div>
       </div>
 
-      {/* Tabla de Consulta Principal */}
       <div className="bg-white rounded-lg shadow border overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse min-w-[900px]">
@@ -213,7 +210,7 @@ export default function NexuraPage() {
             <tbody className="divide-y divide-slate-200 text-sm">
               {isLoading ? (
                 <tr>
-                  <td colSpan={7} className="text-center py-8 text-slate-500">Cargando registros de Base Nexura...</td>
+                  <td colSpan={7} className="text-center py-8 text-slate-500">Cargando registros...</td>
                 </tr>
               ) : filteredData.length === 0 ? (
                 <tr>
@@ -251,7 +248,6 @@ export default function NexuraPage() {
         </div>
       </div>
 
-      {/* Modal del Formulario */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="max-w-5xl max-h-[92vh] overflow-y-auto">
           <DialogHeader className="border-b pb-4">
@@ -259,15 +255,12 @@ export default function NexuraPage() {
           </DialogHeader>
           
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-8 pt-4 pb-10">
-            
-            {/* Seccion 1 */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-blue-50/50 rounded-lg border border-blue-100">
               <h3 className="col-span-3 font-bold text-blue-800 border-b border-blue-200 pb-1 text-sm">1. Radicación y Secretaría</h3>
               <div className="space-y-1"><Label className="text-xs font-bold">NEXURA / Base</Label><Input {...register("baseInformeNexura")} defaultValue="NEXURA" className="bg-white h-8" /></div>
               <div className="space-y-1"><Label className="text-xs font-bold">No.</Label><Input {...register("numero")} className="bg-white h-8" /></div>
               <div className="space-y-1"><Label className="text-xs font-bold">No. Radicación</Label><Input {...register("noRadicacion")} className="bg-white h-8" /></div>
               <div className="space-y-1"><Label className="text-xs font-bold">No. Radicación Externo</Label><Input {...register("noRadicacionExterno")} className="bg-white h-8" /></div>
-              
               <div className="space-y-1">
                 <Label className="text-xs font-bold">Secretaría</Label>
                 <Select onValueChange={(v) => setValue("secretaria", v)} defaultValue={editingItem?.secretaria}>
@@ -275,7 +268,6 @@ export default function NexuraPage() {
                   <SelectContent>{secretarias.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}</SelectContent>
                 </Select>
               </div>
-
               <div className="space-y-1">
                 <Label className="text-xs font-bold">Tipo de Solicitud</Label>
                 <Select onValueChange={(v) => setValue("tipoSolicitud", v)} defaultValue={editingItem?.tipoSolicitud}>
@@ -283,7 +275,6 @@ export default function NexuraPage() {
                   <SelectContent>{tiposSolicitud.map(ts => <SelectItem key={ts} value={ts}>{ts}</SelectItem>)}</SelectContent>
                 </Select>
               </div>
-
               <div className="space-y-1">
                 <Label className="text-xs font-bold">Prioritaria</Label>
                 <Select onValueChange={(v) => setValue("prioritaria", v)} defaultValue={editingItem?.prioritaria || "NO"}>
@@ -293,10 +284,8 @@ export default function NexuraPage() {
               </div>
             </div>
 
-            {/* Seccion 2 */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-orange-50/50 rounded-lg border border-orange-100">
               <h3 className="col-span-3 font-bold text-orange-800 border-b border-orange-200 pb-1 text-sm">2. Detalle y Trámite</h3>
-              
               <div className="space-y-1">
                 <Label className="text-xs font-bold">Canal de Ingreso</Label>
                 <Select onValueChange={(v) => setValue("canalIngreso", v)} defaultValue={editingItem?.canalIngreso}>
@@ -304,9 +293,7 @@ export default function NexuraPage() {
                   <SelectContent>{canalesIngreso.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent>
                 </Select>
               </div>
-
               <div className="space-y-1"><Label className="text-xs font-bold">Tema</Label><Input {...register("tema")} className="bg-white h-8" /></div>
-
               <div className="space-y-1">
                 <Label className="text-xs font-bold">Condición de Solicitud</Label>
                 <Select onValueChange={(v) => setValue("condicionSolicitud", v)} defaultValue={editingItem?.condicionSolicitud}>
@@ -314,6 +301,97 @@ export default function NexuraPage() {
                   <SelectContent>{condiciones.map(cond => <SelectItem key={cond} value={cond}>{cond}</SelectItem>)}</SelectContent>
                 </Select>
               </div>
-
               <div className="space-y-1 md:col-span-2">
-                <Label className="text-
+                <Label className="text-xs font-bold">Responsable / Funcionario</Label>
+                <Select onValueChange={(v) => setValue("responsable", v)} defaultValue={editingItem?.responsable}>
+                  <SelectTrigger className="bg-white h-8"><SelectValue placeholder="Seleccione..." /></SelectTrigger>
+                  <SelectContent>{funcionarios.map(f => <SelectItem key={f} value={f}>{f}</SelectItem>)}</SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-green-50/50 rounded-lg border border-green-100">
+              <h3 className="col-span-3 font-bold text-green-800 border-b border-green-200 pb-1 text-sm">3. Fechas Principales de Control</h3>
+              <div className="space-y-1"><Label className="text-xs font-bold">Fecha de Registro</Label><Input {...register("fechaRegistro")} type="date" className="bg-white h-8" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">Fecha ingreso</Label><Input {...register("fechaIngreso")} type="date" className="bg-white h-8" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold text-red-600">Fecha límite de respuesta</Label><Input {...register("fechaLimiteRespuesta")} type="date" className="bg-white h-8 border-red-200" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">Fecha de respuesta a</Label><Input {...register("fechaRespuestaP")} type="date" className="bg-white h-8" /></div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-indigo-50/50 rounded-lg border border-indigo-100">
+              <h3 className="col-span-3 font-bold text-indigo-800 border-b border-indigo-200 pb-1 text-sm">4. Datos del Solicitante</h3>
+              <div className="space-y-1">
+                <Label className="text-xs font-bold">Tipo de persona</Label>
+                <Select onValueChange={(v) => setValue("tipoPersona", v)} defaultValue={editingItem?.tipoPersona}>
+                  <SelectTrigger className="bg-white h-8"><SelectValue placeholder="Seleccione..." /></SelectTrigger>
+                  <SelectContent>{tiposPersona.map(tp => <SelectItem key={tp} value={tp}>{tp}</SelectItem>)}</SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-1"><Label className="text-xs font-bold">Nit</Label><Input {...register("nit")} className="bg-white h-8" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">Dígito de verificación</Label><Input {...register("digitoVerificacion")} className="bg-white h-8" /></div>
+              <div className="space-y-1">
+                <Label className="text-xs font-bold">Tipo de documento</Label>
+                <Select onValueChange={(v) => setValue("tipoDocumento", v)} defaultValue={editingItem?.tipoDocumento}>
+                  <SelectTrigger className="bg-white h-8"><SelectValue placeholder="Seleccione..." /></SelectTrigger>
+                  <SelectContent>{tiposDocumento.map(td => <SelectItem key={td} value={td}>{td}</SelectItem>)}</SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-1"><Label className="text-xs font-bold">Número de documento</Label><Input {...register("numeroDocumento")} className="bg-white h-8" /></div>
+              <div className="space-y-1 md:col-span-2"><Label className="text-xs font-bold">Nombre del solicitante</Label><Input {...register("nombreSolicitante")} className="bg-white h-8" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">Teléfono de contacto</Label><Input {...register("telefonoContacto")} className="bg-white h-8" /></div>
+              <div className="space-y-1 md:col-span-2"><Label className="text-xs font-bold">Email</Label><Input {...register("email")} type="email" className="bg-white h-8" /></div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-purple-50/50 rounded-lg border border-purple-100">
+              <h3 className="col-span-3 font-bold text-purple-800 border-b border-purple-200 pb-1 text-sm">5. Detalle Final y Cierre</h3>
+              <div className="space-y-1"><Label className="text-xs font-bold">Requerimiento</Label><Input {...register("requerimiento")} className="bg-white h-8" /></div>
+              <div className="space-y-1">
+                <Label className="text-xs font-bold">FUNCIONARIO ENCARGADO</Label>
+                <Select onValueChange={(v) => setValue("funcionarioEncargado", v)} defaultValue={editingItem?.funcionarioEncargado}>
+                  <SelectTrigger className="bg-white h-8"><SelectValue placeholder="Seleccione..." /></SelectTrigger>
+                  <SelectContent>{funcionarios.map(f => <SelectItem key={f} value={f}>{f}</SelectItem>)}</SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-1">
+                <Label className="text-xs font-bold">TIPO DE RENTA</Label>
+                <Select onValueChange={(v) => setValue("tipoRenta", v)} defaultValue={editingItem?.tipoRenta}>
+                  <SelectTrigger className="bg-white h-8"><SelectValue placeholder="Seleccione..." /></SelectTrigger>
+                  <SelectContent>{tiposRenta.map(tr => <SelectItem key={tr} value={tr}>{tr}</SelectItem>)}</SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-1">
+                <Label className="text-xs font-bold">TIPO DE TRAMITE</Label>
+                <Select onValueChange={(v) => setValue("tipoTramite", v)} defaultValue={editingItem?.tipoTramite}>
+                  <SelectTrigger className="bg-white h-8"><SelectValue placeholder="Seleccione..." /></SelectTrigger>
+                  <SelectContent>{tiposTramite.map(tt => <SelectItem key={tt} value={tt}>{tt}</SelectItem>)}</SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-1"><Label className="text-xs font-bold">ITEM</Label><Input {...register("item")} className="bg-white h-8" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">SI EL TIPO DE RENTA ES OTRO</Label><Input {...register("tipoRentaOtro")} className="bg-white h-8" /></div>
+              <div className="space-y-1">
+                <Label className="text-xs font-bold">TIPO DE RESPUESTA</Label>
+                <Select onValueChange={(v) => setValue("tipoRespuesta", v)} defaultValue={editingItem?.tipoRespuesta}>
+                  <SelectTrigger className="bg-white h-8"><SelectValue placeholder="Seleccione..." /></SelectTrigger>
+                  <SelectContent>{tiposRespuesta.map(tr => <SelectItem key={tr} value={tr}>{tr}</SelectItem>)}</SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-1"><Label className="text-xs font-bold">FECHA DE RESPUESTA</Label><Input {...register("fechaRespuestaAL")} type="date" className="bg-white h-8" /></div>
+              <div className="space-y-1"><Label className="text-xs font-bold">NUMERO DE SADE DE SALIDA</Label><Input {...register("numeroSadeSalida")} className="bg-white h-8" /></div>
+              <div className="space-y-1 md:col-span-3">
+                <Label className="text-xs font-bold text-purple-900">PRELACIÓN LEGAL</Label>
+                <Select onValueChange={(v) => setValue("prelacionLegal", v)} defaultValue={editingItem?.prelacionLegal || "N/A"}>
+                  <SelectTrigger className="bg-white h-8 border-purple-300"><SelectValue placeholder="Seleccione..." /></SelectTrigger>
+                  <SelectContent>{prelacionOpciones.map(p => <SelectItem key={p} value={p}>{p}</SelectItem>)}</SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <Button type="submit" className="w-full bg-slate-900 py-6 text-xl font-bold text-white hover:bg-black">
+              <Save className="mr-2 h-6 w-6" /> Guardar Registro en Sheets
+            </Button>
+          </form>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+}
